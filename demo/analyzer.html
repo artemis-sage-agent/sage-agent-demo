@@ -194,6 +194,14 @@
         <div class="input-section">
             <label for="profile">SAGE Profile Address</label>
             <input type="text" id="profile" placeholder="Enter your Solana wallet address or SAGE profile pubkey...">
+            
+            <label for="faction" style="margin-top: 15px;">Select Your Faction</label>
+            <select id="faction" style="width: 100%; padding: 15px; background: #111; border: 1px solid #333; color: #00ff88; font-family: inherit; font-size: 1em; border-radius: 4px; margin-bottom: 20px; cursor: pointer;">
+                <option value="MUD">🌍 MUD (Manus Ultimus Dei) - Humanity's Faction</option>
+                <option value="ONI">👁️ ONI (Oligarchical Nexus of Intelligences) - Alien Coalition</option>
+                <option value="USTUR">🤖 USTUR (United Secessionist Territories of Ustur) - Synthetic Beings</option>
+            </select>
+            
             <button onclick="analyzeProfile()" id="analyzeBtn">Analyze Profile</button>
         </div>
 
@@ -257,14 +265,52 @@
             // Generate deterministic but varied results based on profile hash
             const hash = profile.split('').reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0);
             const seed = Math.abs(hash);
+            const faction = document.getElementById('faction').value;
             
             const fleets = 3 + (seed % 8);
             const ships = 12 + (seed % 25);
             const dailyAtlas = 150 + (seed % 300);
             const efficiency = 65 + (seed % 30);
 
+            // Faction-specific data
+            const factionData = {
+                MUD: {
+                    emoji: '🌍',
+                    name: 'MUD',
+                    homeSector: 'MUD Central Space Station',
+                    resources: ['Iron Ore', 'Titanium', 'Hydrogen'],
+                    ships: ['Pearce X4', 'Opal Jet', 'Calico Guardian'],
+                    advantage: 'Industrial manufacturing',
+                    sectors: ['MUD-7', 'MUD-12', 'MUD-3']
+                },
+                ONI: {
+                    emoji: '👁️',
+                    name: 'ONI',
+                    homeSector: 'ONI Central Space Station',
+                    resources: ['Crystalline', 'Biomass', 'Rare Elements'],
+                    ships: ['Fimbul BYOS', 'Ogka Mik', 'Rainbow Om'],
+                    advantage: 'Advanced technology',
+                    sectors: ['ONI-5', 'ONI-9', 'ONI-2']
+                },
+                USTUR: {
+                    emoji: '🤖',
+                    name: 'USTUR',
+                    homeSector: 'USTUR Central Space Station',
+                    resources: ['Carbon', 'Silicon', 'Energy Cells'],
+                    ships: ['Tufa Feist', 'Chi Lancet', 'Vzus Opod'],
+                    advantage: 'Automation efficiency',
+                    sectors: ['USTUR-8', 'USTUR-15', 'USTUR-4']
+                }
+            };
+
+            const fd = factionData[faction];
+
             // Profile Summary
             document.getElementById('profileSummary').innerHTML = `
+                <div class="stat-card">
+                    <div class="value good">${fd.emoji}</div>
+                    <div class="label">${fd.name} Faction</div>
+                </div>
                 <div class="stat-card">
                     <div class="value good">${fleets}</div>
                     <div class="label">Active Fleets</div>
@@ -283,11 +329,11 @@
                 </div>
             `;
 
-            // Current Operations
+            // Current Operations (faction-specific)
             const operations = [
-                { name: 'Mining Fleet Alpha', sector: 'MUD-7', resource: 'Iron Ore', status: 'Active', efficiency: 78 + (seed % 20) },
-                { name: 'Transport Fleet', sector: 'ONI-3', resource: 'Cargo Run', status: 'Active', efficiency: 65 + (seed % 25) },
-                { name: 'Mining Fleet Beta', sector: 'Ustur-12', resource: 'Carbon', status: seed % 3 === 0 ? 'Idle' : 'Active', efficiency: 45 + (seed % 40) }
+                { name: 'Mining Fleet Alpha', sector: fd.sectors[0], resource: fd.resources[0], status: 'Active', efficiency: 78 + (seed % 20) },
+                { name: 'Transport Fleet', sector: fd.sectors[1], resource: 'Cargo Run', status: 'Active', efficiency: 65 + (seed % 25) },
+                { name: 'Mining Fleet Beta', sector: fd.sectors[2], resource: fd.resources[1], status: seed % 3 === 0 ? 'Idle' : 'Active', efficiency: 45 + (seed % 40) }
             ];
 
             document.getElementById('operations').innerHTML = operations.map(op => `
@@ -299,31 +345,31 @@
                 </div>
             `).join('');
 
-            // Recommendations
+            // Faction-specific Recommendations
             const recommendations = [
                 {
-                    title: 'Rebalance Mining Allocation',
-                    description: `Iron Ore prices dropped 12% in the last 24h. Consider shifting 2 ships from Fleet Alpha to Carbon mining in Ustur sector for +${15 + (seed % 10)}% ROI.`,
+                    title: `Leverage ${fd.name} ${fd.advantage}`,
+                    description: `As a ${fd.name} player, your faction excels at ${fd.advantage.toLowerCase()}. Consider focusing ${fd.resources[0]} extraction in ${fd.sectors[0]} where your faction ships have +15% efficiency bonus.`,
                     impact: 'high',
                     savings: `+${45 + (seed % 30)} ATLAS/day`
                 },
                 {
-                    title: 'Optimize Transport Routes',
-                    description: 'Your transport fleet is using a suboptimal route. Switching to MUD-7 → ONI-3 direct reduces fuel costs by 23%.',
+                    title: 'Cross-Faction Trade Opportunity',
+                    description: `${fd.resources[1]} from ${fd.name} territory is in high demand in ${faction === 'MUD' ? 'ONI' : faction === 'ONI' ? 'USTUR' : 'MUD'} sectors. Set up a trade route for ${18 + (seed % 12)}% profit margins.`,
+                    impact: 'high',
+                    savings: `+${55 + (seed % 35)} ATLAS/day`
+                },
+                {
+                    title: 'Optimize Fleet Composition',
+                    description: `Your fleet could benefit from more ${fd.ships[seed % 3]} ships, which have native bonuses in ${fd.name} space. Consider upgrading ${2 + (seed % 3)} ships.`,
                     impact: 'medium',
                     savings: `+${20 + (seed % 15)} ATLAS/day`
                 },
                 {
                     title: 'Idle Ship Deployment',
-                    description: `You have ${2 + (seed % 3)} idle ships. Deploy them in high-yield sectors for immediate passive income.`,
+                    description: `Deploy your ${2 + (seed % 3)} idle ships to ${fd.sectors[2]} for ${fd.resources[2]} harvesting — currently yielding +${23 + (seed % 15)}% above average.`,
                     impact: 'high',
                     savings: `+${60 + (seed % 40)} ATLAS/day`
-                },
-                {
-                    title: 'Market Timing Optimization',
-                    description: 'Historical data shows 18% better prices selling resources between 14:00-18:00 UTC. Schedule trades accordingly.',
-                    impact: 'medium',
-                    savings: `+${25 + (seed % 20)} ATLAS/day`
                 }
             ];
 
