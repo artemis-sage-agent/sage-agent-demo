@@ -1,0 +1,108 @@
+{
+  "agent_id": "sage-miner-001",
+  "session_start": "2026-02-07T00:00:00Z",
+  "total_decisions": 47,
+  "autonomous_percentage": 99.1,
+  "human_overrides": 1,
+  "
+decisions": [
+    {
+      "timestamp": "2026-02-07T10:15:23Z",
+      "decision_id": "dec_547291",
+      "type": "resource_switch",
+      "action": "Switch mining target from Carbon to Iron Ore",
+      "reasoning": {
+        "price_differential": "+12%",
+        "roi_improvement": "+23%",
+        "market_trend": "bullish_iron",
+        "risk_assessment": "low"
+      },
+      "confidence": 0.89,
+      "execution_time_ms": 234,
+      "outcome": "executed_successfully",
+      "profit_impact": "+45 ATLAS estimated"
+    },
+    {
+      "timestamp": "2026-02-07T09:42:11Z", 
+      "decision_id": "dec_547290",
+      "type": "fleet_redeployment",
+      "action": "Move 3 mining ships from Sector 5 to Sector 7",
+      "reasoning": {
+        "congestion_reduction": "85% → 45%",
+        "efficiency_gain": "+15%",
+        "fuel_cost_analysis": "break_even_acceptable",
+        "competition_level": "moderate"
+      },
+      "confidence": 0.94,
+      "execution_time_ms": 1247,
+      "outcome": "executed_successfully",
+      "profit_impact": "+78 ATLAS estimated"
+    },
+    {
+      "timestamp": "2026-02-07T08:33:07Z",
+      "decision_id": "dec_547289", 
+      "type": "arbitrage_execution",
+      "action": "Cross-sector Iron Ore trade: Buy Low MUD → Sell High ONI",
+      "reasoning": {
+        "price_spread": "8.3%",
+        "transaction_costs": "2.1%",
+        "net_profit_margin": "6.2%", 
+        "execution_certainty": "high"
+      },
+      "confidence": 0.97,
+      "execution_time_ms": 89,
+      "outcome": "executed_successfully", 
+      "profit_impact": "+156 ATLAS actual"
+    },
+    {
+      "timestamp": "2026-02-07T07:21:45Z",
+      "decision_id": "dec_547288",
+      "type": "risk_management",
+      "action": "Reduce position size in volatile Carbon market",
+      "reasoning": {
+        "volatility_spike": "+340% from baseline",
+        "position_exposure": "exceeded_threshold",
+        "risk_tolerance": "conservative_mode",
+        "market_uncertainty": "high"
+      },
+      "confidence": 0.92,
+      "execution_time_ms": 156,
+      "outcome": "executed_successfully",
+      "profit_impact": "+23 ATLAS (loss_prevention)"
+    },
+    {
+      "timestamp": "2026-02-07T06:15:33Z",
+      "decision_id": "dec_547287",
+      "type": "opportunity_detection", 
+      "action": "Enter new mining operation in Sector 12-Gamma",
+      "reasoning": {
+        "resource_discovery": "high_grade_titanium",
+        "competition_analysis": "low_presence",
+        "profitability_projection": "+89% ROI",
+        "infrastructure_cost": "minimal"
+      },
+      "confidence": 0.87,
+      "execution_time_ms": 2341,
+      "outcome": "executed_successfully",
+      "profit_impact": "+234 ATLAS estimated"
+    }
+  ],
+  "performance_summary": {
+    "total_profit_today": "+536 ATLAS",
+    "successful_decisions": 46,
+    "failed_decisions": 0,
+    "pending_operations": 1,
+    "avg_confidence": 0.912,
+    "avg_execution_time_ms": 813,
+    "risk_incidents": 0,
+    "human_interventions": 1
+  },
+  "infrastructure_metrics": {
+    "blockchain": "z.ink",
+    "uptime_percentage": 100.0,
+    "avg_block_time_ms": 400,
+    "transaction_success_rate": 99.97,
+    "network_congestion": "minimal",
+    "gas_cost_optimization": "active"
+  }
+}
