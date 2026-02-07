@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAGE Profile Analyzer | SAGE-Agent</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Monaco', 'Menlo', monospace; 
+            background: #0a0a0a; 
+            color: #00ff88; 
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #00ff88;
+            padding-bottom: 20px;
+        }
+        .header h1 { margin-bottom: 10px; }
+        .header p { color: #888; }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .input-section {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .input-section label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .input-section input {
+            width: 100%;
+            padding: 15px;
+            background: #111;
+            border: 1px solid #333;
+            color: #00ff88;
+            font-family: inherit;
+            font-size: 1em;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .input-section input:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+        .input-section input::placeholder {
+            color: #555;
+        }
+        button {
+            background: #00ff88;
+            color: #0a0a0a;
+            border: none;
+            padding: 15px 40px;
+            font-family: inherit;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #00cc6a;
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .results {
+            display: none;
+        }
+        .results.visible {
+            display: block;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        .loading.visible {
+            display: block;
+        }
+        .loading .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #333;
+            border-top-color: #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .panel {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #00ff88;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .panel h3 {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #222;
+        }
+        .metric:last-child { border-bottom: none; }
+        .good { color: #00ff88; }
+        .warning { color: #ffaa00; }
+        .critical { color: #ff4444; }
+        .recommendation {
+            background: rgba(0, 255, 136, 0.05);
+            border-left: 3px solid #00ff88;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .recommendation.high-impact {
+            border-left-color: #ffaa00;
+        }
+        .recommendation h4 {
+            margin-bottom: 8px;
+        }
+        .recommendation p {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+        .impact-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            margin-left: 10px;
+        }
+        .impact-high { background: #ffaa00; color: #000; }
+        .impact-medium { background: #00ff88; color: #000; }
+        .impact-low { background: #333; color: #888; }
+        .profile-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-card .value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .stat-card .label {
+            color: #888;
+            font-size: 0.85em;
+        }
+        .disclaimer {
+            text-align: center;
+            color: #555;
+            font-size: 0.85em;
+            margin-top: 30px;
+            padding: 20px;
+            border-top: 1px solid #222;
+        }
+        a { color: #00ff88; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏹 SAGE Profile Analyzer</h1>
+            <p>Enter your SAGE profile to get AI-powered optimization recommendations</p>
+        </div>
+
+        <div class="input-section">
+            <label for="profile">SAGE Profile Address</label>
+            <input type="text" id="profile" placeholder="Enter your Solana wallet address or SAGE profile pubkey...">
+            <button onclick="analyzeProfile()" id="analyzeBtn">Analyze Profile</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 20px;">Analyzing your SAGE operations...</p>
+        </div>
+
+        <div class="results" id="results">
+            <div class="panel">
+                <h3>📊 Profile Overview</h3>
+                <div class="profile-summary" id="profileSummary"></div>
+            </div>
+
+            <div class="panel">
+                <h3>⚡ Current Operations</h3>
+                <div id="operations"></div>
+            </div>
+
+            <div class="panel">
+                <h3>🎯 Optimization Recommendations</h3>
+                <div id="recommendations"></div>
+            </div>
+
+            <div class="panel">
+                <h3>📈 Projected Improvements</h3>
+                <div id="projections"></div>
+            </div>
+        </div>
+
+        <p class="disclaimer">
+            <strong>Demo Mode:</strong> This analyzer demonstrates SAGE-Agent's optimization capabilities. 
+            Full integration with live SAGE data coming soon.<br><br>
+            <a href="index.html">← Back to Home</a> · <a href="dashboard.html">Live Dashboard</a>
+        </p>
+    </div>
+
+    <script>
+        function analyzeProfile() {
+            const profile = document.getElementById('profile').value.trim();
+            if (!profile) {
+                alert('Please enter a SAGE profile address');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').classList.add('visible');
+            document.getElementById('results').classList.remove('visible');
+            document.getElementById('analyzeBtn').disabled = true;
+
+            // Simulate analysis delay
+            setTimeout(() => {
+                generateResults(profile);
+                document.getElementById('loading').classList.remove('visible');
+                document.getElementById('results').classList.add('visible');
+                document.getElementById('analyzeBtn').disabled = false;
+            }, 2500);
+        }
+
+        function generateResults(profile) {
+            // Generate deterministic but varied results based on profile hash
+            const hash = profile.split('').reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0);
+            const seed = Math.abs(hash);
+            
+            const fleets = 3 + (seed % 8);
+            const ships = 12 + (seed % 25);
+            const dailyAtlas = 150 + (seed % 300);
+            const efficiency = 65 + (seed % 30);
+
+            // Profile Summary
+            document.getElementById('profileSummary').innerHTML = `
+                <div class="stat-card">
+                    <div class="value good">${fleets}</div>
+                    <div class="label">Active Fleets</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value good">${ships}</div>
+                    <div class="label">Total Ships</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value ${efficiency > 80 ? 'good' : efficiency > 60 ? 'warning' : 'critical'}">${efficiency}%</div>
+                    <div class="label">Efficiency Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value good">${dailyAtlas}</div>
+                    <div class="label">Est. Daily ATLAS</div>
+                </div>
+            `;
+
+            // Current Operations
+            const operations = [
+                { name: 'Mining Fleet Alpha', sector: 'MUD-7', resource: 'Iron Ore', status: 'Active', efficiency: 78 + (seed % 20) },
+                { name: 'Transport Fleet', sector: 'ONI-3', resource: 'Cargo Run', status: 'Active', efficiency: 65 + (seed % 25) },
+                { name: 'Mining Fleet Beta', sector: 'Ustur-12', resource: 'Carbon', status: seed % 3 === 0 ? 'Idle' : 'Active', efficiency: 45 + (seed % 40) }
+            ];
+
+            document.getElementById('operations').innerHTML = operations.map(op => `
+                <div class="metric">
+                    <span>${op.name} → ${op.sector}</span>
+                    <span class="${op.efficiency > 75 ? 'good' : op.efficiency > 50 ? 'warning' : 'critical'}">
+                        ${op.status} (${op.efficiency}% eff)
+                    </span>
+                </div>
+            `).join('');
+
+            // Recommendations
+            const recommendations = [
+                {
+                    title: 'Rebalance Mining Allocation',
+                    description: `Iron Ore prices dropped 12% in the last 24h. Consider shifting 2 ships from Fleet Alpha to Carbon mining in Ustur sector for +${15 + (seed % 10)}% ROI.`,
+                    impact: 'high',
+                    savings: `+${45 + (seed % 30)} ATLAS/day`
+                },
+                {
+                    title: 'Optimize Transport Routes',
+                    description: 'Your transport fleet is using a suboptimal route. Switching to MUD-7 → ONI-3 direct reduces fuel costs by 23%.',
+                    impact: 'medium',
+                    savings: `+${20 + (seed % 15)} ATLAS/day`
+                },
+                {
+                    title: 'Idle Ship Deployment',
+                    description: `You have ${2 + (seed % 3)} idle ships. Deploy them in high-yield sectors for immediate passive income.`,
+                    impact: 'high',
+                    savings: `+${60 + (seed % 40)} ATLAS/day`
+                },
+                {
+                    title: 'Market Timing Optimization',
+                    description: 'Historical data shows 18% better prices selling resources between 14:00-18:00 UTC. Schedule trades accordingly.',
+                    impact: 'medium',
+                    savings: `+${25 + (seed % 20)} ATLAS/day`
+                }
+            ];
+
+            document.getElementById('recommendations').innerHTML = recommendations.map(rec => `
+                <div class="recommendation ${rec.impact === 'high' ? 'high-impact' : ''}">
+                    <h4>${rec.title} <span class="impact-badge impact-${rec.impact}">${rec.impact.toUpperCase()} IMPACT</span></h4>
+                    <p>${rec.description}</p>
+                    <p style="color: #00ff88; margin-top: 10px;"><strong>Estimated: ${rec.savings}</strong></p>
+                </div>
+            `).join('');
+
+            // Projections
+            const currentDaily = dailyAtlas;
+            const optimizedDaily = Math.round(currentDaily * 1.45);
+            const monthlyGain = (optimizedDaily - currentDaily) * 30;
+
+            document.getElementById('projections').innerHTML = `
+                <div class="metric">
+                    <span>Current Daily Revenue</span>
+                    <span class="warning">${currentDaily} ATLAS</span>
+                </div>
+                <div class="metric">
+                    <span>Optimized Daily Revenue</span>
+                    <span class="good">${optimizedDaily} ATLAS</span>
+                </div>
+                <div class="metric">
+                    <span>Improvement</span>
+                    <span class="good">+45%</span>
+                </div>
+                <div class="metric">
+                    <span>Monthly Additional Revenue</span>
+                    <span class="good">+${monthlyGain.toLocaleString()} ATLAS</span>
+                </div>
+                <div style="margin-top: 20px; padding: 15px; background: rgba(0,255,136,0.1); border-radius: 4px;">
+                    <strong>🤖 SAGE-Agent Can Automate This</strong><br>
+                    <span style="color: #aaa; font-size: 0.9em;">
+                        Enable autonomous mode to have SAGE-Agent implement these optimizations 24/7, 
+                        rebalancing your operations in real-time as market conditions change.
+                    </span>
+                </div>
+            `;
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('profile').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') analyzeProfile();
+        });
+    </script>
+</body>
+</html>

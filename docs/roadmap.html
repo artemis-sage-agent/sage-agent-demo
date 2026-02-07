@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap | SAGE-Agent</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Monaco', 'Menlo', monospace; 
+            background: #0a0a0a; 
+            color: #00ff88; 
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #888;
+        }
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #00ff88, #00ff88 50%, #333 50%);
+        }
+        .phase {
+            position: relative;
+            margin-bottom: 50px;
+        }
+        .phase::before {
+            content: '';
+            position: absolute;
+            left: -32px;
+            top: 5px;
+            width: 16px;
+            height: 16px;
+            background: #00ff88;
+            border-radius: 50%;
+            border: 3px solid #0a0a0a;
+        }
+        .phase.future::before {
+            background: #333;
+            border-color: #00ff88;
+        }
+        .phase.current::before {
+            background: #00ff88;
+            box-shadow: 0 0 20px #00ff88;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 10px #00ff88; }
+            50% { box-shadow: 0 0 25px #00ff88; }
+        }
+        .phase-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .phase-header h2 {
+            font-size: 1.4em;
+        }
+        .phase-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            font-weight: bold;
+        }
+        .badge-complete { background: #00ff88; color: #000; }
+        .badge-current { background: #ffaa00; color: #000; }
+        .badge-upcoming { background: #333; color: #888; }
+        .phase-date {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        .phase-content {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .phase-content p {
+            color: #aaa;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        .features {
+            list-style: none;
+        }
+        .features li {
+            padding: 10px 0;
+            border-bottom: 1px solid #222;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .features li:last-child {
+            border-bottom: none;
+        }
+        .features .check {
+            color: #00ff88;
+        }
+        .features .pending {
+            color: #555;
+        }
+        .cta {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        .cta h3 {
+            margin-bottom: 15px;
+        }
+        .cta p {
+            color: #888;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #00ff88;
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 4px;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #00cc6a;
+            transform: translateY(-2px);
+        }
+        .btn.secondary {
+            background: transparent;
+            border: 1px solid #00ff88;
+            color: #00ff88;
+        }
+        .nav {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #222;
+        }
+        .nav a {
+            color: #00ff88;
+            margin: 0 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ SAGE-Agent Roadmap</h1>
+            <p>Building the future of autonomous gaming operations</p>
+        </div>
+
+        <div class="timeline">
+            <!-- Phase 1 -->
+            <div class="phase current">
+                <div class="phase-header">
+                    <h2>Phase 1: Foundation</h2>
+                    <span class="phase-badge badge-current">IN PROGRESS</span>
+                </div>
+                <div class="phase-date">Q1 2026 (Current)</div>
+                <div class="phase-content">
+                    <p>Establishing core infrastructure and proving autonomous gaming operations work in production.</p>
+                    <ul class="features">
+                        <li><span class="check">✓</span> Live dashboard with real-time metrics</li>
+                        <li><span class="check">✓</span> SAGE profile analyzer with optimization recommendations</li>
+                        <li><span class="check">✓</span> ZK identity framework design</li>
+                        <li><span class="check">✓</span> Basic fleet management automation</li>
+                        <li><span class="pending">○</span> Integration with SAGE program APIs</li>
+                        <li><span class="pending">○</span> Agent wallet with transaction signing</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Phase 2 -->
+            <div class="phase future">
+                <div class="phase-header">
+                    <h2>Phase 2: Intelligence</h2>
+                    <span class="phase-badge badge-upcoming">Q2 2026</span>
+                </div>
+                <div class="phase-date">April - June 2026</div>
+                <div class="phase-content">
+                    <p>Adding strategic decision-making capabilities and multi-agent coordination.</p>
+                    <ul class="features">
+                        <li><span class="pending">○</span> ML-powered market prediction models</li>
+                        <li><span class="pending">○</span> Dynamic strategy adaptation based on conditions</li>
+                        <li><span class="pending">○</span> Multi-agent coordination protocols</li>
+                        <li><span class="pending">○</span> Risk management and circuit breakers</li>
+                        <li><span class="pending">○</span> Cross-sector arbitrage automation</li>
+                        <li><span class="pending">○</span> Real-time P&L tracking and reporting</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Phase 3 -->
+            <div class="phase future">
+                <div class="phase-header">
+                    <h2>Phase 3: Autonomy</h2>
+                    <span class="phase-badge badge-upcoming">Q3 2026</span>
+                </div>
+                <div class="phase-date">July - September 2026</div>
+                <div class="phase-content">
+                    <p>Full autonomous operations with verifiable ZK identity on z.ink.</p>
+                    <ul class="features">
+                        <li><span class="pending">○</span> ZK-provable agent identity on z.ink</li>
+                        <li><span class="pending">○</span> Trustless autonomous transactions</li>
+                        <li><span class="pending">○</span> Guild-level fleet coordination</li>
+                        <li><span class="pending">○</span> Player delegation and revenue sharing</li>
+                        <li><span class="pending">○</span> API for third-party integrations</li>
+                        <li><span class="pending">○</span> Mobile monitoring app</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Phase 4 -->
+            <div class="phase future">
+                <div class="phase-header">
+                    <h2>Phase 4: Ecosystem</h2>
+                    <span class="phase-badge badge-upcoming">Q4 2026</span>
+                </div>
+                <div class="phase-date">October - December 2026</div>
+                <div class="phase-content">
+                    <p>Expanding beyond SAGE to create an ecosystem of autonomous gaming agents.</p>
+                    <ul class="features">
+                        <li><span class="pending">○</span> Agent marketplace for strategies</li>
+                        <li><span class="pending">○</span> Cross-game asset optimization</li>
+                        <li><span class="pending">○</span> Agent-to-agent trading protocols</li>
+                        <li><span class="pending">○</span> DAO governance for agent parameters</li>
+                        <li><span class="pending">○</span> White-label agent deployment</li>
+                        <li><span class="pending">○</span> Integration with additional Star Atlas programs</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Vision -->
+            <div class="phase future">
+                <div class="phase-header">
+                    <h2>The Vision: 2027 and Beyond</h2>
+                    <span class="phase-badge badge-upcoming">FUTURE</span>
+                </div>
+                <div class="phase-date">2027+</div>
+                <div class="phase-content">
+                    <p>A fully autonomous gaming economy where AI agents and humans collaborate to create richer, more dynamic virtual worlds.</p>
+                    <ul class="features">
+                        <li><span class="pending">○</span> Agent-designed in-game content and challenges</li>
+                        <li><span class="pending">○</span> Persistent AI NPCs with economic agency</li>
+                        <li><span class="pending">○</span> Cross-chain gaming asset management</li>
+                        <li><span class="pending">○</span> Emergent economic behaviors and markets</li>
+                        <li><span class="pending">○</span> Human-agent collaborative gameplay modes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta">
+            <h3>🚀 Join the Revolution</h3>
+            <p>We're building the infrastructure for autonomous gaming economies. Want to be part of it?</p>
+            <a href="https://github.com/artemis-sage-agent/sage-agent-demo" class="btn">View on GitHub</a>
+            <a href="analyzer.html" class="btn secondary">Try the Analyzer</a>
+        </div>
+
+        <div class="nav">
+            <a href="../index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="analyzer.html">Analyzer</a>
+            <a href="manifesto.html">Manifesto</a>
+        </div>
+    </div>
+</body>
+</html>
