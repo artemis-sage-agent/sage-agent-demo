@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAGE-Agent Live Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Monaco', 'Menlo', monospace; 
+            background: #0a0a0a; 
+            color: #00ff88; 
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #00ff88;
+            padding-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .panel {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .status-good { color: #00ff88; }
+        .status-warning { color: #ffaa00; }
+        .status-error { color: #ff0044; }
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+        .decision {
+            background: rgba(0, 255, 136, 0.05);
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 3px solid #00ff88;
+        }
+        .timestamp {
+            color: #888;
+            font-size: 0.9em;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        .active { animation: pulse 2s infinite; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏹 SAGE-Agent Live Operations</h1>
+        <p>Autonomous gaming operations on z.ink infrastructure</p>
+        <p class="timestamp">Last Update: <span id="timestamp"></span></p>
+    </div>
+
+    <div class="grid">
+        <div class="panel">
+            <h3>Agent Status</h3>
+            <div class="metric">
+                <span>Agent ID:</span>
+                <span class="status-good">sage-miner-001</span>
+            </div>
+            <div class="metric">
+                <span>Status:</span>
+                <span class="status-good active">● ACTIVE</span>
+            </div>
+            <div class="metric">
+                <span>Uptime:</span>
+                <span class="status-good">847h 23m</span>
+            </div>
+            <div class="metric">
+                <span>Operations:</span>
+                <span class="status-good">2,847 completed</span>
+            </div>
+            <div class="metric">
+                <span>Success Rate:</span>
+                <span class="status-good">99.7%</span>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3>Infrastructure Status</h3>
+            <div class="metric">
+                <span>Blockchain:</span>
+                <span class="status-good">z.ink</span>
+            </div>
+            <div class="metric">
+                <span>Network Uptime:</span>
+                <span class="status-good">1,095 days (100%)</span>
+            </div>
+            <div class="metric">
+                <span>Avg Block Time:</span>
+                <span class="status-good">0.4s</span>
+            </div>
+            <div class="metric">
+                <span>Transaction Success:</span>
+                <span class="status-good">99.97%</span>
+            </div>
+            <div class="metric">
+                <span>Last Halt:</span>
+                <span class="status-good">Never</span>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3>Current Operations</h3>
+            <div style="background: rgba(0,255,136,0.1); padding: 15px; margin: 10px 0; border-radius: 4px;">
+                <strong>Mining Operation Alpha</strong><br>
+                <div class="metric" style="margin-top: 10px;">
+                    <span>Location:</span>
+                    <span>Sector 7-Delta</span>
+                </div>
+                <div class="metric">
+                    <span>Resource:</span>
+                    <span>Iron Ore</span>
+                </div>
+                <div class="metric">
+                    <span>Profitability:</span>
+                    <span class="status-good">+68% ROI</span>
+                </div>
+                <div class="metric">
+                    <span>Runtime:</span>
+                    <span>14h 32m</span>
+                </div>
+                <div class="metric">
+                    <span>Next Decision:</span>
+                    <span class="active">1m 47s</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3>Performance Metrics</h3>
+            <div class="metric">
+                <span>Total Profit:</span>
+                <span class="status-good">+2,847 ATLAS</span>
+            </div>
+            <div class="metric">
+                <span>Best Trade:</span>
+                <span class="status-good">+156 ATLAS</span>
+            </div>
+            <div class="metric">
+                <span>Efficiency:</span>
+                <span class="status-good">94.2%</span>
+            </div>
+            <div class="metric">
+                <span>Autonomous %:</span>
+                <span class="status-good">99.1%</span>
+            </div>
+            <div class="metric">
+                <span>Human Override:</span>
+                <span class="status-warning">0.9%</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3>Recent Autonomous Decisions</h3>
+        
+        <div class="decision">
+            <div class="timestamp">2026-02-07 10:15:23 UTC</div>
+            <strong>Resource Switch Decision</strong><br>
+            Switched mining target from Carbon to Iron Ore<br>
+            <em>Reason: Price differential increased 12%, ROI improved 23%</em><br>
+            <span class="status-good">Confidence: 89%</span>
+        </div>
+
+        <div class="decision">
+            <div class="timestamp">2026-02-07 09:42:11 UTC</div>
+            <strong>Fleet Redeployment</strong><br>
+            Moved 3 mining ships from Sector 5 to Sector 7<br>
+            <em>Reason: Congestion reduction, 15% efficiency gain projected</em><br>
+            <span class="status-good">Confidence: 94%</span>
+        </div>
+
+        <div class="decision">
+            <div class="timestamp">2026-02-07 08:33:07 UTC</div>
+            <strong>Market Arbitrage Execution</strong><br>
+            Cross-sector Iron Ore trade: Buy Low MUD → Sell High ONI<br>
+            <em>Reason: 8.3% price spread detected, transaction costs favorable</em><br>
+            <span class="status-good">Confidence: 97%</span>
+        </div>
+    </div>
+
+    <script>
+        function updateTimestamp() {
+            document.getElementById('timestamp').textContent = new Date().toLocaleString();
+        }
+        
+        updateTimestamp();
+        setInterval(updateTimestamp, 1000);
+        
+        // Simulate live updates
+        setInterval(() => {
+            const elements = document.querySelectorAll('.active');
+            elements.forEach(el => {
+                el.style.opacity = Math.random() > 0.5 ? '1' : '0.6';
+            });
+        }, 2000);
+    </script>
+</body>
+</html>
