@@ -1,0 +1,11 @@
+file '01-landing-hero_1080p.jpg'
+duration 16
+file '02-stats-capabilities_1080p.jpg'
+duration 16
+file '03-dashboard-fleet_1080p.jpg'
+duration 16
+file '04-analyzer-factions_1080p.jpg'
+duration 16
+file '05-roadmap-cta_1080p.jpg'
+duration 16
+file '05-roadmap-cta_1080p.jpg'
