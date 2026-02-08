@@ -1472,19 +1472,40 @@
                 ]
             };
             
-            const response = await fetch('https://api.mainnet-beta.solana.com', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(rpcPayload)
-            });
+            // Try multiple RPC endpoints (public RPCs may rate-limit)
+            const rpcEndpoints = [
+                'https://mainnet.helius-rpc.com/?api-key=1d8740dc-e5f4-421c-b823-e1bad1889eff',
+                'https://api.mainnet-beta.solana.com',
+                'https://rpc.ankr.com/solana',
+                'https://solana-mainnet.g.alchemy.com/v2/demo'
+            ];
             
-            if (!response.ok) {
-                throw new Error(`RPC request failed: ${response.status}`);
+            let data = null;
+            let lastError = null;
+            
+            for (const endpoint of rpcEndpoints) {
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(rpcPayload)
+                    });
+                    
+                    if (response.ok) {
+                        data = await response.json();
+                        if (!data.error) break;
+                        lastError = data.error?.message || 'Unknown RPC error';
+                        data = null;
+                    }
+                } catch (e) {
+                    lastError = e.message;
+                    continue;
+                }
             }
             
-            const data = await response.json();
+            if (!data) {
+                throw new Error(lastError || 'All RPC endpoints failed');
+            }
             
             if (data.error) {
                 throw new Error(`RPC error: ${data.error.message}`);
