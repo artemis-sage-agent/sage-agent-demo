@@ -3,116 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Autonomous Gaming Manifesto</title>
+    <title>Manifesto | SAGE-Agent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-card: #161618;
+            --border: rgba(255,255,255,0.08);
+            --text-primary: #fafafa;
+            --text-secondary: #888;
+            --text-muted: #555;
+            --accent: #00d4aa;
+            --accent-glow: rgba(0, 212, 170, 0.15);
+        }
+        
         body {
-            font-family: 'Georgia', serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-            color: #e0e0e0;
-            line-height: 1.8;
-            padding: 40px 20px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Subtle gradient background */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(0, 212, 170, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(100, 100, 255, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
         .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 60px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 1.1em;
+            letter-spacing: -0.02em;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent), #00a080);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+            padding: 40px 0;
+        }
+        
+        h1 {
+            font-size: 3.5em;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .content {
             max-width: 800px;
             margin: 0 auto;
         }
-        h1 {
-            font-size: 2.5em;
-            color: #00ff88;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        .subtitle {
-            text-align: center;
-            font-style: italic;
-            color: #888;
-            margin-bottom: 40px;
-            font-size: 1.2em;
-        }
-        h2 {
-            color: #00ff88;
-            margin-top: 50px;
-            margin-bottom: 20px;
-            font-size: 1.6em;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-        }
-        p {
-            margin-bottom: 20px;
-        }
-        strong {
-            color: #fff;
-        }
-        ul {
-            margin: 20px 0 20px 30px;
-        }
-        li {
-            margin-bottom: 10px;
-        }
-        .highlight {
-            background: rgba(0, 255, 136, 0.1);
-            border-left: 3px solid #00ff88;
-            padding: 20px;
-            margin: 30px 0;
-        }
-        .cta {
-            text-align: center;
-            margin-top: 60px;
+        
+        .section {
+            margin-bottom: 60px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             padding: 40px;
-            background: rgba(0, 255, 136, 0.05);
-            border: 1px solid #00ff88;
+            transition: all 0.3s ease;
+        }
+        
+        .section:hover {
+            border-color: rgba(255,255,255,0.12);
+        }
+        
+        h2 {
+            color: var(--accent);
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+        
+        p {
+            color: var(--text-secondary);
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+        
+        strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        ul {
+            margin: 24px 0;
+            padding-left: 24px;
+        }
+        
+        li {
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        
+        .highlight {
+            background: var(--accent-glow);
+            border-left: 4px solid var(--accent);
+            padding: 32px;
+            margin: 40px 0;
             border-radius: 8px;
         }
+        
+        .highlight p {
+            color: var(--text-primary);
+            font-size: 1.2em;
+            font-weight: 500;
+            margin-bottom: 0;
+        }
+        
+        .cta {
+            text-align: center;
+            margin: 80px auto;
+            padding: 48px;
+            max-width: 600px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            position: relative;
+        }
+        
+        .cta::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(135deg, var(--accent), #00a080, var(--accent));
+            border-radius: 20px;
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        .cta h3 {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+        
         .cta p {
+            color: var(--text-secondary);
+            font-size: 1.1em;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            background: var(--accent);
+            color: var(--bg-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95em;
+            border-radius: 12px;
+            margin: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn:hover {
+            background: #00a080;
+            transform: translateY(-1px);
+        }
+        
+        .btn.secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        
+        .btn.secondary:hover {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+        }
+        
+        .back-nav {
+            text-align: center;
+            margin: 60px 0;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .back-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin: 0 20px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .back-nav a:hover {
+            color: var(--accent);
+        }
+        
+        .emoji {
             font-size: 1.2em;
         }
-        .emoji {
-            font-size: 2em;
-        }
+        
         a {
-            color: #00ff88;
+            color: var(--accent);
+            text-decoration: none;
         }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
         hr {
             border: none;
-            border-top: 1px solid #333;
-            margin: 40px 0;
+            border-top: 1px solid var(--border);
+            margin: 60px 0;
         }
     </style>
 </head>
 <body>
+    <div class="gradient-bg"></div>
+    
     <div class="container">
-        <h1>The Autonomous Gaming Manifesto</h1>
-        <p class="subtitle">Why AI Agents Will Revolutionize Virtual Economies</p>
+        <nav>
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🏹</div>
+                <span>SAGE-Agent</span>
+            </a>
+            <div class="nav-links">
+                <a href="../demo/dashboard.html">Dashboard</a>
+                <a href="../demo/analyzer.html">Analyzer</a>
+                <a href="roadmap.html">Roadmap</a>
+                <a href="https://github.com/artemis-sage-agent/sage-agent-demo" target="_blank">GitHub</a>
+            </div>
+        </nav>
         
-        <hr>
+        <div class="header">
+            <h1>📜 Manifesto</h1>
+            <p class="subtitle">Why AI Agents Will Revolutionize Virtual Economies</p>
+        </div>
+        
+        <div class="content">
         
         <div class="highlight">
             <p><strong>We are at an inflection point.</strong> Gaming economies generate over $200 billion annually, yet they remain fundamentally constrained by human limitations. Players burn out after 40-hour weeks. Operations halt when humans sleep. Strategic decisions suffer from emotion and fatigue.</p>
             <p><strong>The solution isn't replacing human creativity.</strong> It's amplifying human potential through autonomous agents that operate when humans can't.</p>
         </div>
 
-        <h2>The Current Paradigm is Broken</h2>
-        
-        <p><strong>Human-Only Operations:</strong></p>
-        <ul>
-            <li>8-12 hours max daily engagement</li>
-            <li>Emotional decision-making under pressure</li>
-            <li>Manual micromanagement of routine tasks</li>
-            <li>Limited scalability across time zones</li>
-            <li>Burnout after weeks of intensive operations</li>
-        </ul>
+        <div class="section">
+            <h2>The Current Paradigm is Broken</h2>
+            
+            <p><strong>Human-Only Operations:</strong></p>
+            <ul>
+                <li>8-12 hours max daily engagement</li>
+                <li>Emotional decision-making under pressure</li>
+                <li>Manual micromanagement of routine tasks</li>
+                <li>Limited scalability across time zones</li>
+                <li>Burnout after weeks of intensive operations</li>
+            </ul>
 
-        <p><strong>Traditional "Bot" Approach:</strong></p>
-        <ul>
-            <li>Brittle scripts that break on updates</li>
-            <li>No strategic thinking or adaptation</li>
-            <li>Easily detected and banned</li>
-            <li>Zero value creation for the ecosystem</li>
-        </ul>
+            <p><strong>Traditional "Bot" Approach:</strong></p>
+            <ul>
+                <li>Brittle scripts that break on updates</li>
+                <li>No strategic thinking or adaptation</li>
+                <li>Easily detected and banned</li>
+                <li>Zero value creation for the ecosystem</li>
+            </ul>
+        </div>
 
-        <h2>The Autonomous Gaming Revolution</h2>
+        <div class="section">
+            <h2>The Autonomous Gaming Revolution</h2>
         
         <p><strong>Intelligent Agents That:</strong></p>
         <ul>
@@ -133,109 +367,113 @@
 
         <h2>Why Star Atlas + z.ink is the Perfect Testing Ground</h2>
         
-        <p><strong>Production-Grade Infrastructure:</strong></p>
-        <ul>
-            <li>3+ years of uptime on battle-tested SVM infrastructure</li>
-            <li>Real economy with $10M+ in assets traded</li>
-            <li>Thousands of active players depending on stable operations</li>
-            <li>Complex gameplay requiring strategic decision-making</li>
-        </ul>
+            <p><strong>Production-Grade Infrastructure:</strong></p>
+            <ul>
+                <li>3+ years of uptime on battle-tested SVM infrastructure</li>
+                <li>Real economy with $10M+ in assets traded</li>
+                <li>Thousands of active players depending on stable operations</li>
+                <li>Complex gameplay requiring strategic decision-making</li>
+            </ul>
 
-        <p><strong>Not a Demo Environment:</strong></p>
-        <ul>
-            <li>Real money at stake</li>
-            <li>Reputation matters</li>
-            <li>Performance impacts actual players</li>
-            <li>Success has measurable economic value</li>
-        </ul>
-
-        <h2>The Technical Foundation</h2>
-        
-        <p><strong>z.ink (SVM-Native) Advantages:</strong></p>
-        <ul>
-            <li>ZK-provable agent identity for every transaction</li>
-            <li>Sub-cent transaction costs</li>
-            <li>Native gaming integration vs retrofitted DeFi tools</li>
-            <li>Battle-tested with real user load</li>
-        </ul>
-
-        <p><strong>Agent Architecture:</strong></p>
-        <ul>
-            <li>Multi-layer decision making</li>
-            <li>Risk management protocols</li>
-            <li>Transparency and audit trails</li>
-            <li>Human override capabilities</li>
-            <li>Cross-chain asset portability</li>
-        </ul>
-
-        <h2>What This Means for Gaming</h2>
-        
-        <p><strong>For Players:</strong></p>
-        <ul>
-            <li>Assets work harder, generating value 24/7</li>
-            <li>Freedom to focus on creative and strategic gameplay</li>
-            <li>Protection from market manipulation</li>
-            <li>Increased liquidity and price discovery</li>
-        </ul>
-
-        <p><strong>For Game Developers:</strong></p>
-        <ul>
-            <li>More active, liquid economies</li>
-            <li>Reduced reliance on manual market-making</li>
-            <li>Higher retention through automated content generation</li>
-            <li>New revenue models around agent services</li>
-        </ul>
-
-        <p><strong>For the Industry:</strong></p>
-        <ul>
-            <li>Proof that crypto gaming can scale beyond speculation</li>
-            <li>Framework for AI-native game design</li>
-            <li>Bridge between traditional and web3 gaming</li>
-            <li>Foundation for persistent, living worlds</li>
-        </ul>
-
-        <h2>The Implementation Path</h2>
-        
-        <p><strong>Phase 1: Autonomous Operations</strong> (Current)</p>
-        <ul>
-            <li>Fleet management and resource optimization</li>
-            <li>Basic market making and arbitrage</li>
-            <li>Risk-managed autonomous trading</li>
-        </ul>
-
-        <p><strong>Phase 2: Strategic Intelligence</strong> (Q2 2026)</p>
-        <ul>
-            <li>Multi-agent coordination</li>
-            <li>Dynamic strategy adaptation</li>
-            <li>Cross-game asset optimization</li>
-        </ul>
-
-        <p><strong>Phase 3: Emergent Economies</strong> (Q3-Q4 2026)</p>
-        <ul>
-            <li>Agent-designed content and challenges</li>
-            <li>Autonomous guild and alliance management</li>
-            <li>Player-agent collaborative gameplay</li>
-        </ul>
-
-        <hr>
-
-        <div class="cta">
-            <p><strong>This is happening now.</strong></p>
-            <p>The question isn't whether autonomous agents will transform gaming.<br>
-            The question is whether you'll be part of building that transformation.</p>
-            <br>
-            <p><strong>Build something that matters. Build it on battle-tested infrastructure. Build it today.</strong></p>
-            <p class="emoji">🏹</p>
+            <p><strong>Not a Demo Environment:</strong></p>
+            <ul>
+                <li>Real money at stake</li>
+                <li>Reputation matters</li>
+                <li>Performance impacts actual players</li>
+                <li>Success has measurable economic value</li>
+            </ul>
         </div>
 
-        <hr>
+        <div class="section">
+            <h2>The Technical Foundation</h2>
+            
+            <p><strong>z.ink (SVM-Native) Advantages:</strong></p>
+            <ul>
+                <li>ZK-provable agent identity for every transaction</li>
+                <li>Sub-cent transaction costs</li>
+                <li>Native gaming integration vs retrofitted DeFi tools</li>
+                <li>Battle-tested with real user load</li>
+            </ul>
+
+            <p><strong>Agent Architecture:</strong></p>
+            <ul>
+                <li>Multi-layer decision making</li>
+                <li>Risk management protocols</li>
+                <li>Transparency and audit trails</li>
+                <li>Human override capabilities</li>
+                <li>Cross-chain asset portability</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>What This Means for Gaming</h2>
         
-        <div style="text-align: center; margin-top: 40px;">
-            <a href="../index.html" style="color: #00ff88; margin: 0 15px;">Home</a>
-            <a href="../demo/dashboard.html" style="color: #00ff88; margin: 0 15px;">Dashboard</a>
-            <a href="../demo/analyzer.html" style="color: #00ff88; margin: 0 15px;">Analyzer</a>
-            <a href="roadmap.html" style="color: #00ff88; margin: 0 15px;">Roadmap</a>
-            <a href="https://github.com/artemis-sage-agent/sage-agent-demo" style="color: #00ff88; margin: 0 15px;">GitHub</a>
+            <p><strong>For Players:</strong></p>
+            <ul>
+                <li>Assets work harder, generating value 24/7</li>
+                <li>Freedom to focus on creative and strategic gameplay</li>
+                <li>Protection from market manipulation</li>
+                <li>Increased liquidity and price discovery</li>
+            </ul>
+
+            <p><strong>For Game Developers:</strong></p>
+            <ul>
+                <li>More active, liquid economies</li>
+                <li>Reduced reliance on manual market-making</li>
+                <li>Higher retention through automated content generation</li>
+                <li>New revenue models around agent services</li>
+            </ul>
+
+            <p><strong>For the Industry:</strong></p>
+            <ul>
+                <li>Proof that crypto gaming can scale beyond speculation</li>
+                <li>Framework for AI-native game design</li>
+                <li>Bridge between traditional and web3 gaming</li>
+                <li>Foundation for persistent, living worlds</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>The Implementation Path</h2>
+        
+            <p><strong>Phase 1: Autonomous Operations</strong> (Current)</p>
+            <ul>
+                <li>Fleet management and resource optimization</li>
+                <li>Basic market making and arbitrage</li>
+                <li>Risk-managed autonomous trading</li>
+            </ul>
+
+            <p><strong>Phase 2: Strategic Intelligence</strong> (Q2 2026)</p>
+            <ul>
+                <li>Multi-agent coordination</li>
+                <li>Dynamic strategy adaptation</li>
+                <li>Cross-game asset optimization</li>
+            </ul>
+
+            <p><strong>Phase 3: Emergent Economies</strong> (Q3-Q4 2026)</p>
+            <ul>
+                <li>Agent-designed content and challenges</li>
+                <li>Autonomous guild and alliance management</li>
+                <li>Player-agent collaborative gameplay</li>
+            </ul>
+        </div>
+
+        <div class="cta">
+            <h3>🚀 This is happening now</h3>
+            <p>The question isn't whether autonomous agents will transform gaming.<br>
+            The question is whether you'll be part of building that transformation.</p>
+            <p><strong>Build something that matters. Build it on battle-tested infrastructure. Build it today.</strong></p>
+            <a href="https://github.com/artemis-sage-agent/sage-agent-demo" class="btn">View on GitHub</a>
+            <a href="../demo/dashboard.html" class="btn secondary">See the Dashboard</a>
+        </div>
+
+        <div class="back-nav">
+            <a href="../index.html">Home</a>
+            <a href="../demo/dashboard.html">Dashboard</a>
+            <a href="../demo/analyzer.html">Analyzer</a>
+            <a href="roadmap.html">Roadmap</a>
+        </div>
+        
         </div>
     </div>
 </body>
