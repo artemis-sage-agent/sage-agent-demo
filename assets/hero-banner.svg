@@ -1,0 +1,136 @@
+<svg width="1200" height="400" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Cyberpunk gradient background -->
+    <radialGradient id="bgGrad" cx="50%" cy="30%" r="80%">
+      <stop offset="0%" style="stop-color:#00d4aa;stop-opacity:0.08"/>
+      <stop offset="60%" style="stop-color:#00d4aa;stop-opacity:0.02"/>
+      <stop offset="100%" style="stop-color:#0c0c0c;stop-opacity:1"/>
+    </radialGradient>
+    
+    <!-- Neon glow for text -->
+    <filter id="textGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Scan lines pattern -->
+    <pattern id="scanLines" patternUnits="userSpaceOnUse" width="2" height="6">
+      <rect width="2" height="3" fill="#00d4aa" opacity="0.03"/>
+      <rect y="3" width="2" height="3" fill="transparent"/>
+    </pattern>
+    
+    <!-- Grid pattern for tech background -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#fafafa" stroke-width="0.3" opacity="0.1"/>
+    </pattern>
+    
+    <!-- Glitch effect -->
+    <filter id="glitch" x="-5%" y="-5%" width="110%" height="110%">
+      <feOffset in="SourceGraphic" dx="1" dy="0" result="offset1"/>
+      <feOffset in="SourceGraphic" dx="-1" dy="0" result="offset2"/>
+      <feFlood flood-color="#00d4aa" flood-opacity="0.1" result="glitchColor"/>
+      <feComposite in="glitchColor" in2="offset1" operator="in" result="glitch1"/>
+      <feComposite in="glitchColor" in2="offset2" operator="in" result="glitch2"/>
+      <feMerge>
+        <feMergeNode in="glitch1"/>
+        <feMergeNode in="glitch2"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="400" fill="#0c0c0c"/>
+  <rect width="1200" height="400" fill="url(#bgGrad)"/>
+  <rect width="1200" height="400" fill="url(#grid)"/>
+  
+  <!-- Floating geometric elements - space debris/tech -->
+  <polygon points="100,80 120,70 140,90 120,100" fill="none" stroke="#fafafa" stroke-width="0.5" opacity="0.3"/>
+  <polygon points="1050,320 1070,310 1090,330 1070,340" fill="none" stroke="#00d4aa" stroke-width="0.5" opacity="0.4"/>
+  <circle cx="150" cy="320" r="15" fill="none" stroke="#fafafa" stroke-width="0.5" opacity="0.2"/>
+  <circle cx="1100" cy="80" r="8" fill="none" stroke="#00d4aa" stroke-width="0.5" opacity="0.3"/>
+  
+  <!-- Central logo element -->
+  <g transform="translate(80, 150)">
+    <polygon points="40,20 55,30 55,50 40,60 25,50 25,30" 
+             fill="none" 
+             stroke="#00d4aa" 
+             stroke-width="2" 
+             filter="url(#textGlow)"/>
+    <circle cx="40" cy="40" r="2" fill="#00d4aa" filter="url(#textGlow)"/>
+    <!-- Crosshairs -->
+    <line x1="25" y1="40" x2="20" y2="40" stroke="#00d4aa" stroke-width="1" opacity="0.8"/>
+    <line x1="55" y1="40" x2="60" y2="40" stroke="#00d4aa" stroke-width="1" opacity="0.8"/>
+    <line x1="40" y1="25" x2="40" y2="20" stroke="#00d4aa" stroke-width="1" opacity="0.8"/>
+    <line x1="40" y1="55" x2="40" y2="60" stroke="#00d4aa" stroke-width="1" opacity="0.8"/>
+  </g>
+  
+  <!-- Main title: SAGE-Agent -->
+  <text x="200" y="220" 
+        font-family="General Sans, system-ui, sans-serif" 
+        font-size="72" 
+        font-weight="600" 
+        fill="#fafafa" 
+        letter-spacing="-2px"
+        filter="url(#glitch)">SAGE-Agent</text>
+  
+  <!-- Accent on "Agent" -->
+  <text x="580" y="220" 
+        font-family="General Sans, system-ui, sans-serif" 
+        font-size="72" 
+        font-weight="600" 
+        fill="#00d4aa" 
+        letter-spacing="-2px"
+        filter="url(#textGlow)">Agent</text>
+  
+  <!-- Tagline -->
+  <text x="200" y="270" 
+        font-family="Satoshi, system-ui, sans-serif" 
+        font-size="24" 
+        font-weight="400" 
+        fill="#a0a0a0" 
+        letter-spacing="0.5px">Verifiable AI for the onchain economy</text>
+  
+  <!-- Decorative elements -->
+  <!-- Connection lines suggesting network/system -->
+  <line x1="160" y1="190" x2="200" y2="200" stroke="#00d4aa" stroke-width="1" opacity="0.4"/>
+  <line x1="750" y1="200" x2="800" y2="190" stroke="#00d4aa" stroke-width="1" opacity="0.4"/>
+  
+  <!-- Data streams -->
+  <g opacity="0.3">
+    <circle cx="900" cy="150" r="2" fill="#00d4aa">
+      <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="920" cy="160" r="1.5" fill="#fafafa">
+      <animate attributeName="opacity" values="0.2;0.6;0.2" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="940" cy="145" r="1" fill="#00d4aa">
+      <animate attributeName="opacity" values="0.1;0.5;0.1" dur="3s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Corner tech details -->
+  <g opacity="0.4">
+    <!-- Top left -->
+    <path d="M20 60 L20 20 L60 20" fill="none" stroke="#00d4aa" stroke-width="1"/>
+    <line x1="30" y1="30" x2="50" y2="30" stroke="#fafafa" stroke-width="0.5"/>
+    
+    <!-- Bottom right -->
+    <path d="M1140 340 L1180 340 L1180 380" fill="none" stroke="#00d4aa" stroke-width="1"/>
+    <line x1="1150" y1="350" x2="1170" y2="350" stroke="#fafafa" stroke-width="0.5"/>
+  </g>
+  
+  <!-- Scan line overlay -->
+  <rect width="1200" height="400" fill="url(#scanLines)" opacity="0.6"/>
+  
+  <!-- Subtle particle effects -->
+  <g opacity="0.2">
+    <circle cx="300" cy="100" r="0.5" fill="#fafafa"/>
+    <circle cx="800" cy="320" r="0.5" fill="#00d4aa"/>
+    <circle cx="1000" cy="120" r="0.5" fill="#fafafa"/>
+    <circle cx="400" cy="350" r="0.5" fill="#00d4aa"/>
+  </g>
+</svg>
