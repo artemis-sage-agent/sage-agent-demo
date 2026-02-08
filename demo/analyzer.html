@@ -196,6 +196,309 @@
         }
 
         /* ═══════════════════════════════════════════════════════
+           Wallet Input Section — NEW
+        ═══════════════════════════════════════════════════════ */
+
+        .wallet-section {
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .wallet-section:hover {
+            border-color: var(--border-hover);
+        }
+
+        .wallet-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .wallet-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .wallet-input-group {
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .wallet-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            transition: all 0.25s ease;
+            margin-bottom: 1rem;
+        }
+
+        .wallet-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .wallet-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+        }
+
+        .wallet-input.error {
+            border-color: #ef4444;
+        }
+
+        .wallet-error {
+            color: #ef4444;
+            font-size: 0.8rem;
+            text-align: left;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .wallet-error.visible {
+            display: block;
+        }
+
+        .wallet-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .wallet-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            border: none;
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .wallet-btn-primary {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .wallet-btn-primary:hover {
+            background: #00c499;
+            transform: translateY(-1px);
+        }
+
+        .wallet-btn-primary:disabled {
+            background: var(--text-tertiary);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .wallet-btn-secondary {
+            background: var(--bg-subtle);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .wallet-btn-secondary:hover {
+            background: var(--bg-raised);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+
+        .wallet-helper {
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            line-height: 1.6;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Your Fleet Section — NEW
+        ═══════════════════════════════════════════════════════ */
+
+        .your-fleet-section {
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            margin: 2rem 0;
+            overflow: hidden;
+            display: none;
+        }
+
+        .your-fleet-section.visible {
+            display: block;
+        }
+
+        .your-fleet-section:hover {
+            border-color: var(--border-hover);
+        }
+
+        .fleet-header {
+            background: linear-gradient(135deg, var(--accent-dim), var(--bg-subtle));
+            padding: 2rem 2.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .fleet-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .fleet-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .fleet-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem 2.5rem;
+        }
+
+        .fleet-stat {
+            text-align: center;
+        }
+
+        .fleet-stat-value {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+
+        .fleet-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            letter-spacing: 0.02em;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Personalized Recommendations — NEW
+        ═══════════════════════════════════════════════════════ */
+
+        .personalized-recommendations {
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            margin: 2rem 0;
+            overflow: hidden;
+            display: none;
+        }
+
+        .personalized-recommendations.visible {
+            display: block;
+        }
+
+        .personalized-recommendations:hover {
+            border-color: var(--border-hover);
+        }
+
+        .personal-rec-header {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), var(--bg-subtle));
+            padding: 2rem 2.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .personal-rec-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #3b82f6;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .personal-rec-content {
+            padding: 2rem 2.5rem;
+        }
+
+        .rec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .rec-card {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .rec-card-title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .rec-card-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .earnings-estimate {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), var(--bg-subtle));
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .earnings-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .earnings-value {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #f59e0b;
+            margin-bottom: 0.25rem;
+        }
+
+        .earnings-period {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+        }
+
+        /* ═══════════════════════════════════════════════════════
            Faction Selector — Elegant Pills
         ═══════════════════════════════════════════════════════ */
 
@@ -323,6 +626,42 @@
         .loading-text {
             color: var(--text-secondary);
             font-size: 0.95rem;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Error/No Fleet State
+        ═══════════════════════════════════════════════════════ */
+
+        .no-fleet-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        .no-fleet-state.visible {
+            display: block;
+        }
+
+        .no-fleet-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+        }
+
+        .no-fleet-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .no-fleet-desc {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            max-width: 400px;
+            margin: 0 auto;
         }
 
         /* ═══════════════════════════════════════════════════════
@@ -564,6 +903,10 @@
             main { padding-top: 6rem; }
             .container { padding: 0 1.5rem; }
 
+            .wallet-section { padding: 2rem 1.5rem; }
+            .wallet-buttons { flex-direction: column; align-items: center; }
+            .wallet-btn { width: 100%; max-width: 250px; justify-content: center; }
+
             .faction-selector {
                 flex-direction: column;
                 align-items: center;
@@ -576,11 +919,11 @@
                 justify-content: center;
             }
 
-            .stats-grid {
+            .stats-grid, .fleet-stats {
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .info-grid {
+            .info-grid, .rec-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -637,7 +980,117 @@
                 <h1 class="section-title">SAGE Profile Analyzer</h1>
                 <p class="section-desc">
                     Deep faction analysis powered by real-time Star Atlas Galaxy API data. 
-                    Choose your allegiance and discover optimal fleet configurations for your strategic advantage.
+                    Connect your wallet for personalized fleet recommendations, or explore faction strategies below.
+                </p>
+            </div>
+
+            <!-- ════════════════════════════════════════════════════
+                 Wallet Input Section — NEW
+            ════════════════════════════════════════════════════ -->
+            <div class="wallet-section reveal">
+                <h2 class="wallet-title">Connect Your Fleet</h2>
+                <p class="wallet-subtitle">Connect your wallet to see personalized fleet recommendations</p>
+                
+                <div class="wallet-input-group">
+                    <input 
+                        type="text" 
+                        class="wallet-input" 
+                        id="walletInput" 
+                        placeholder="Enter your Solana wallet address..."
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                    <div class="wallet-error" id="walletError"></div>
+                    
+                    <div class="wallet-buttons">
+                        <button class="wallet-btn wallet-btn-primary" id="analyzeFleetBtn" onclick="analyzeWallet()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="M21 21l-4.35-4.35"/>
+                            </svg>
+                            Analyze Fleet
+                        </button>
+                        
+                        <button class="wallet-btn wallet-btn-secondary" onclick="tryDemo()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="13,2 3,14 12,22 22,10"/>
+                            </svg>
+                            Try Demo
+                        </button>
+                        
+                        <button class="wallet-btn wallet-btn-secondary" onclick="tryDemoWallet()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="22" y1="2" x2="11" y2="13"/>
+                                <polygon points="22,2 15,22 11,13 2,9"/>
+                            </svg>
+                            Try Demo Wallet
+                        </button>
+                    </div>
+                    
+                    <p class="wallet-helper">
+                        Enter your Solana wallet address to analyze your Star Atlas fleet and get personalized recommendations. 
+                        No wallet connection required — we only read public blockchain data.
+                    </p>
+                </div>
+            </div>
+
+            <!-- ════════════════════════════════════════════════════
+                 Your Fleet Section — NEW
+            ════════════════════════════════════════════════════ -->
+            <div class="your-fleet-section" id="yourFleetSection">
+                <div class="fleet-header">
+                    <h3 class="fleet-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 7l5 5-5 5"/>
+                            <path d="M6 12h12"/>
+                        </svg>
+                        Your Fleet
+                    </h3>
+                    <p class="fleet-subtitle" id="fleetWalletAddress"></p>
+                </div>
+                
+                <div class="fleet-stats" id="fleetStats">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- ════════════════════════════════════════════════════
+                 Personalized Recommendations — NEW
+            ════════════════════════════════════════════════════ -->
+            <div class="personalized-recommendations" id="personalizedRecommendations">
+                <div class="personal-rec-header">
+                    <h3 class="personal-rec-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="22" y1="2" x2="11" y2="13"/>
+                            <polygon points="22,2 15,22 11,13 2,9"/>
+                        </svg>
+                        Personalized Recommendations
+                    </h3>
+                    <p class="fleet-subtitle">AI-powered insights based on your actual fleet composition</p>
+                </div>
+                
+                <div class="personal-rec-content" id="personalRecContent">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- ════════════════════════════════════════════════════
+                 No Fleet Found State — NEW
+            ════════════════════════════════════════════════════ -->
+            <div class="no-fleet-state" id="noFleetState">
+                <div class="no-fleet-icon">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="15" y1="9" x2="9" y2="15"/>
+                        <line x1="9" y1="9" x2="15" y2="15"/>
+                    </svg>
+                </div>
+                <h3 class="no-fleet-title">No Star Atlas Fleet Found</h3>
+                <p class="no-fleet-desc">
+                    No Star Atlas assets found for this wallet. Try a different address or explore faction strategies below.
+                    Make sure you own Star Atlas NFTs (ships) for analysis.
                 </p>
             </div>
 
@@ -845,13 +1298,17 @@
     </main>
 
     <!-- ════════════════════════════════════════════════════
-         Scripts — Enhanced with Galaxy API
+         Scripts — Enhanced with Wallet Integration
     ════════════════════════════════════════════════════ -->
     <script>
         // Global state
         let currentFaction = 'mud';
         let galaxyData = null;
         let isLoading = false;
+        let playerFleet = null;
+
+        // Demo wallet address (known Star Atlas whale)
+        const DEMO_WALLET = '3v7CfLCPQn3iLhGjXk8nj9XGD3vVBQ1Z8w2AKsKKr3YL';
 
         // Faction metadata
         const factionData = {
@@ -902,7 +1359,498 @@
             setupScrollReveal();
             await loadGalaxyData();
             updateAnalysis();
+            setupWalletInput();
         });
+
+        // Setup wallet input event listeners
+        function setupWalletInput() {
+            const walletInput = document.getElementById('walletInput');
+            const analyzeBtn = document.getElementById('analyzeFleetBtn');
+            
+            walletInput.addEventListener('input', (e) => {
+                clearWalletError();
+                const isValid = validateWalletAddress(e.target.value);
+                analyzeBtn.disabled = !isValid;
+            });
+            
+            walletInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !analyzeBtn.disabled) {
+                    analyzeWallet();
+                }
+            });
+        }
+
+        // Validate Solana wallet address format
+        function validateWalletAddress(address) {
+            if (!address) return false;
+            
+            // Basic validation: base58, 32-44 characters
+            const base58Regex = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+            return base58Regex.test(address.trim());
+        }
+
+        // Show wallet validation error
+        function showWalletError(message) {
+            const input = document.getElementById('walletInput');
+            const error = document.getElementById('walletError');
+            
+            input.classList.add('error');
+            error.textContent = message;
+            error.classList.add('visible');
+        }
+
+        // Clear wallet error state
+        function clearWalletError() {
+            const input = document.getElementById('walletInput');
+            const error = document.getElementById('walletError');
+            
+            input.classList.remove('error');
+            error.classList.remove('visible');
+        }
+
+        // Main wallet analysis function
+        async function analyzeWallet() {
+            const walletInput = document.getElementById('walletInput');
+            const address = walletInput.value.trim();
+            
+            if (!validateWalletAddress(address)) {
+                showWalletError('Invalid wallet address format. Please enter a valid Solana wallet address.');
+                return;
+            }
+            
+            clearWalletError();
+            
+            // Show loading state
+            const analyzeBtn = document.getElementById('analyzeFleetBtn');
+            const originalText = analyzeBtn.innerHTML;
+            analyzeBtn.innerHTML = '<div class="loading-spinner" style="width:16px;height:16px;margin:0;border-width:1px;"></div> Analyzing...';
+            analyzeBtn.disabled = true;
+            
+            try {
+                // Fetch player's token accounts
+                const tokenAccounts = await fetchPlayerTokens(address);
+                
+                if (!tokenAccounts || tokenAccounts.length === 0) {
+                    showNoFleetFound();
+                    return;
+                }
+                
+                // Cross-reference with Galaxy API data
+                const starAtlasAssets = await crossReferenceAssets(tokenAccounts);
+                
+                if (starAtlasAssets.length === 0) {
+                    showNoFleetFound();
+                } else {
+                    playerFleet = {
+                        walletAddress: address,
+                        ships: starAtlasAssets
+                    };
+                    showPlayerFleet();
+                    showPersonalizedRecommendations();
+                }
+                
+            } catch (error) {
+                console.error('Error analyzing wallet:', error);
+                showWalletError('Failed to analyze wallet. Please try again or use the demo.');
+            } finally {
+                // Restore button
+                analyzeBtn.innerHTML = originalText;
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        // Fetch player's token accounts from Solana RPC
+        async function fetchPlayerTokens(walletAddress) {
+            const rpcPayload = {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "getTokenAccountsByOwner",
+                "params": [
+                    walletAddress,
+                    {"programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"},
+                    {"encoding": "jsonParsed"}
+                ]
+            };
+            
+            const response = await fetch('https://api.mainnet-beta.solana.com', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(rpcPayload)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`RPC request failed: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.error) {
+                throw new Error(`RPC error: ${data.error.message}`);
+            }
+            
+            return data.result?.value || [];
+        }
+
+        // Cross-reference token accounts with Star Atlas NFTs
+        async function crossReferenceAssets(tokenAccounts) {
+            if (!galaxyData) {
+                await loadGalaxyData();
+            }
+            
+            const starAtlasAssets = [];
+            
+            // Create a map of mint addresses for quick lookup
+            const galaxyMintMap = new Map();
+            galaxyData.forEach(nft => {
+                if (nft.mint) {
+                    galaxyMintMap.set(nft.mint, nft);
+                }
+            });
+            
+            // Check each token account
+            tokenAccounts.forEach(account => {
+                const tokenInfo = account.account.data.parsed.info;
+                const mint = tokenInfo.mint;
+                const amount = parseInt(tokenInfo.tokenAmount.amount);
+                
+                // Only consider accounts with actual tokens
+                if (amount > 0 && galaxyMintMap.has(mint)) {
+                    const nftData = galaxyMintMap.get(mint);
+                    starAtlasAssets.push({
+                        ...nftData,
+                        owned: amount,
+                        tokenAccount: account.pubkey
+                    });
+                }
+            });
+            
+            return starAtlasAssets;
+        }
+
+        // Show player's fleet
+        function showPlayerFleet() {
+            if (!playerFleet) return;
+            
+            const section = document.getElementById('yourFleetSection');
+            const addressDisplay = document.getElementById('fleetWalletAddress');
+            const statsContainer = document.getElementById('fleetStats');
+            
+            // Display wallet address (truncated)
+            const address = playerFleet.walletAddress;
+            addressDisplay.textContent = `${address.slice(0, 6)}...${address.slice(-4)}`;
+            
+            // Calculate fleet statistics
+            const totalShips = playerFleet.ships.length;
+            const totalValue = playerFleet.ships.reduce((sum, ship) => {
+                const price = ship.markets?.[0]?.ui || 0;
+                return sum + (price * ship.owned);
+            }, 0);
+            
+            const factionCounts = {};
+            playerFleet.ships.forEach(ship => {
+                const faction = getShipFaction(ship);
+                factionCounts[faction] = (factionCounts[faction] || 0) + ship.owned;
+            });
+            
+            const dominantFaction = Object.entries(factionCounts)
+                .sort(([,a], [,b]) => b - a)[0]?.[0] || 'mixed';
+            
+            const rarityDistribution = {};
+            playerFleet.ships.forEach(ship => {
+                const rarity = ship.attributes?.rarity || 'common';
+                rarityDistribution[rarity] = (rarityDistribution[rarity] || 0) + ship.owned;
+            });
+            
+            const rareCount = Object.entries(rarityDistribution)
+                .filter(([rarity]) => ['rare', 'epic', 'legendary', 'anomaly'].includes(rarity))
+                .reduce((sum, [, count]) => sum + count, 0);
+            
+            // Update stats display
+            statsContainer.innerHTML = `
+                <div class="fleet-stat">
+                    <div class="fleet-stat-value">${totalShips}</div>
+                    <div class="fleet-stat-label">Total Ships</div>
+                </div>
+                <div class="fleet-stat">
+                    <div class="fleet-stat-value">${Math.round(totalValue).toLocaleString()}</div>
+                    <div class="fleet-stat-label">Fleet Value (ATLAS)</div>
+                </div>
+                <div class="fleet-stat">
+                    <div class="fleet-stat-value">${dominantFaction.toUpperCase()}</div>
+                    <div class="fleet-stat-label">Dominant Faction</div>
+                </div>
+                <div class="fleet-stat">
+                    <div class="fleet-stat-value">${rareCount}</div>
+                    <div class="fleet-stat-label">Rare+ Ships</div>
+                </div>
+            `;
+            
+            section.classList.add('visible');
+        }
+
+        // Show personalized recommendations
+        function showPersonalizedRecommendations() {
+            if (!playerFleet) return;
+            
+            const section = document.getElementById('personalizedRecommendations');
+            const content = document.getElementById('personalRecContent');
+            
+            // Analyze fleet composition
+            const fleetAnalysis = analyzeFleetComposition(playerFleet.ships);
+            const recommendations = generatePersonalizedRecommendations(fleetAnalysis);
+            
+            // Build content
+            let html = '<div class="rec-grid">';
+            
+            recommendations.forEach(rec => {
+                html += `
+                    <div class="rec-card">
+                        <h4 class="rec-card-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                ${rec.icon}
+                            </svg>
+                            ${rec.title}
+                        </h4>
+                        <p class="rec-card-desc">${rec.description}</p>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            // Add earnings estimate
+            const estimatedDaily = calculateDailyEarnings(fleetAnalysis);
+            html += `
+                <div class="earnings-estimate">
+                    <div class="earnings-title">Estimated Daily Earnings Potential</div>
+                    <div class="earnings-value">${estimatedDaily.toLocaleString()} ATLAS</div>
+                    <div class="earnings-period">Per day with optimal operations</div>
+                </div>
+            `;
+            
+            content.innerHTML = html;
+            section.classList.add('visible');
+        }
+
+        // Analyze fleet composition
+        function analyzeFleetComposition(ships) {
+            const analysis = {
+                totalShips: ships.reduce((sum, ship) => sum + ship.owned, 0),
+                categories: {},
+                sizes: {},
+                factions: {},
+                rarities: {},
+                totalValue: 0
+            };
+            
+            ships.forEach(ship => {
+                const category = ship.attributes?.category || 'unknown';
+                const size = ship.attributes?.class || 'medium';
+                const faction = getShipFaction(ship);
+                const rarity = ship.attributes?.rarity || 'common';
+                const value = (ship.markets?.[0]?.ui || 0) * ship.owned;
+                
+                analysis.categories[category] = (analysis.categories[category] || 0) + ship.owned;
+                analysis.sizes[size] = (analysis.sizes[size] || 0) + ship.owned;
+                analysis.factions[faction] = (analysis.factions[faction] || 0) + ship.owned;
+                analysis.rarities[rarity] = (analysis.rarities[rarity] || 0) + ship.owned;
+                analysis.totalValue += value;
+            });
+            
+            return analysis;
+        }
+
+        // Generate personalized recommendations
+        function generatePersonalizedRecommendations(analysis) {
+            const recommendations = [];
+            
+            // Fleet composition analysis
+            const dominantCategory = Object.entries(analysis.categories)
+                .sort(([,a], [,b]) => b - a)[0]?.[0];
+                
+            if (dominantCategory === 'fighter') {
+                recommendations.push({
+                    icon: '<path d="M13 7l5 5-5 5"/><path d="M6 12h12"/>',
+                    title: 'Combat Fleet Optimization',
+                    description: 'Your fleet is combat-focused. Consider adding mining ships for resource generation and transport vessels for cargo operations to create a balanced economy.'
+                });
+            } else if (dominantCategory === 'mining') {
+                recommendations.push({
+                    icon: '<circle cx="12" cy="12" r="10"/><line x1="22" y1="2" x2="11" y2="13"/>',
+                    title: 'Mining Operation Enhancement',
+                    description: 'Strong mining fleet detected. Add transport ships to efficiently move resources and consider defensive fighters to protect your mining operations.'
+                });
+            }
+            
+            // Faction alignment
+            const dominantFaction = Object.entries(analysis.factions)
+                .sort(([,a], [,b]) => b - a)[0]?.[0];
+                
+            if (dominantFaction !== 'mixed') {
+                const factionInfo = factionData[dominantFaction];
+                recommendations.push({
+                    icon: '<polygon points="13,2 3,14 12,22 22,10"/>',
+                    title: `${factionInfo.name} Synergy Bonus`,
+                    description: `Your fleet aligns with ${factionInfo.name}. Focus operations in ${factionInfo.sectors[0]} and prioritize ${factionInfo.resources[0]} to maximize faction bonuses.`
+                });
+            }
+            
+            // Fleet size recommendations
+            if (analysis.totalShips < 5) {
+                recommendations.push({
+                    icon: '<path d="M12 1l3 3v6a6 6 0 1 1-12 0V4l3-3z"/>',
+                    title: 'Fleet Expansion',
+                    description: 'Consider expanding your fleet with complementary ships. A balanced mix of combat, mining, and transport vessels will maximize your operational capabilities.'
+                });
+            }
+            
+            // Rarity analysis
+            const rareShips = Object.entries(analysis.rarities)
+                .filter(([rarity]) => ['rare', 'epic', 'legendary', 'anomaly'].includes(rarity))
+                .reduce((sum, [, count]) => sum + count, 0);
+                
+            if (rareShips > analysis.totalShips * 0.3) {
+                recommendations.push({
+                    icon: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+                    title: 'High-Value Fleet Management',
+                    description: 'Your fleet contains valuable rare ships. Consider specialized insurance strategies and focus on high-reward operations that justify the risk.'
+                });
+            }
+            
+            return recommendations;
+        }
+
+        // Calculate estimated daily earnings
+        function calculateDailyEarnings(analysis) {
+            const baseEarnings = {
+                'mining': 50,
+                'transport': 30,
+                'fighter': 40,
+                'capital': 100,
+                'support': 25
+            };
+            
+            let dailyEarnings = 0;
+            
+            Object.entries(analysis.categories).forEach(([category, count]) => {
+                const baseEarn = baseEarnings[category] || 35;
+                dailyEarnings += baseEarn * count;
+            });
+            
+            // Apply rarity multiplier
+            const rareMultiplier = Object.entries(analysis.rarities).reduce((multiplier, [rarity, count]) => {
+                const rarityBonus = {
+                    'common': 1,
+                    'uncommon': 1.2,
+                    'rare': 1.5,
+                    'epic': 2,
+                    'legendary': 3,
+                    'anomaly': 4
+                };
+                return multiplier + (rarityBonus[rarity] || 1) * count * 0.1;
+            }, 1);
+            
+            return Math.round(dailyEarnings * rareMultiplier);
+        }
+
+        // Get ship faction (simplified mapping)
+        function getShipFaction(ship) {
+            const name = ship.name.toLowerCase();
+            if (name.includes('mud') || name.includes('pearce') || name.includes('busan')) {
+                return 'mud';
+            } else if (name.includes('oni') || name.includes('calico') || name.includes('vzus')) {
+                return 'oni';
+            } else if (name.includes('ustur') || name.includes('tufa') || name.includes('rainier')) {
+                return 'ustur';
+            }
+            return 'mixed';
+        }
+
+        // Show no fleet found state
+        function showNoFleetFound() {
+            const noFleetState = document.getElementById('noFleetState');
+            noFleetState.classList.add('visible');
+            
+            // Hide other sections
+            document.getElementById('yourFleetSection').classList.remove('visible');
+            document.getElementById('personalizedRecommendations').classList.remove('visible');
+        }
+
+        // Try demo with hardcoded fleet data
+        function tryDemo() {
+            // Generate demo fleet
+            const demoShips = generateDemoFleet();
+            
+            playerFleet = {
+                walletAddress: 'DEMO_FLEET_SIMULATION',
+                ships: demoShips
+            };
+            
+            // Clear any error states
+            clearWalletError();
+            document.getElementById('noFleetState').classList.remove('visible');
+            document.getElementById('walletInput').value = 'Demo Fleet Simulation';
+            
+            // Show fleet analysis
+            showPlayerFleet();
+            showPersonalizedRecommendations();
+        }
+
+        // Try demo wallet
+        function tryDemoWallet() {
+            document.getElementById('walletInput').value = DEMO_WALLET;
+            analyzeWallet();
+        }
+
+        // Generate demo fleet data
+        function generateDemoFleet() {
+            return [
+                {
+                    name: 'Pearce X4',
+                    mint: 'demo-pearce',
+                    attributes: { category: 'fighter', class: 'small', rarity: 'uncommon', tier: 4 },
+                    markets: [{ ui: 850 }],
+                    owned: 2
+                },
+                {
+                    name: 'Busan Maiden',
+                    mint: 'demo-busan',
+                    attributes: { category: 'transport', class: 'medium', rarity: 'rare', tier: 5 },
+                    markets: [{ ui: 2400 }],
+                    owned: 1
+                },
+                {
+                    name: 'Calico Guardian',
+                    mint: 'demo-calico',
+                    attributes: { category: 'fighter', class: 'medium', rarity: 'common', tier: 3 },
+                    markets: [{ ui: 650 }],
+                    owned: 3
+                },
+                {
+                    name: 'Vzus Ambwe',
+                    mint: 'demo-vzus',
+                    attributes: { category: 'capital', class: 'large', rarity: 'epic', tier: 6 },
+                    markets: [{ ui: 15000 }],
+                    owned: 1
+                },
+                {
+                    name: 'Tufa Feeder',
+                    mint: 'demo-tufa',
+                    attributes: { category: 'mining', class: 'medium', rarity: 'common', tier: 3 },
+                    markets: [{ ui: 720 }],
+                    owned: 2
+                },
+                {
+                    name: 'Lowbie Soothe',
+                    mint: 'demo-lowbie',
+                    attributes: { category: 'support', class: 'small', rarity: 'rare', tier: 5 },
+                    markets: [{ ui: 1200 }],
+                    owned: 1
+                }
+            ];
+        }
 
         // Scroll reveal animation
         function setupScrollReveal() {
@@ -964,15 +1912,15 @@
         // Generate mock ship data for demo
         function generateMockShipData() {
             const mockShips = [
-                { name: 'Opal Jetjet', symbol: 'JETJET', attributes: { category: 'fighter', class: 'small', rarity: 'common', tier: 3 }, faction: 'mud' },
-                { name: 'Pearce X4', symbol: 'PRCEX4', attributes: { category: 'fighter', class: 'small', rarity: 'uncommon', tier: 4 }, faction: 'mud' },
-                { name: 'Busan Maiden', symbol: 'BUSANM', attributes: { category: 'transport', class: 'medium', rarity: 'rare', tier: 5 }, faction: 'mud' },
-                { name: 'Calico Guardian', symbol: 'CALICOG', attributes: { category: 'fighter', class: 'medium', rarity: 'common', tier: 3 }, faction: 'oni' },
-                { name: 'Iris Probe', symbol: 'IRISP', attributes: { category: 'mining', class: 'small', rarity: 'uncommon', tier: 4 }, faction: 'oni' },
-                { name: 'Vzus Ambwe', symbol: 'VZUSA', attributes: { category: 'capital', class: 'large', rarity: 'epic', tier: 6 }, faction: 'oni' },
-                { name: 'Tufa Feeder', symbol: 'TUFAF', attributes: { category: 'mining', class: 'medium', rarity: 'common', tier: 3 }, faction: 'ustur' },
-                { name: 'Lowbie Soothe', symbol: 'LOWBIES', attributes: { category: 'support', class: 'small', rarity: 'rare', tier: 5 }, faction: 'ustur' },
-                { name: 'Rainier Distress', symbol: 'RAINIER', attributes: { category: 'capital', class: 'large', rarity: 'legendary', tier: 7 }, faction: 'ustur' }
+                { name: 'Opal Jetjet', symbol: 'JETJET', attributes: { category: 'fighter', class: 'small', rarity: 'common', tier: 3 }, faction: 'mud', mint: 'jetjet-mint' },
+                { name: 'Pearce X4', symbol: 'PRCEX4', attributes: { category: 'fighter', class: 'small', rarity: 'uncommon', tier: 4 }, faction: 'mud', mint: 'pearce-mint' },
+                { name: 'Busan Maiden', symbol: 'BUSANM', attributes: { category: 'transport', class: 'medium', rarity: 'rare', tier: 5 }, faction: 'mud', mint: 'busan-mint' },
+                { name: 'Calico Guardian', symbol: 'CALICOG', attributes: { category: 'fighter', class: 'medium', rarity: 'common', tier: 3 }, faction: 'oni', mint: 'calico-mint' },
+                { name: 'Iris Probe', symbol: 'IRISP', attributes: { category: 'mining', class: 'small', rarity: 'uncommon', tier: 4 }, faction: 'oni', mint: 'iris-mint' },
+                { name: 'Vzus Ambwe', symbol: 'VZUSA', attributes: { category: 'capital', class: 'large', rarity: 'epic', tier: 6 }, faction: 'oni', mint: 'vzus-mint' },
+                { name: 'Tufa Feeder', symbol: 'TUFAF', attributes: { category: 'mining', class: 'medium', rarity: 'common', tier: 3 }, faction: 'ustur', mint: 'tufa-mint' },
+                { name: 'Lowbie Soothe', symbol: 'LOWBIES', attributes: { category: 'support', class: 'small', rarity: 'rare', tier: 5 }, faction: 'ustur', mint: 'lowbie-mint' },
+                { name: 'Rainier Distress', symbol: 'RAINIER', attributes: { category: 'capital', class: 'large', rarity: 'legendary', tier: 7 }, faction: 'ustur', mint: 'rainier-mint' }
             ];
             
             return mockShips.map(ship => ({
