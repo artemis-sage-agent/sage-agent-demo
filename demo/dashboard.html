@@ -3,644 +3,952 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | SAGE-Agent</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>Dashboard — SAGE Agent</title>
+    <meta name="description" content="Real-time fleet operations dashboard for SAGE autonomous agent system. Monitor fleet status, earnings, and autonomous decisions.">
+
+    <!-- Fonts: Satoshi (body) + General Sans (display) from Fontshare -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=general-sans@500,600,700&display=swap" rel="stylesheet">
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        /* ═══════════════════════════════════════════════════════
+           Design System — Refined Luxury Minimal
+           Palette: Near-monochrome + single accent (#00d4aa)
+           Inspired by: Linear, Reflect, early Superhuman
+        ═══════════════════════════════════════════════════════ */
+
         :root {
-            --bg-primary: #0a0a0b;
-            --bg-secondary: #111113;
-            --bg-card: #161618;
-            --bg-card-hover: #1a1a1d;
-            --border: rgba(255,255,255,0.08);
-            --text-primary: #fafafa;
-            --text-secondary: #888;
-            --text-muted: #555;
-            --accent: #00d4aa;
-            --accent-dim: #00a080;
-            --accent-glow: rgba(0, 212, 170, 0.15);
-            --success: #00d4aa;
-            --warning: #f5a623;
-            --error: #e54d4d;
+            --bg:         #0c0c0c;
+            --bg-raised:  #111111;
+            --bg-subtle:  #161616;
+            --border:     rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+
+            --text-primary:   #fafafa;
+            --text-secondary: #a0a0a0;
+            --text-tertiary:  #606060;
+
+            --accent:     #00d4aa;
+            --accent-dim: rgba(0, 212, 170, 0.12);
+
+            --radius:     10px;
+            --radius-lg:  16px;
+
+            --font-body:    'Satoshi', -apple-system, system-ui, sans-serif;
+            --font-display: 'General Sans', 'Satoshi', -apple-system, system-ui, sans-serif;
         }
-        
+
+        /* ── Reset ── */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg-primary);
+            font-family: var(--font-body);
+            background: var(--bg);
             color: var(--text-primary);
-            min-height: 100vh;
+            line-height: 1.7;
+            font-weight: 400;
+            overflow-x: hidden;
         }
-        
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        
-        /* Layout */
-        .app {
-            display: grid;
-            grid-template-columns: 260px 1fr;
-            min-height: 100vh;
+
+        a { color: inherit; text-decoration: none; }
+
+        /* ── Selection ── */
+        ::selection {
+            background: var(--accent-dim);
+            color: var(--accent);
         }
-        
-        /* Sidebar */
-        .sidebar {
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--border);
-            padding: 24px;
+
+        /* ── Fade-in animations ── */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Hover scale micro-animation ── */
+        .hover-scale {
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Navigation (matching index.html exactly)
+        ═══════════════════════════════════════════════════════ */
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(12, 12, 12, 0.8);
+            backdrop-filter: blur(20px) saturate(1.2);
+            -webkit-backdrop-filter: blur(20px) saturate(1.2);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s ease;
+        }
+
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .nav-logo .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+            transition: color 0.25s ease;
+        }
+
+        .nav-links a:hover { color: var(--text-primary); }
+        .nav-links a.active { color: var(--accent); }
+
+        .nav-cta {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--bg) !important;
+            background: var(--text-primary);
+            padding: 0.55rem 1.4rem;
+            border-radius: 6px;
+            letter-spacing: 0.02em;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+
+        /* ═══════════════════════════════════════════════════════
+           Main Dashboard Layout
+        ═══════════════════════════════════════════════════════ */
+
+        main {
+            padding-top: 100px; /* Account for fixed nav */
+            padding-left: 2rem;
+            padding-right: 2rem;
+            padding-bottom: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .dashboard-time {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            margin-top: 0.5rem;
+            letter-spacing: 0.02em;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Agent Status Card
+        ═══════════════════════════════════════════════════════ */
+
+        .status-banner {
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem 2rem;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: border-color 0.3s ease;
+        }
+
+        .status-banner:hover {
+            border-color: var(--border-hover);
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-text {
             display: flex;
             flex-direction: column;
         }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 40px;
-        }
-        
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-dim));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-        
-        .logo-text {
-            font-weight: 600;
-            font-size: 1.1em;
-        }
-        
-        .nav-section {
-            margin-bottom: 32px;
-        }
-        
-        .nav-label {
-            font-size: 0.75em;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 12px;
-        }
-        
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            border-radius: 8px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.95em;
-            font-weight: 500;
-            transition: all 0.15s;
-            margin-bottom: 4px;
-        }
-        
-        .nav-item:hover {
-            background: var(--bg-card);
-            color: var(--text-primary);
-        }
-        
-        .nav-item.active {
-            background: var(--accent-glow);
-            color: var(--accent);
-        }
-        
-        .status-card {
-            margin-top: auto;
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid var(--border);
-        }
-        
-        .status-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-        
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--success);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--accent-glow); }
-            50% { opacity: 0.8; box-shadow: 0 0 0 8px transparent; }
-        }
-        
+
         .status-label {
-            font-size: 0.85em;
-            color: var(--success);
-            font-weight: 500;
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent);
+            letter-spacing: 0.02em;
         }
-        
-        .status-info {
-            font-size: 0.8em;
-            color: var(--text-muted);
+
+        .status-detail {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.1rem;
         }
-        
-        /* Main Content */
-        .main {
-            padding: 32px;
-            overflow-y: auto;
-        }
-        
-        .header {
+
+        .status-stats {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
+            gap: 2rem;
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
         }
-        
-        .header h1 {
-            font-size: 1.75em;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
-        
-        .header-time {
-            color: var(--text-muted);
-            font-size: 0.9em;
-        }
-        
-        /* Stats Grid */
+
+        /* ═══════════════════════════════════════════════════════
+           Stats Grid
+        ═══════════════════════════════════════════════════════ */
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 32px;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
         }
-        
+
         .stat-card {
-            background: var(--bg-card);
+            background: var(--bg-raised);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            transition: all 0.2s;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            transition: border-color 0.3s ease, transform 0.2s ease;
         }
-        
+
         .stat-card:hover {
-            border-color: rgba(255,255,255,0.12);
+            border-color: var(--border-hover);
             transform: translateY(-2px);
         }
-        
+
         .stat-label {
-            font-size: 0.85em;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            font-weight: 500;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: 1rem;
         }
-        
+
         .stat-value {
-            font-size: 2em;
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 3vw, 2.2rem);
             font-weight: 700;
             letter-spacing: -0.02em;
-            line-height: 1.2;
-        }
-        
-        .stat-value.success { color: var(--success); }
-        .stat-value.warning { color: var(--warning); }
-        
-        .stat-change {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.8em;
-            color: var(--success);
-            margin-top: 8px;
-        }
-        
-        /* Content Grid */
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
-        
-        .panel {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-        
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .panel-title {
-            font-size: 1em;
-            font-weight: 600;
-        }
-        
-        .panel-badge {
-            font-size: 0.75em;
-            padding: 4px 10px;
-            border-radius: 100px;
-            background: var(--accent-glow);
+            line-height: 1.1;
             color: var(--accent);
-            font-weight: 500;
+            margin-bottom: 0.5rem;
         }
-        
+
+        .stat-change {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .stat-change .change-icon {
+            color: var(--accent);
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Section Labels
+        ═══════════════════════════════════════════════════════ */
+
+        .section-label {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Panels Grid
+        ═══════════════════════════════════════════════════════ */
+
+        .panels-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .panel {
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+        }
+
+        .panel:hover {
+            border-color: var(--border-hover);
+        }
+
+        .panel-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .panel-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+            background: var(--accent-dim);
+            padding: 0.35rem 0.8rem;
+            border-radius: 100px;
+            letter-spacing: 0.02em;
+        }
+
         .panel-content {
-            padding: 20px 24px;
+            padding: 1.5rem 2rem;
         }
-        
-        /* Fleet List */
+
+        /* ═══════════════════════════════════════════════════════
+           Fleet Composition
+        ═══════════════════════════════════════════════════════ */
+
         .fleet-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 16px 0;
+            justify-content: space-between;
+            padding: 1rem 0;
             border-bottom: 1px solid var(--border);
         }
-        
+
         .fleet-item:last-child {
             border-bottom: none;
+            padding-bottom: 0;
         }
-        
+
+        .fleet-item:first-child {
+            padding-top: 0;
+        }
+
         .fleet-info {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 1rem;
         }
-        
+
         .fleet-icon {
-            width: 44px;
-            height: 44px;
-            background: var(--bg-secondary);
-            border-radius: 10px;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 1.2rem;
         }
-        
+
+        .fleet-details {
+            display: flex;
+            flex-direction: column;
+        }
+
         .fleet-name {
+            font-family: var(--font-display);
+            font-size: 0.95rem;
             font-weight: 600;
-            margin-bottom: 2px;
+            margin-bottom: 0.2rem;
         }
-        
-        .fleet-detail {
-            font-size: 0.85em;
-            color: var(--text-muted);
+
+        .fleet-sector {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
         }
-        
+
         .fleet-status {
             text-align: right;
         }
-        
+
         .fleet-status-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            font-size: 0.85em;
+            gap: 0.5rem;
+            font-size: 0.8rem;
             font-weight: 500;
+            margin-bottom: 0.3rem;
         }
-        
-        .fleet-status-badge.active { color: var(--success); }
-        .fleet-status-badge.idle { color: var(--warning); }
-        
+
+        .fleet-status-badge.active {
+            color: var(--accent);
+        }
+
+        .fleet-status-badge.idle {
+            color: var(--text-secondary);
+        }
+
         .fleet-efficiency {
-            font-size: 0.8em;
-            color: var(--text-muted);
-            margin-top: 4px;
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
         }
-        
-        /* Activity Feed */
+
+        /* ═══════════════════════════════════════════════════════
+           Recent Activity
+        ═══════════════════════════════════════════════════════ */
+
         .activity-item {
             display: flex;
-            gap: 16px;
-            padding: 14px 0;
+            gap: 1rem;
+            padding: 1rem 0;
             border-bottom: 1px solid var(--border);
         }
-        
+
         .activity-item:last-child {
             border-bottom: none;
+            padding-bottom: 0;
         }
-        
+
+        .activity-item:first-child {
+            padding-top: 0;
+        }
+
         .activity-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             background: var(--accent);
             border-radius: 50%;
-            margin-top: 6px;
+            margin-top: 0.5rem;
             flex-shrink: 0;
         }
-        
+
         .activity-content {
             flex: 1;
         }
-        
+
         .activity-text {
-            font-size: 0.9em;
-            margin-bottom: 4px;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+            line-height: 1.5;
         }
-        
-        .activity-time {
-            font-size: 0.8em;
-            color: var(--text-muted);
-        }
-        
+
         .activity-value {
+            color: var(--accent);
             font-weight: 600;
-            color: var(--success);
         }
-        
-        /* Full Width Panel */
-        .panel-full {
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Autonomous Decisions Table
+        ═══════════════════════════════════════════════════════ */
+
+        .decisions-panel {
             grid-column: 1 / -1;
         }
-        
-        /* Decision Table */
-        .decision-table {
+
+        .decisions-table {
             width: 100%;
         }
-        
+
         .decision-row {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 100px;
-            padding: 16px 0;
+            gap: 1rem;
+            padding: 1.2rem 0;
             border-bottom: 1px solid var(--border);
             align-items: center;
         }
-        
+
         .decision-row:last-child {
             border-bottom: none;
         }
-        
+
+        .decision-row:first-child {
+            padding-top: 0;
+        }
+
         .decision-action {
+            font-size: 0.9rem;
             font-weight: 500;
         }
-        
+
         .decision-sector {
+            font-size: 0.85rem;
             color: var(--text-secondary);
-            font-size: 0.9em;
         }
-        
+
         .decision-profit {
-            color: var(--success);
+            font-size: 0.85rem;
             font-weight: 600;
+            color: var(--accent);
         }
-        
-        .decision-badge {
-            font-size: 0.75em;
-            padding: 4px 12px;
-            border-radius: 100px;
-            font-weight: 500;
+
+        .decision-status {
             text-align: center;
         }
-        
-        .decision-badge.executed {
-            background: rgba(0, 212, 170, 0.1);
-            color: var(--success);
+
+        .status-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.35rem 0.8rem;
+            border-radius: 100px;
+            letter-spacing: 0.03em;
         }
-        
-        .decision-badge.pending {
-            background: rgba(245, 166, 35, 0.1);
-            color: var(--warning);
+
+        .status-badge.executed {
+            background: var(--accent-dim);
+            color: var(--accent);
         }
-        
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .content-grid { grid-template-columns: 1fr; }
+
+        .status-badge.pending {
+            background: rgba(160, 160, 160, 0.12);
+            color: var(--text-secondary);
         }
-        
+
+        /* ═══════════════════════════════════════════════════════
+           Responsive Design
+        ═══════════════════════════════════════════════════════ */
+
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .panels-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 768px) {
-            .app { grid-template-columns: 1fr; }
-            .sidebar { display: none; }
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-            .decision-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+            nav {
+                padding: 1rem 1.5rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            main {
+                padding: 100px 1.5rem 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .status-banner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .status-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .decision-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+                text-align: left;
+            }
+            
+            .decision-status {
+                text-align: left;
+            }
+        }
+
+        /* ── Grain overlay — very subtle texture ── */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.015;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 128px 128px;
         }
     </style>
 </head>
 <body>
-    <div class="app">
-        <aside class="sidebar">
-            <div class="logo">
-                <div class="logo-icon">🏹</div>
-                <span class="logo-text">SAGE-Agent</span>
-            </div>
-            
-            <div class="nav-section">
-                <div class="nav-label">Overview</div>
-                <a href="dashboard.html" class="nav-item active">
-                    <span>📊</span> Dashboard
-                </a>
-                <a href="analyzer.html" class="nav-item">
-                    <span>🔍</span> Profile Analyzer
-                </a>
-            </div>
-            
-            <div class="nav-section">
-                <div class="nav-label">Resources</div>
-                <a href="../docs/roadmap.html" class="nav-item">
-                    <span>🗺️</span> Roadmap
-                </a>
-                <a href="../docs/manifesto.html" class="nav-item">
-                    <span>📜</span> Manifesto
-                </a>
-                <a href="https://github.com/artemis-sage-agent/sage-agent-demo" class="nav-item" target="_blank">
-                    <span>💻</span> GitHub
-                </a>
-            </div>
-            
-            <div class="status-card">
-                <div class="status-header">
-                    <div class="status-dot"></div>
-                    <span class="status-label">Agent Active</span>
+
+    <!-- ════════════════════════════════════════════════════
+         Navigation (matching index.html exactly)
+    ════════════════════════════════════════════════════ -->
+    <nav>
+        <div class="nav-logo">
+            <span class="dot"></span>
+            SAGE
+        </div>
+        <ul class="nav-links">
+            <li><a href="../index.html#features">Features</a></li>
+            <li><a href="../index.html#how-it-works">How It Works</a></li>
+            <li><a href="dashboard.html" class="active">Dashboard</a></li>
+            <li><a href="analyzer.html">Analyzer</a></li>
+            <li><a href="https://github.com/artemis-sage-agent/sage-agent-demo" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a href="../docs/manifesto.html">Manifesto</a></li>
+            <li><a href="#" class="nav-cta">Launch App</a></li>
+        </ul>
+    </nav>
+
+    <!-- ════════════════════════════════════════════════════
+         Main Dashboard
+    ════════════════════════════════════════════════════ -->
+    <main>
+        <!-- Header -->
+        <div class="dashboard-header fade-in">
+            <h1 class="dashboard-title">Fleet Command</h1>
+            <p class="dashboard-subtitle">Real-time autonomous operations oversight</p>
+            <div class="dashboard-time" id="dashboard-time"></div>
+        </div>
+
+        <!-- Agent Status Banner -->
+        <div class="status-banner fade-in hover-scale">
+            <div class="status-left">
+                <div class="status-indicator"></div>
+                <div class="status-text">
+                    <div class="status-label">Agent Online</div>
+                    <div class="status-detail">3 fleets under autonomous control</div>
                 </div>
-                <div class="status-info">
-                    Monitoring 3 fleets<br>
-                    Last action: 2m ago
-                </div>
             </div>
-        </aside>
-        
-        <main class="main">
-            <div class="header">
-                <h1>Agent Dashboard</h1>
-                <div class="header-time mono" id="timestamp"></div>
+            <div class="status-stats">
+                <span>Last action: 2m ago</span>
+                <span>Session: 14h 23m</span>
+                <span>Uptime: 99.7%</span>
             </div>
-            
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Total Earnings</div>
-                    <div class="stat-value success">2,847 <small style="font-size:0.5em;color:var(--text-muted)">ATLAS</small></div>
-                    <div class="stat-change">↑ +127 today</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Success Rate</div>
-                    <div class="stat-value">99.7%</div>
-                    <div class="stat-change">↑ +0.2% this week</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Autonomous Actions</div>
-                    <div class="stat-value">99.1%</div>
-                    <div class="stat-change">847 of 854 decisions</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Active Fleets</div>
-                    <div class="stat-value">3</div>
-                    <div class="stat-change">12 ships total</div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card fade-in hover-scale">
+                <div class="stat-label">Total Earnings</div>
+                <div class="stat-value">2,847</div>
+                <div class="stat-change">
+                    <span class="change-icon">↗</span>
+                    <span>+127 ATLAS today</span>
                 </div>
             </div>
             
-            <div class="content-grid">
-                <div class="panel">
-                    <div class="panel-header">
-                        <span class="panel-title">Fleet Status</span>
-                        <span class="panel-badge">3 Active</span>
-                    </div>
-                    <div class="panel-content">
-                        <div class="fleet-item">
-                            <div class="fleet-info">
-                                <div class="fleet-icon">⛏️</div>
-                                <div>
-                                    <div class="fleet-name">Mining Fleet Alpha</div>
-                                    <div class="fleet-detail">MUD-7 · Iron Ore</div>
-                                </div>
-                            </div>
-                            <div class="fleet-status">
-                                <div class="fleet-status-badge active">● Active</div>
-                                <div class="fleet-efficiency">92% efficiency</div>
-                            </div>
-                        </div>
-                        <div class="fleet-item">
-                            <div class="fleet-info">
-                                <div class="fleet-icon">🚀</div>
-                                <div>
-                                    <div class="fleet-name">Transport Fleet</div>
-                                    <div class="fleet-detail">ONI-3 → MUD-7</div>
-                                </div>
-                            </div>
-                            <div class="fleet-status">
-                                <div class="fleet-status-badge active">● In Transit</div>
-                                <div class="fleet-efficiency">ETA 14 min</div>
-                            </div>
-                        </div>
-                        <div class="fleet-item">
-                            <div class="fleet-info">
-                                <div class="fleet-icon">⛏️</div>
-                                <div>
-                                    <div class="fleet-name">Mining Fleet Beta</div>
-                                    <div class="fleet-detail">USTUR-12 · Carbon</div>
-                                </div>
-                            </div>
-                            <div class="fleet-status">
-                                <div class="fleet-status-badge idle">● Refueling</div>
-                                <div class="fleet-efficiency">78% efficiency</div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="stat-card fade-in hover-scale">
+                <div class="stat-label">Active Fleet</div>
+                <div class="stat-value">12</div>
+                <div class="stat-change">
+                    <span class="change-icon">◆</span>
+                    <span>3 fleet groups</span>
                 </div>
-                
-                <div class="panel">
-                    <div class="panel-header">
-                        <span class="panel-title">Recent Activity</span>
-                        <span class="panel-badge">Live</span>
-                    </div>
-                    <div class="panel-content">
-                        <div class="activity-item">
-                            <div class="activity-dot"></div>
-                            <div class="activity-content">
-                                <div class="activity-text">Sold 450 Iron Ore at <span class="activity-value">+12% above avg</span></div>
-                                <div class="activity-time">2 minutes ago</div>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-dot"></div>
-                            <div class="activity-content">
-                                <div class="activity-text">Repositioned Fleet Alpha to high-yield sector</div>
-                                <div class="activity-time">18 minutes ago</div>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-dot"></div>
-                            <div class="activity-content">
-                                <div class="activity-text">Cross-sector arbitrage: <span class="activity-value">+47 ATLAS</span></div>
-                                <div class="activity-time">34 minutes ago</div>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-dot"></div>
-                            <div class="activity-content">
-                                <div class="activity-text">Fleet Beta completed mining cycle</div>
-                                <div class="activity-time">1 hour ago</div>
-                            </div>
-                        </div>
-                    </div>
+            </div>
+            
+            <div class="stat-card fade-in hover-scale">
+                <div class="stat-label">Success Rate</div>
+                <div class="stat-value">99.7%</div>
+                <div class="stat-change">
+                    <span class="change-icon">↗</span>
+                    <span>+0.2% this week</span>
                 </div>
-                
-                <div class="panel panel-full">
-                    <div class="panel-header">
-                        <span class="panel-title">Autonomous Decisions</span>
-                        <span class="panel-badge">847 Total</span>
+            </div>
+            
+            <div class="stat-card fade-in hover-scale">
+                <div class="stat-label">Uptime</div>
+                <div class="stat-value">99.1%</div>
+                <div class="stat-change">
+                    <span class="change-icon">◆</span>
+                    <span>847 of 854 cycles</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Label -->
+        <div class="section-label fade-in">Operations Overview</div>
+
+        <!-- Panels Grid -->
+        <div class="panels-grid">
+            <!-- Fleet Composition Panel -->
+            <div class="panel fade-in hover-scale">
+                <div class="panel-header">
+                    <span class="panel-title">Fleet Composition</span>
+                    <span class="panel-badge">3 Active</span>
+                </div>
+                <div class="panel-content">
+                    <div class="fleet-item">
+                        <div class="fleet-info">
+                            <div class="fleet-icon">⛏️</div>
+                            <div class="fleet-details">
+                                <div class="fleet-name">Mining Alpha</div>
+                                <div class="fleet-sector">MUD-7 · Iron Ore</div>
+                            </div>
+                        </div>
+                        <div class="fleet-status">
+                            <div class="fleet-status-badge active">
+                                <span>●</span> Active
+                            </div>
+                            <div class="fleet-efficiency">92% efficiency</div>
+                        </div>
                     </div>
-                    <div class="panel-content">
-                        <div class="decision-table">
-                            <div class="decision-row">
-                                <div class="decision-action">Market sell: Iron Ore batch</div>
-                                <div class="decision-sector">MUD-7</div>
-                                <div class="decision-profit">+54 ATLAS</div>
-                                <div class="decision-badge executed">Executed</div>
+                    
+                    <div class="fleet-item">
+                        <div class="fleet-info">
+                            <div class="fleet-icon">🚀</div>
+                            <div class="fleet-details">
+                                <div class="fleet-name">Transport Fleet</div>
+                                <div class="fleet-sector">ONI-3 → MUD-7</div>
                             </div>
-                            <div class="decision-row">
-                                <div class="decision-action">Fleet reposition for yield optimization</div>
-                                <div class="decision-sector">MUD-7 → MUD-12</div>
-                                <div class="decision-profit">+23% projected</div>
-                                <div class="decision-badge executed">Executed</div>
+                        </div>
+                        <div class="fleet-status">
+                            <div class="fleet-status-badge active">
+                                <span>●</span> In Transit
                             </div>
-                            <div class="decision-row">
-                                <div class="decision-action">Cross-faction trade opportunity</div>
-                                <div class="decision-sector">ONI-3</div>
-                                <div class="decision-profit">+47 ATLAS</div>
-                                <div class="decision-badge executed">Executed</div>
+                            <div class="fleet-efficiency">ETA 14 min</div>
+                        </div>
+                    </div>
+                    
+                    <div class="fleet-item">
+                        <div class="fleet-info">
+                            <div class="fleet-icon">⚡</div>
+                            <div class="fleet-details">
+                                <div class="fleet-name">Mining Beta</div>
+                                <div class="fleet-sector">USTUR-12 · Carbon</div>
                             </div>
-                            <div class="decision-row">
-                                <div class="decision-action">Refuel optimization: batch processing</div>
-                                <div class="decision-sector">USTUR-12</div>
-                                <div class="decision-profit">-8% fuel cost</div>
-                                <div class="decision-badge pending">Pending</div>
+                        </div>
+                        <div class="fleet-status">
+                            <div class="fleet-status-badge idle">
+                                <span>○</span> Refueling
                             </div>
+                            <div class="fleet-efficiency">78% efficiency</div>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
-    
+
+            <!-- Recent Activity Panel -->
+            <div class="panel fade-in hover-scale">
+                <div class="panel-header">
+                    <span class="panel-title">Recent Activity</span>
+                    <span class="panel-badge">Live</span>
+                </div>
+                <div class="panel-content">
+                    <div class="activity-item">
+                        <div class="activity-dot"></div>
+                        <div class="activity-content">
+                            <div class="activity-text">
+                                Sold 450 Iron Ore at <span class="activity-value">+12% above avg</span>
+                            </div>
+                            <div class="activity-time">2 minutes ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-dot"></div>
+                        <div class="activity-content">
+                            <div class="activity-text">
+                                Repositioned Fleet Alpha to high-yield sector
+                            </div>
+                            <div class="activity-time">18 minutes ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-dot"></div>
+                        <div class="activity-content">
+                            <div class="activity-text">
+                                Cross-sector arbitrage: <span class="activity-value">+47 ATLAS</span>
+                            </div>
+                            <div class="activity-time">34 minutes ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-dot"></div>
+                        <div class="activity-content">
+                            <div class="activity-text">
+                                Fleet Beta completed mining cycle
+                            </div>
+                            <div class="activity-time">1 hour ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Label -->
+        <div class="section-label fade-in">Autonomous Decisions</div>
+
+        <!-- Decisions Panel (Full Width) -->
+        <div class="panel decisions-panel fade-in hover-scale">
+            <div class="panel-header">
+                <span class="panel-title">Decision Log</span>
+                <span class="panel-badge">847 Total</span>
+            </div>
+            <div class="panel-content">
+                <div class="decisions-table">
+                    <div class="decision-row">
+                        <div class="decision-action">Market sell: Iron Ore batch optimization</div>
+                        <div class="decision-sector">MUD-7</div>
+                        <div class="decision-profit">+54 ATLAS</div>
+                        <div class="decision-status">
+                            <span class="status-badge executed">Executed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="decision-row">
+                        <div class="decision-action">Fleet reposition for yield optimization</div>
+                        <div class="decision-sector">MUD-7 → MUD-12</div>
+                        <div class="decision-profit">+23% projected</div>
+                        <div class="decision-status">
+                            <span class="status-badge executed">Executed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="decision-row">
+                        <div class="decision-action">Cross-faction trade opportunity detected</div>
+                        <div class="decision-sector">ONI-3</div>
+                        <div class="decision-profit">+47 ATLAS</div>
+                        <div class="decision-status">
+                            <span class="status-badge executed">Executed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="decision-row">
+                        <div class="decision-action">Refuel optimization: batch processing</div>
+                        <div class="decision-sector">USTUR-12</div>
+                        <div class="decision-profit">-8% fuel cost</div>
+                        <div class="decision-status">
+                            <span class="status-badge pending">Pending</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ════════════════════════════════════════════════════
+         Scripts — minimal, purposeful
+    ════════════════════════════════════════════════════ -->
     <script>
+        // Update timestamp
         function updateTimestamp() {
             const now = new Date();
-            document.getElementById('timestamp').textContent = 
-                now.toLocaleString('en-US', { 
-                    month: 'short', 
-                    day: 'numeric',
-                    hour: '2-digit', 
-                    minute: '2-digit',
-                    second: '2-digit'
-                });
+            const timeString = now.toLocaleString('en-US', { 
+                weekday: 'short',
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            document.getElementById('dashboard-time').textContent = timeString;
         }
+        
         updateTimestamp();
         setInterval(updateTimestamp, 1000);
+
+        // Fade-in on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -40px 0px'
+        });
+
+        // Initial fade-in for elements immediately visible
+        setTimeout(() => {
+            document.querySelectorAll('.fade-in').forEach(el => {
+                if (el.getBoundingClientRect().top < window.innerHeight) {
+                    el.classList.add('visible');
+                } else {
+                    observer.observe(el);
+                }
+            });
+        }, 100);
     </script>
+
 </body>
 </html>
