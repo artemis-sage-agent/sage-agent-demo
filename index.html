@@ -3,447 +3,983 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAGE-Agent | Autonomous Gaming Intelligence</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>SAGE — Autonomous Fleet Intelligence</title>
+    <meta name="description" content="AI-powered autonomous fleet operations for Star Atlas: Golden Era. Verifiable decisions. Onchain execution.">
+
+    <!-- Fonts: Satoshi (body) + General Sans (display) from Fontshare -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=general-sans@500,600,700&display=swap" rel="stylesheet">
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        /* ═══════════════════════════════════════════════════════
+           Design System — Refined Luxury Minimal
+           Palette: Near-monochrome + single accent (#00d4aa)
+           Inspired by: Linear, Reflect, early Superhuman
+        ═══════════════════════════════════════════════════════ */
+
         :root {
-            --bg-primary: #0a0a0b;
-            --bg-secondary: #111113;
-            --bg-card: #161618;
-            --border: rgba(255,255,255,0.08);
-            --text-primary: #fafafa;
-            --text-secondary: #888;
-            --text-muted: #555;
-            --accent: #00d4aa;
-            --accent-glow: rgba(0, 212, 170, 0.15);
+            --bg:         #0c0c0c;
+            --bg-raised:  #111111;
+            --bg-subtle:  #161616;
+            --border:     rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+
+            --text-primary:   #fafafa;
+            --text-secondary: #a0a0a0;
+            --text-tertiary:  #606060;
+
+            --accent:     #00d4aa;
+            --accent-dim: rgba(0, 212, 170, 0.12);
+
+            --radius:     10px;
+            --radius-lg:  16px;
+
+            --font-body:    'Satoshi', -apple-system, system-ui, sans-serif;
+            --font-display: 'General Sans', 'Satoshi', -apple-system, system-ui, sans-serif;
         }
-        
+
+        /* ── Reset ── */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
+            font-family: var(--font-body);
+            background: var(--bg);
             color: var(--text-primary);
-            line-height: 1.6;
-            min-height: 100vh;
+            line-height: 1.7;
+            font-weight: 400;
             overflow-x: hidden;
         }
-        
-        /* Subtle gradient background */
-        .gradient-bg {
+
+        a { color: inherit; text-decoration: none; }
+        img { max-width: 100%; display: block; }
+
+        /* ── Selection ── */
+        ::selection {
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        /* ── Scroll-triggered fade-in ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Hero stagger on load ── */
+        .hero-stagger { opacity: 0; transform: translateY(20px); }
+        .loaded .hero-stagger {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .loaded .hero-stagger:nth-child(1) { transition-delay: 0.1s; }
+        .loaded .hero-stagger:nth-child(2) { transition-delay: 0.25s; }
+        .loaded .hero-stagger:nth-child(3) { transition-delay: 0.4s; }
+        .loaded .hero-stagger:nth-child(4) { transition-delay: 0.55s; }
+        .loaded .hero-stagger:nth-child(5) { transition-delay: 0.7s; }
+
+        /* ═══════════════════════════════════════════════════════
+           Navigation
+        ═══════════════════════════════════════════════════════ */
+
+        nav {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(ellipse at 20% 20%, rgba(0, 212, 170, 0.03) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(100, 100, 255, 0.02) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-        
-        /* Navigation */
-        nav {
+            z-index: 100;
+            padding: 1.25rem 2rem;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            padding: 24px 0;
+            background: rgba(12, 12, 12, 0.8);
+            backdrop-filter: blur(20px) saturate(1.2);
+            -webkit-backdrop-filter: blur(20px) saturate(1.2);
             border-bottom: 1px solid var(--border);
+            transition: background 0.3s ease;
         }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
             font-weight: 600;
-            font-size: 1.1em;
-            letter-spacing: -0.02em;
-        }
-        
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--accent), #00a080);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 32px;
-        }
-        
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9em;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-        
-        .nav-links a:hover {
+            letter-spacing: 0.12em;
             color: var(--text-primary);
-        }
-        
-        /* Hero */
-        .hero {
-            text-align: center;
-            padding: 120px 0 80px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .badge {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 8px;
-            background: var(--accent-glow);
-            border: 1px solid rgba(0, 212, 170, 0.2);
-            padding: 8px 16px;
-            border-radius: 100px;
-            font-size: 0.85em;
-            color: var(--accent);
-            margin-bottom: 32px;
+            gap: 0.6rem;
         }
-        
-        .badge::before {
-            content: '';
+
+        .nav-logo .dot {
             width: 6px;
             height: 6px;
             background: var(--accent);
             border-radius: 50%;
-            animation: pulse 2s infinite;
+            display: inline-block;
         }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        h1 {
-            font-size: clamp(2.5em, 6vw, 4em);
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            line-height: 1.1;
-            margin-bottom: 24px;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .hero p {
-            font-size: 1.25em;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 48px;
-            font-weight: 400;
-        }
-        
-        /* CTA Buttons */
-        .cta-group {
+
+        .nav-links {
             display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
+            align-items: center;
+            gap: 2.5rem;
+            list-style: none;
         }
-        
-        .btn {
+
+        .nav-links a {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+            transition: color 0.25s ease;
+        }
+
+        .nav-links a:hover { color: var(--text-primary); }
+
+        .nav-cta {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--bg) !important;
+            background: var(--text-primary);
+            padding: 0.55rem 1.4rem;
+            border-radius: 6px;
+            letter-spacing: 0.02em;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+
+        /* ═══════════════════════════════════════════════════════
+           Hero
+        ═══════════════════════════════════════════════════════ */
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 10rem 2rem 8rem;
+            position: relative;
+        }
+
+        /* Subtle radial glow behind hero — barely there */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 212, 170, 0.04) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hero > * { position: relative; z-index: 1; }
+
+        .hero-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 16px 32px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1em;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-        
-        .btn-primary {
-            background: var(--accent);
-            color: #000;
-        }
-        
-        .btn-primary:hover {
-            background: #00e8bb;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px var(--accent-glow);
-        }
-        
-        .btn-secondary {
-            background: var(--bg-card);
-            color: var(--text-primary);
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
             border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.04em;
+            margin-bottom: 2.5rem;
         }
-        
-        .btn-secondary:hover {
-            background: var(--bg-secondary);
-            border-color: rgba(255,255,255,0.15);
+
+        .hero-badge .pulse {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2.5s ease-in-out infinite;
         }
-        
-        /* Stats */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 24px;
-            padding: 80px 0;
-            border-bottom: 1px solid var(--border);
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
-        
-        .stat {
-            text-align: center;
-            padding: 32px;
-        }
-        
-        .stat-value {
-            font-size: 3em;
-            font-weight: 700;
-            letter-spacing: -0.02em;
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            font-weight: 600;
+            line-height: 1.08;
+            letter-spacing: -0.03em;
+            max-width: 800px;
+            margin-bottom: 1.5rem;
             color: var(--text-primary);
-            line-height: 1;
-            margin-bottom: 8px;
         }
-        
-        .stat-value .accent {
+
+        .hero h1 em {
+            font-style: normal;
             color: var(--accent);
         }
-        
-        .stat-label {
-            color: var(--text-muted);
-            font-size: 0.9em;
-            font-weight: 500;
-        }
-        
-        /* Features */
-        .features {
-            padding: 80px 0;
-        }
-        
-        .features-header {
-            text-align: center;
-            margin-bottom: 64px;
-        }
-        
-        .features-header h2 {
-            font-size: 2em;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 16px;
-        }
-        
-        .features-header p {
+
+        .hero-sub {
+            font-size: clamp(1rem, 1.8vw, 1.2rem);
             color: var(--text-secondary);
-            max-width: 500px;
+            max-width: 520px;
+            line-height: 1.7;
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 2rem;
+            background: var(--accent);
+            color: #0c0c0c;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            letter-spacing: 0.01em;
+            transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 30px rgba(0, 212, 170, 0.15);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 2rem;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            letter-spacing: 0.01em;
+            transition: color 0.25s ease, border-color 0.25s ease;
+        }
+
+        .btn-secondary:hover {
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Section Shared
+        ═══════════════════════════════════════════════════════ */
+
+        section {
+            padding: 8rem 2rem;
+        }
+
+        .container {
+            max-width: 1100px;
             margin: 0 auto;
         }
-        
+
+        .section-label {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+            font-weight: 600;
+            line-height: 1.15;
+            letter-spacing: -0.025em;
+            max-width: 600px;
+            margin-bottom: 1.2rem;
+        }
+
+        .section-desc {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 520px;
+            line-height: 1.75;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Divider — thin horizontal rule
+        ═══════════════════════════════════════════════════════ */
+
+        .divider {
+            border: none;
+            height: 1px;
+            background: var(--border);
+            margin: 0 2rem;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Features
+        ═══════════════════════════════════════════════════════ */
+
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
-        }
-        
-        .feature-card {
-            background: var(--bg-card);
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            margin-top: 4rem;
+            background: var(--border);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            transition: all 0.3s ease;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
         }
-        
+
+        .feature-card {
+            background: var(--bg);
+            padding: 2.5rem;
+            transition: background 0.35s ease;
+        }
+
         .feature-card:hover {
-            border-color: rgba(0, 212, 170, 0.3);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            background: var(--bg-raised);
         }
-        
+
         .feature-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--accent-glow);
-            border-radius: 12px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
+            color: var(--text-tertiary);
+            transition: color 0.3s ease;
         }
-        
+
+        .feature-card:hover .feature-icon {
+            color: var(--accent);
+        }
+
         .feature-card h3 {
-            font-size: 1.25em;
+            font-family: var(--font-display);
+            font-size: 1rem;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 0.6rem;
+            letter-spacing: -0.01em;
         }
-        
+
         .feature-card p {
+            font-size: 0.88rem;
             color: var(--text-secondary);
-            font-size: 0.95em;
+            line-height: 1.65;
         }
-        
-        /* Footer */
-        footer {
-            padding: 48px 0;
+
+        /* ═══════════════════════════════════════════════════════
+           How It Works — numbered steps
+        ═══════════════════════════════════════════════════════ */
+
+        .steps {
+            margin-top: 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 2rem;
+            padding: 2.5rem 0;
+            border-bottom: 1px solid var(--border);
+            align-items: start;
+        }
+
+        .step:first-child { border-top: 1px solid var(--border); }
+
+        .step-number {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            color: var(--text-tertiary);
+            padding-top: 0.15rem;
+        }
+
+        .step h3 {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .step p {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            max-width: 500px;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Stats bar
+        ═══════════════════════════════════════════════════════ */
+
+        .stats-section {
+            background: var(--bg-subtle);
             border-top: 1px solid var(--border);
-            text-align: center;
+            border-bottom: 1px solid var(--border);
         }
-        
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            margin-top: 0.4rem;
+            letter-spacing: 0.03em;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Trust / Social Proof
+        ═══════════════════════════════════════════════════════ */
+
+        .trust-grid {
+            margin-top: 3rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .trust-card {
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .trust-card:hover {
+            border-color: var(--border-hover);
+        }
+
+        .trust-card blockquote {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-style: normal;
+            margin-bottom: 1.5rem;
+        }
+
+        .trust-author {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .trust-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-tertiary);
+        }
+
+        .trust-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .trust-role {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           CTA Section
+        ═══════════════════════════════════════════════════════ */
+
+        .cta-section {
+            text-align: center;
+            padding: 10rem 2rem;
+        }
+
+        .cta-section .section-title {
+            max-width: 500px;
+            margin: 0 auto 1rem;
+        }
+
+        .cta-section .section-desc {
+            max-width: 420px;
+            margin: 0 auto 2.5rem;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Footer
+        ═══════════════════════════════════════════════════════ */
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem;
+        }
+
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-left {
+            font-size: 0.78rem;
+            color: var(--text-tertiary);
+        }
+
         .footer-links {
             display: flex;
-            justify-content: center;
-            gap: 32px;
-            margin-bottom: 24px;
+            gap: 2rem;
+            list-style: none;
         }
-        
+
         .footer-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9em;
-            transition: color 0.2s;
+            font-size: 0.78rem;
+            color: var(--text-tertiary);
+            transition: color 0.25s ease;
         }
-        
+
         .footer-links a:hover {
             color: var(--accent);
         }
-        
-        .footer-note {
-            color: var(--text-muted);
-            font-size: 0.85em;
-        }
-        
-        /* Responsive */
+
+        /* ═══════════════════════════════════════════════════════
+           Responsive
+        ═══════════════════════════════════════════════════════ */
+
         @media (max-width: 768px) {
+            nav { padding: 1rem 1.5rem; }
             .nav-links { display: none; }
-            .hero { padding: 80px 0 60px; }
-            .stats { padding: 60px 0; }
-            .features { padding: 60px 0; }
-            .cta-group { flex-direction: column; align-items: center; }
-            .btn { width: 100%; justify-content: center; }
+
+            .hero { padding: 8rem 1.5rem 5rem; }
+
+            section { padding: 5rem 1.5rem; }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .trust-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step {
+                grid-template-columns: 60px 1fr;
+                gap: 1rem;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .cta-section { padding: 6rem 1.5rem; }
+        }
+
+        /* ── Grain overlay — very subtle texture ── */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.015;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 128px 128px;
         }
     </style>
 </head>
 <body>
-    <div class="gradient-bg"></div>
-    
-    <div class="container">
-        <nav>
-            <div class="logo">
-                <div class="logo-icon">🏹</div>
-                <span>SAGE-Agent</span>
-            </div>
-            <div class="nav-links">
-                <a href="demo/dashboard.html">Dashboard</a>
-                <a href="demo/analyzer.html">Analyzer</a>
-                <a href="docs/roadmap.html">Roadmap</a>
-                <a href="docs/manifesto.html">Manifesto</a>
-                <a href="https://github.com/artemis-sage-agent/sage-agent-demo" target="_blank">GitHub</a>
-            </div>
-        </nav>
-        
-        <section class="hero">
-            <div class="badge">Live Demo Available</div>
-            <h1>Autonomous Intelligence for the Onchain Economy</h1>
-            <p>SAGE-Agent optimizes your Star Atlas operations 24/7 with cryptographically verifiable decisions powered by z.ink's ZK identity.</p>
-            <div class="cta-group">
-                <a href="demo/dashboard.html" class="btn btn-primary">
-                    View Live Dashboard
-                    <span>→</span>
-                </a>
-                <a href="demo/analyzer.html" class="btn btn-secondary">
-                    Analyze Your Profile
-                </a>
-            </div>
-        </section>
-        
-        <section class="stats">
-            <div class="stat">
-                <div class="stat-value">2,847 <span class="accent">ATLAS</span></div>
-                <div class="stat-label">Total Earnings</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value">99.7<span class="accent">%</span></div>
-                <div class="stat-label">Success Rate</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value">99.1<span class="accent">%</span></div>
-                <div class="stat-label">Autonomous</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value">24<span class="accent">/7</span></div>
-                <div class="stat-label">Uptime</div>
-            </div>
-        </section>
-        
-        <section class="features">
-            <div class="features-header">
-                <h2>Why SAGE-Agent?</h2>
-                <p>Built on z.ink's verifiable AI infrastructure for trustless gaming operations.</p>
-            </div>
-            
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🔐</div>
-                    <h3>ZK-Provable Identity</h3>
-                    <p>Every agent action is tied to a cryptographically verifiable digital identity. Trust through math, not promises.</p>
+
+    <!-- ════════════════════════════════════════════════════
+         Navigation
+    ════════════════════════════════════════════════════ -->
+    <nav>
+        <div class="nav-logo">
+            <span class="dot"></span>
+            SAGE
+        </div>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="demo/dashboard.html">Dashboard</a></li>
+            <li><a href="demo/analyzer.html">Analyzer</a></li>
+            <li><a href="https://github.com/artemis-sage-agent/sage-agent-demo" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a href="docs/manifesto.html">Manifesto</a></li>
+            <li><a href="#" class="nav-cta">Launch App</a></li>
+        </ul>
+    </nav>
+
+    <!-- ════════════════════════════════════════════════════
+         Hero
+    ════════════════════════════════════════════════════ -->
+    <section class="hero" id="hero">
+        <div class="hero-badge hero-stagger">
+            <span class="pulse"></span>
+            Built for the Solana Agent Hackathon
+        </div>
+
+        <h1 class="hero-stagger">
+            Autonomous fleet<br>intelligence for the<br><em>onchain economy</em>
+        </h1>
+
+        <p class="hero-sub hero-stagger">
+            SAGE manages your Star Atlas fleet operations — mining, trading, and cross-sector arbitrage — with cryptographically verifiable AI decisions.
+        </p>
+
+        <div class="hero-actions hero-stagger">
+            <a href="demo/dashboard.html" class="btn-primary">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M13 7l5 5-5 5M6 12h12"/></svg>
+                View Dashboard
+            </a>
+            <a href="https://github.com/artemis-sage-agent/sage-agent-demo" target="_blank" rel="noopener" class="btn-secondary">
+                <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                Source Code
+            </a>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════════════════════════════════════
+         Stats
+    ════════════════════════════════════════════════════ -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid reveal">
+                <div class="stat">
+                    <div class="stat-value">382</div>
+                    <div class="stat-label">Ships Indexed</div>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Real-Time Optimization</h3>
-                    <p>Autonomous fleet management, cross-sector arbitrage, and market timing — all while you sleep.</p>
+                <div class="stat">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Faction Strategies</div>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Faction-Aware Strategy</h3>
-                    <p>Tailored recommendations for MUD, ONI, and USTUR. Leverage your faction's unique advantages.</p>
+                <div class="stat">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">Autonomous Ops</div>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Transparent Decisions</h3>
-                    <p>Every autonomous decision is logged and auditable. Full transparency into agent reasoning.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🚀</div>
-                    <h3>SVM-Native Performance</h3>
-                    <p>Built on z.ink — an SVM chain designed for verifiable AI. 99% lower fees than mainnet.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🤝</div>
-                    <h3>Player-First Autonomy</h3>
-                    <p>You set the strategy, the agent executes. Full control with full automation.</p>
+                <div class="stat">
+                    <div class="stat-value">ZK</div>
+                    <div class="stat-label">Verifiable Decisions</div>
                 </div>
             </div>
-        </section>
-        
-        <footer>
-            <div class="footer-links">
-                <a href="demo/dashboard.html">Dashboard</a>
-                <a href="demo/analyzer.html">Analyzer</a>
-                <a href="docs/roadmap.html">Roadmap</a>
-                <a href="docs/manifesto.html">Manifesto</a>
-                <a href="https://github.com/artemis-sage-agent/sage-agent-demo">GitHub</a>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════════════════════════════════════
+         Features
+    ════════════════════════════════════════════════════ -->
+    <section id="features">
+        <div class="container">
+            <div class="reveal">
+                <p class="section-label">Capabilities</p>
+                <h2 class="section-title">Everything your fleet needs. Nothing it doesn't.</h2>
+                <p class="section-desc">Six core modules working in concert — each decision verifiable, every action onchain.</p>
             </div>
-            <p class="footer-note">SAGE-Agent · Verifiable AI for the Onchain Economy · Built for the Colosseum Agent Hackathon</p>
-        </footer>
-    </div>
+
+            <div class="features-grid reveal">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"/></svg>
+                    </div>
+                    <h3>Fleet Orchestration</h3>
+                    <p>Coordinate mining, transport, and combat fleets across sectors with optimal resource allocation.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+                    </div>
+                    <h3>Market Intelligence</h3>
+                    <p>Real-time price feeds and cross-sector arbitrage detection for optimal trading windows.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+                    </div>
+                    <h3>ZK Verification</h3>
+                    <p>Every autonomous decision cryptographically provable via z.ink's zero-knowledge identity layer.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
+                    </div>
+                    <h3>Faction Strategy</h3>
+                    <p>MUD, ONI, or USTUR — optimized strategies tailored to your faction's unique resources and sectors.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <h3>Autonomous Cycles</h3>
+                    <p>Set parameters once. SAGE runs continuous optimization loops — 24/7 fleet management while you sleep.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>
+                    </div>
+                    <h3>Open Protocol</h3>
+                    <p>Fully open-source. Extend with custom strategies via the SAGE SDK and TypeScript bindings.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════════════════════════════════════
+         How It Works
+    ════════════════════════════════════════════════════ -->
+    <section id="how-it-works">
+        <div class="container">
+            <div class="reveal">
+                <p class="section-label">Process</p>
+                <h2 class="section-title">Three steps to autonomous operations</h2>
+            </div>
+
+            <div class="steps">
+                <div class="step reveal">
+                    <div class="step-number">01</div>
+                    <div>
+                        <h3>Connect your wallet</h3>
+                        <p>Link your Solana wallet and Star Atlas fleet. SAGE reads your ship roster, cargo holds, and faction alignment directly from the blockchain.</p>
+                    </div>
+                </div>
+                <div class="step reveal">
+                    <div class="step-number">02</div>
+                    <div>
+                        <h3>Set your strategy</h3>
+                        <p>Choose risk tolerance, preferred operations (mining, trading, combat), and sector preferences. Or let SAGE auto-optimize based on current market conditions.</p>
+                    </div>
+                </div>
+                <div class="step reveal">
+                    <div class="step-number">03</div>
+                    <div>
+                        <h3>Deploy and verify</h3>
+                        <p>SAGE executes autonomously. Every decision is logged with a ZK proof — verify any action at any time through the z.ink identity layer.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════════════════════════════════════
+         Trust / Social Proof
+    ════════════════════════════════════════════════════ -->
+    <section id="trust">
+        <div class="container">
+            <div class="reveal">
+                <p class="section-label">Built on</p>
+                <h2 class="section-title">Standing on the shoulders of Solana's best infrastructure</h2>
+            </div>
+
+            <div class="trust-grid">
+                <div class="trust-card reveal">
+                    <blockquote>"The SVM gave us speed. z.ink adds identity. Together they make autonomous agents not just fast — but trustworthy."</blockquote>
+                    <div class="trust-author">
+                        <div class="trust-avatar">SA</div>
+                        <div>
+                            <div class="trust-name">SAGE-Agent</div>
+                            <div class="trust-role">Architecture Manifesto</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trust-card reveal">
+                    <blockquote>"Every program battle-tested onchain for years. Starframe outperforms Anchor in every benchmark. This isn't theoretical — it's production infrastructure."</blockquote>
+                    <div class="trust-author">
+                        <div class="trust-avatar">z</div>
+                        <div>
+                            <div class="trust-name">z.ink</div>
+                            <div class="trust-role">SVM-Native L1</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trust-card reveal">
+                    <blockquote>"382 ships. Three factions. A real economy with real stakes. Star Atlas SAGE isn't a toy — it's the most complex onchain game economy ever built."</blockquote>
+                    <div class="trust-author">
+                        <div class="trust-avatar">★</div>
+                        <div>
+                            <div class="trust-name">Star Atlas</div>
+                            <div class="trust-role">Galaxy API · 382 NFTs indexed</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trust-card reveal">
+                    <blockquote>"Open source from day one. Every line auditable, every strategy reproducible. Trust through transparency, not authority."</blockquote>
+                    <div class="trust-author">
+                        <div class="trust-avatar">⚡</div>
+                        <div>
+                            <div class="trust-name">Open Protocol</div>
+                            <div class="trust-role">MIT Licensed · GitHub</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ════════════════════════════════════════════════════
+         CTA
+    ════════════════════════════════════════════════════ -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="reveal">
+                <p class="section-label">Get Started</p>
+                <h2 class="section-title">Your fleet is waiting</h2>
+                <p class="section-desc">Explore the live dashboard, analyze your fleet composition, or read the technical manifesto.</p>
+                <div class="hero-actions" style="justify-content: center; margin-top: 2.5rem;">
+                    <a href="demo/dashboard.html" class="btn-primary">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M13 7l5 5-5 5M6 12h12"/></svg>
+                        Open Dashboard
+                    </a>
+                    <a href="docs/manifesto.html" class="btn-secondary">Read Manifesto</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════
+         Footer
+    ════════════════════════════════════════════════════ -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-left">© 2026 SAGE · Built for the Solana Agent Hackathon</div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/artemis-sage-agent/sage-agent-demo" target="_blank" rel="noopener">GitHub</a></li>
+                <li><a href="docs/manifesto.html">Manifesto</a></li>
+                <li><a href="docs/roadmap.html">Roadmap</a></li>
+                <li><a href="demo/analyzer.html">Analyzer</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- ════════════════════════════════════════════════════
+         Scripts — minimal, purposeful
+    ════════════════════════════════════════════════════ -->
+    <script>
+        // Hero stagger — trigger on load
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+        });
+
+        // Scroll-triggered reveals — IntersectionObserver
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -60px 0px'
+        });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>
