@@ -3,49 +3,447 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAGE-Agent | Autonomous Gaming on z.ink</title>
+    <title>SAGE-Agent | Autonomous Gaming Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-card: #161618;
+            --border: rgba(255,255,255,0.08);
+            --text-primary: #fafafa;
+            --text-secondary: #888;
+            --text-muted: #555;
+            --accent: #00d4aa;
+            --accent-glow: rgba(0, 212, 170, 0.15);
+        }
+        
         body {
-            font-family: 'Monaco', monospace;
-            background: #0a0a0a;
-            color: #00ff88;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Subtle gradient background */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(0, 212, 170, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(100, 100, 255, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Navigation */
+        nav {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 1.1em;
+            letter-spacing: -0.02em;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent), #00a080);
+            border-radius: 8px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px;
+            font-size: 16px;
         }
-        h1 { font-size: 3em; margin-bottom: 20px; }
-        .subtitle { color: #888; margin-bottom: 40px; }
-        .links { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
-        a {
-            display: block;
-            padding: 20px 40px;
-            border: 1px solid #00ff88;
-            color: #00ff88;
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
             text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.3s;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: color 0.2s;
         }
-        a:hover {
-            background: rgba(0, 255, 136, 0.1);
+        
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+        
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 120px 0 80px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent-glow);
+            border: 1px solid rgba(0, 212, 170, 0.2);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 0.85em;
+            color: var(--accent);
+            margin-bottom: 32px;
+        }
+        
+        .badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        h1 {
+            font-size: clamp(2.5em, 6vw, 4em);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 1.25em;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 48px;
+            font-weight: 400;
+        }
+        
+        /* CTA Buttons */
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1em;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+        }
+        
+        .btn-primary:hover {
+            background: #00e8bb;
             transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--accent-glow);
         }
-        .emoji { font-size: 2em; margin-bottom: 20px; }
+        
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: rgba(255,255,255,0.15);
+        }
+        
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            padding: 80px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 32px;
+        }
+        
+        .stat-value {
+            font-size: 3em;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value .accent {
+            color: var(--accent);
+        }
+        
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        /* Features */
+        .features {
+            padding: 80px 0;
+        }
+        
+        .features-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+        
+        .features-header h2 {
+            font-size: 2em;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+        
+        .features-header p {
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: rgba(0, 212, 170, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+        
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--accent-glow);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.25em;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 48px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 24px;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+        
+        .footer-note {
+            color: var(--text-muted);
+            font-size: 0.85em;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero { padding: 80px 0 60px; }
+            .stats { padding: 60px 0; }
+            .features { padding: 60px 0; }
+            .cta-group { flex-direction: column; align-items: center; }
+            .btn { width: 100%; justify-content: center; }
+        }
     </style>
 </head>
 <body>
-    <div class="emoji">🏹</div>
-    <h1>SAGE-Agent</h1>
-    <p class="subtitle">Autonomous Gaming Operations on z.ink Infrastructure</p>
-    <div class="links">
-        <a href="demo/dashboard.html">Live Dashboard</a>
-        <a href="demo/analyzer.html">Profile Analyzer</a>
-        <a href="docs/roadmap.html">Roadmap</a>
-        <a href="docs/manifesto.html">The Manifesto</a>
-        <a href="https://github.com/artemis-sage-agent/sage-agent-demo">GitHub</a>
+    <div class="gradient-bg"></div>
+    
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <div class="logo-icon">🏹</div>
+                <span>SAGE-Agent</span>
+            </div>
+            <div class="nav-links">
+                <a href="demo/dashboard.html">Dashboard</a>
+                <a href="demo/analyzer.html">Analyzer</a>
+                <a href="docs/roadmap.html">Roadmap</a>
+                <a href="docs/manifesto.html">Manifesto</a>
+                <a href="https://github.com/artemis-sage-agent/sage-agent-demo" target="_blank">GitHub</a>
+            </div>
+        </nav>
+        
+        <section class="hero">
+            <div class="badge">Live Demo Available</div>
+            <h1>Autonomous Intelligence for the Onchain Economy</h1>
+            <p>SAGE-Agent optimizes your Star Atlas operations 24/7 with cryptographically verifiable decisions powered by z.ink's ZK identity.</p>
+            <div class="cta-group">
+                <a href="demo/dashboard.html" class="btn btn-primary">
+                    View Live Dashboard
+                    <span>→</span>
+                </a>
+                <a href="demo/analyzer.html" class="btn btn-secondary">
+                    Analyze Your Profile
+                </a>
+            </div>
+        </section>
+        
+        <section class="stats">
+            <div class="stat">
+                <div class="stat-value">2,847 <span class="accent">ATLAS</span></div>
+                <div class="stat-label">Total Earnings</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">99.7<span class="accent">%</span></div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">99.1<span class="accent">%</span></div>
+                <div class="stat-label">Autonomous</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">24<span class="accent">/7</span></div>
+                <div class="stat-label">Uptime</div>
+            </div>
+        </section>
+        
+        <section class="features">
+            <div class="features-header">
+                <h2>Why SAGE-Agent?</h2>
+                <p>Built on z.ink's verifiable AI infrastructure for trustless gaming operations.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>ZK-Provable Identity</h3>
+                    <p>Every agent action is tied to a cryptographically verifiable digital identity. Trust through math, not promises.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Real-Time Optimization</h3>
+                    <p>Autonomous fleet management, cross-sector arbitrage, and market timing — all while you sleep.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Faction-Aware Strategy</h3>
+                    <p>Tailored recommendations for MUD, ONI, and USTUR. Leverage your faction's unique advantages.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Transparent Decisions</h3>
+                    <p>Every autonomous decision is logged and auditable. Full transparency into agent reasoning.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>SVM-Native Performance</h3>
+                    <p>Built on z.ink — an SVM chain designed for verifiable AI. 99% lower fees than mainnet.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🤝</div>
+                    <h3>Player-First Autonomy</h3>
+                    <p>You set the strategy, the agent executes. Full control with full automation.</p>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <div class="footer-links">
+                <a href="demo/dashboard.html">Dashboard</a>
+                <a href="demo/analyzer.html">Analyzer</a>
+                <a href="docs/roadmap.html">Roadmap</a>
+                <a href="docs/manifesto.html">Manifesto</a>
+                <a href="https://github.com/artemis-sage-agent/sage-agent-demo">GitHub</a>
+            </div>
+            <p class="footer-note">SAGE-Agent · Verifiable AI for the Onchain Economy · Built for the Colosseum Agent Hackathon</p>
+        </footer>
     </div>
 </body>
 </html>

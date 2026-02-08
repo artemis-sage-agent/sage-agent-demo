@@ -3,426 +3,740 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAGE Profile Analyzer | SAGE-Agent</title>
+    <title>Profile Analyzer | SAGE-Agent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Monaco', 'Menlo', monospace; 
-            background: #0a0a0a; 
-            color: #00ff88; 
-            padding: 20px;
+        
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-card: #161618;
+            --border: rgba(255,255,255,0.08);
+            --text-primary: #fafafa;
+            --text-secondary: #888;
+            --text-muted: #555;
+            --accent: #00d4aa;
+            --accent-dim: #00a080;
+            --accent-glow: rgba(0, 212, 170, 0.15);
+            --success: #00d4aa;
+            --warning: #f5a623;
+            --error: #e54d4d;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #00ff88;
-            padding-bottom: 20px;
-        }
-        .header h1 { margin-bottom: 10px; }
-        .header p { color: #888; }
+        
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        
         .container {
             max-width: 900px;
             margin: 0 auto;
+            padding: 48px 24px;
         }
-        .input-section {
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid #00ff88;
-            padding: 30px;
-            border-radius: 8px;
-            margin-bottom: 30px;
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
         }
-        .input-section label {
-            display: block;
-            margin-bottom: 10px;
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-bottom: 24px;
+            transition: color 0.2s;
+        }
+        
+        .back-link:hover {
+            color: var(--text-primary);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 12px;
+        }
+        
+        .header p {
+            color: var(--text-secondary);
             font-size: 1.1em;
         }
-        .input-section input {
+        
+        /* Input Card */
+        .input-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 32px;
+        }
+        
+        .input-group {
+            margin-bottom: 24px;
+        }
+        
+        .input-label {
+            display: block;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        
+        .input-field {
             width: 100%;
-            padding: 15px;
-            background: #111;
-            border: 1px solid #333;
-            color: #00ff88;
-            font-family: inherit;
-            font-size: 1em;
-            border-radius: 4px;
-            margin-bottom: 20px;
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95em;
+            transition: all 0.2s;
         }
-        .input-section input:focus {
+        
+        .input-field:focus {
             outline: none;
-            border-color: #00ff88;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
         }
-        .input-section input::placeholder {
-            color: #555;
+        
+        .input-field::placeholder {
+            color: var(--text-muted);
         }
-        button {
-            background: #00ff88;
-            color: #0a0a0a;
+        
+        .select-field {
+            width: 100%;
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+        }
+        
+        .select-field:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .faction-badges {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .faction-badge {
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 0.8em;
+            font-weight: 500;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .faction-badge:hover {
+            border-color: var(--accent);
+        }
+        
+        .faction-badge.active {
+            background: var(--accent-glow);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        
+        .btn-analyze {
+            width: 100%;
+            padding: 18px;
+            background: var(--accent);
+            color: #000;
             border: none;
-            padding: 15px 40px;
+            border-radius: 12px;
             font-family: inherit;
             font-size: 1em;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
-        button:hover {
-            background: #00cc6a;
+        
+        .btn-analyze:hover {
+            background: #00e8bb;
             transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--accent-glow);
         }
-        button:disabled {
-            background: #333;
-            color: #666;
+        
+        .btn-analyze:disabled {
+            background: var(--text-muted);
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
-        .results {
-            display: none;
-        }
-        .results.visible {
-            display: block;
-        }
+        
+        /* Loading */
         .loading {
-            text-align: center;
-            padding: 40px;
             display: none;
+            text-align: center;
+            padding: 60px 20px;
         }
+        
         .loading.visible {
             display: block;
         }
-        .loading .spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 3px solid #333;
-            border-top-color: #00ff88;
+        
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
             border-radius: 50%;
             animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
         }
+        
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        .loading p {
+            color: var(--text-secondary);
+        }
+        
+        /* Results */
+        .results {
+            display: none;
+        }
+        
+        .results.visible {
+            display: block;
+        }
+        
+        /* Stats Overview */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px 20px;
+            text-align: center;
+        }
+        
+        .stat-icon {
+            font-size: 1.5em;
+            margin-bottom: 12px;
+        }
+        
+        .stat-value {
+            font-size: 1.75em;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+        
+        .stat-value.success { color: var(--success); }
+        .stat-value.warning { color: var(--warning); }
+        .stat-value.error { color: var(--error); }
+        
+        .stat-label {
+            font-size: 0.8em;
+            color: var(--text-muted);
+        }
+        
+        /* Panel */
         .panel {
-            background: rgba(0, 255, 136, 0.05);
-            border: 1px solid #00ff88;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            margin-bottom: 24px;
+            overflow: hidden;
         }
-        .panel h3 {
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #333;
+        
+        .panel-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        .metric {
+        
+        .panel-icon {
+            font-size: 1.25em;
+        }
+        
+        .panel-title {
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        
+        .panel-content {
+            padding: 24px;
+        }
+        
+        /* Operations */
+        .operation-item {
             display: flex;
             justify-content: space-between;
-            margin: 10px 0;
-            padding: 8px 0;
-            border-bottom: 1px solid #222;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
         }
-        .metric:last-child { border-bottom: none; }
-        .good { color: #00ff88; }
-        .warning { color: #ffaa00; }
-        .critical { color: #ff4444; }
+        
+        .operation-item:last-child {
+            border-bottom: none;
+        }
+        
+        .operation-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .operation-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .operation-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .operation-detail {
+            font-size: 0.85em;
+            color: var(--text-muted);
+        }
+        
+        .operation-status {
+            text-align: right;
+        }
+        
+        .operation-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        
+        .operation-badge.high { color: var(--success); }
+        .operation-badge.medium { color: var(--warning); }
+        .operation-badge.low { color: var(--error); }
+        
+        /* Recommendations */
         .recommendation {
-            background: rgba(0, 255, 136, 0.05);
-            border-left: 3px solid #00ff88;
-            padding: 15px;
-            margin: 15px 0;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border-left: 3px solid var(--accent);
         }
+        
+        .recommendation:last-child {
+            margin-bottom: 0;
+        }
+        
         .recommendation.high-impact {
-            border-left-color: #ffaa00;
+            border-left-color: var(--warning);
         }
-        .recommendation h4 {
+        
+        .rec-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .rec-title {
+            font-weight: 600;
+        }
+        
+        .rec-badge {
+            font-size: 0.7em;
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .rec-badge.high {
+            background: rgba(245, 166, 35, 0.15);
+            color: var(--warning);
+        }
+        
+        .rec-badge.medium {
+            background: var(--accent-glow);
+            color: var(--accent);
+        }
+        
+        .rec-description {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        
+        .rec-savings {
+            font-weight: 600;
+            color: var(--success);
+        }
+        
+        /* Projections */
+        .projection-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .projection-row:last-child {
+            border-bottom: none;
+        }
+        
+        .projection-label {
+            color: var(--text-secondary);
+        }
+        
+        .projection-value {
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        .projection-value.success { color: var(--success); }
+        .projection-value.warning { color: var(--warning); }
+        
+        /* CTA */
+        .cta-box {
+            background: linear-gradient(135deg, var(--accent-glow), rgba(100, 100, 255, 0.05));
+            border: 1px solid rgba(0, 212, 170, 0.2);
+            border-radius: 16px;
+            padding: 28px;
+            text-align: center;
+            margin-top: 24px;
+        }
+        
+        .cta-box h4 {
             margin-bottom: 8px;
         }
-        .recommendation p {
-            color: #aaa;
+        
+        .cta-box p {
+            color: var(--text-secondary);
             font-size: 0.9em;
         }
-        .impact-badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.75em;
-            margin-left: 10px;
+        
+        /* Footer Nav */
+        .footer-nav {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            padding: 48px 0;
+            border-top: 1px solid var(--border);
+            margin-top: 48px;
         }
-        .impact-high { background: #ffaa00; color: #000; }
-        .impact-medium { background: #00ff88; color: #000; }
-        .impact-low { background: #333; color: #888; }
-        .profile-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+        
+        .footer-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.2s;
         }
-        .stat-card {
-            background: #111;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
+        
+        .footer-nav a:hover {
+            color: var(--accent);
         }
-        .stat-card .value {
-            font-size: 2em;
-            font-weight: bold;
-            margin-bottom: 5px;
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .stats-overview .stat-card:last-child {
+                grid-column: span 2;
+            }
+            .faction-badges {
+                flex-wrap: wrap;
+            }
         }
-        .stat-card .label {
-            color: #888;
-            font-size: 0.85em;
-        }
-        .disclaimer {
-            text-align: center;
-            color: #555;
-            font-size: 0.85em;
-            margin-top: 30px;
-            padding: 20px;
-            border-top: 1px solid #222;
-        }
-        a { color: #00ff88; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🏹 SAGE Profile Analyzer</h1>
-            <p>Enter your SAGE profile to get AI-powered optimization recommendations</p>
+            <a href="../index.html" class="back-link">← Back to Home</a>
+            <h1>Profile Analyzer</h1>
+            <p>Get AI-powered optimization recommendations for your SAGE operations</p>
         </div>
-
-        <div class="input-section">
-            <label for="profile">SAGE Profile Address</label>
-            <input type="text" id="profile" placeholder="Enter your Solana wallet address or SAGE profile pubkey...">
+        
+        <div class="input-card">
+            <div class="input-group">
+                <label class="input-label">Wallet Address</label>
+                <input type="text" id="profile" class="input-field mono" placeholder="Enter your Solana wallet or SAGE profile...">
+            </div>
             
-            <label for="faction" style="margin-top: 15px;">Select Your Faction</label>
-            <select id="faction" style="width: 100%; padding: 15px; background: #111; border: 1px solid #333; color: #00ff88; font-family: inherit; font-size: 1em; border-radius: 4px; margin-bottom: 20px; cursor: pointer;">
-                <option value="MUD">🌍 MUD (Manus Ultimus Dei) - Humanity's Faction</option>
-                <option value="ONI">👁️ ONI (Oligarchical Nexus of Intelligences) - Alien Coalition</option>
-                <option value="USTUR">🤖 USTUR (United Secessionist Territories of Ustur) - Synthetic Beings</option>
-            </select>
+            <div class="input-group">
+                <label class="input-label">Select Faction</label>
+                <div class="faction-badges">
+                    <span class="faction-badge active" data-faction="MUD" onclick="selectFaction('MUD')">🌍 MUD</span>
+                    <span class="faction-badge" data-faction="ONI" onclick="selectFaction('ONI')">👁️ ONI</span>
+                    <span class="faction-badge" data-faction="USTUR" onclick="selectFaction('USTUR')">🤖 USTUR</span>
+                </div>
+                <input type="hidden" id="faction" value="MUD">
+            </div>
             
-            <button onclick="analyzeProfile()" id="analyzeBtn">Analyze Profile</button>
+            <button onclick="analyzeProfile()" id="analyzeBtn" class="btn-analyze">
+                Analyze Profile
+            </button>
         </div>
-
+        
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p style="margin-top: 20px;">Analyzing your SAGE operations...</p>
+            <p>Analyzing your SAGE operations...</p>
         </div>
-
+        
         <div class="results" id="results">
+            <div class="stats-overview" id="statsOverview"></div>
+            
             <div class="panel">
-                <h3>📊 Profile Overview</h3>
-                <div class="profile-summary" id="profileSummary"></div>
+                <div class="panel-header">
+                    <span class="panel-icon">⚡</span>
+                    <span class="panel-title">Current Operations</span>
+                </div>
+                <div class="panel-content" id="operations"></div>
             </div>
-
+            
             <div class="panel">
-                <h3>⚡ Current Operations</h3>
-                <div id="operations"></div>
+                <div class="panel-header">
+                    <span class="panel-icon">🎯</span>
+                    <span class="panel-title">Optimization Recommendations</span>
+                </div>
+                <div class="panel-content" id="recommendations"></div>
             </div>
-
+            
             <div class="panel">
-                <h3>🎯 Optimization Recommendations</h3>
-                <div id="recommendations"></div>
-            </div>
-
-            <div class="panel">
-                <h3>📈 Projected Improvements</h3>
-                <div id="projections"></div>
+                <div class="panel-header">
+                    <span class="panel-icon">📈</span>
+                    <span class="panel-title">Projected Improvements</span>
+                </div>
+                <div class="panel-content" id="projections"></div>
             </div>
         </div>
-
-        <p class="disclaimer">
-            <strong>Demo Mode:</strong> This analyzer demonstrates SAGE-Agent's optimization capabilities. 
-            Full integration with live SAGE data coming soon.<br><br>
-            <a href="index.html">← Back to Home</a> · <a href="dashboard.html">Live Dashboard</a>
-        </p>
+        
+        <nav class="footer-nav">
+            <a href="../index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="../docs/roadmap.html">Roadmap</a>
+            <a href="../docs/manifesto.html">Manifesto</a>
+        </nav>
     </div>
-
+    
     <script>
+        let selectedFaction = 'MUD';
+        
+        function selectFaction(faction) {
+            selectedFaction = faction;
+            document.getElementById('faction').value = faction;
+            document.querySelectorAll('.faction-badge').forEach(el => {
+                el.classList.toggle('active', el.dataset.faction === faction);
+            });
+        }
+        
         function analyzeProfile() {
             const profile = document.getElementById('profile').value.trim();
             if (!profile) {
-                alert('Please enter a SAGE profile address');
+                alert('Please enter a wallet address');
                 return;
             }
-
-            // Show loading
+            
             document.getElementById('loading').classList.add('visible');
             document.getElementById('results').classList.remove('visible');
             document.getElementById('analyzeBtn').disabled = true;
-
-            // Simulate analysis delay
+            
             setTimeout(() => {
                 generateResults(profile);
                 document.getElementById('loading').classList.remove('visible');
                 document.getElementById('results').classList.add('visible');
                 document.getElementById('analyzeBtn').disabled = false;
-            }, 2500);
+            }, 2000);
         }
-
+        
         function generateResults(profile) {
-            // Generate deterministic but varied results based on profile hash
             const hash = profile.split('').reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0);
             const seed = Math.abs(hash);
-            const faction = document.getElementById('faction').value;
+            const faction = selectedFaction;
             
+            const factionData = {
+                MUD: {
+                    emoji: '🌍', name: 'MUD', fullName: 'Manus Ultimus Dei',
+                    resources: ['Iron Ore', 'Titanium', 'Hydrogen'],
+                    sectors: ['MUD-7', 'MUD-12', 'MUD-3'],
+                    advantage: 'Industrial manufacturing'
+                },
+                ONI: {
+                    emoji: '👁️', name: 'ONI', fullName: 'Oligarchical Nexus',
+                    resources: ['Crystalline', 'Biomass', 'Rare Elements'],
+                    sectors: ['ONI-5', 'ONI-9', 'ONI-2'],
+                    advantage: 'Advanced technology'
+                },
+                USTUR: {
+                    emoji: '🤖', name: 'USTUR', fullName: 'United Secessionist Territories',
+                    resources: ['Carbon', 'Silicon', 'Energy Cells'],
+                    sectors: ['USTUR-8', 'USTUR-15', 'USTUR-4'],
+                    advantage: 'Automation efficiency'
+                }
+            };
+            
+            const fd = factionData[faction];
             const fleets = 3 + (seed % 8);
             const ships = 12 + (seed % 25);
             const dailyAtlas = 150 + (seed % 300);
             const efficiency = 65 + (seed % 30);
-
-            // Faction-specific data
-            const factionData = {
-                MUD: {
-                    emoji: '🌍',
-                    name: 'MUD',
-                    homeSector: 'MUD Central Space Station',
-                    resources: ['Iron Ore', 'Titanium', 'Hydrogen'],
-                    ships: ['Pearce X4', 'Opal Jet', 'Calico Guardian'],
-                    advantage: 'Industrial manufacturing',
-                    sectors: ['MUD-7', 'MUD-12', 'MUD-3']
-                },
-                ONI: {
-                    emoji: '👁️',
-                    name: 'ONI',
-                    homeSector: 'ONI Central Space Station',
-                    resources: ['Crystalline', 'Biomass', 'Rare Elements'],
-                    ships: ['Fimbul BYOS', 'Ogka Mik', 'Rainbow Om'],
-                    advantage: 'Advanced technology',
-                    sectors: ['ONI-5', 'ONI-9', 'ONI-2']
-                },
-                USTUR: {
-                    emoji: '🤖',
-                    name: 'USTUR',
-                    homeSector: 'USTUR Central Space Station',
-                    resources: ['Carbon', 'Silicon', 'Energy Cells'],
-                    ships: ['Tufa Feist', 'Chi Lancet', 'Vzus Opod'],
-                    advantage: 'Automation efficiency',
-                    sectors: ['USTUR-8', 'USTUR-15', 'USTUR-4']
-                }
-            };
-
-            const fd = factionData[faction];
-
-            // Profile Summary
-            document.getElementById('profileSummary').innerHTML = `
+            const effClass = efficiency > 80 ? 'success' : efficiency > 60 ? 'warning' : 'error';
+            
+            document.getElementById('statsOverview').innerHTML = `
                 <div class="stat-card">
-                    <div class="value good">${fd.emoji}</div>
-                    <div class="label">${fd.name} Faction</div>
+                    <div class="stat-icon">${fd.emoji}</div>
+                    <div class="stat-value">${fd.name}</div>
+                    <div class="stat-label">Faction</div>
                 </div>
                 <div class="stat-card">
-                    <div class="value good">${fleets}</div>
-                    <div class="label">Active Fleets</div>
+                    <div class="stat-icon">🚀</div>
+                    <div class="stat-value">${fleets}</div>
+                    <div class="stat-label">Active Fleets</div>
                 </div>
                 <div class="stat-card">
-                    <div class="value good">${ships}</div>
-                    <div class="label">Total Ships</div>
+                    <div class="stat-icon">🛸</div>
+                    <div class="stat-value">${ships}</div>
+                    <div class="stat-label">Total Ships</div>
                 </div>
                 <div class="stat-card">
-                    <div class="value ${efficiency > 80 ? 'good' : efficiency > 60 ? 'warning' : 'critical'}">${efficiency}%</div>
-                    <div class="label">Efficiency Score</div>
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-value ${effClass}">${efficiency}%</div>
+                    <div class="stat-label">Efficiency</div>
                 </div>
                 <div class="stat-card">
-                    <div class="value good">${dailyAtlas}</div>
-                    <div class="label">Est. Daily ATLAS</div>
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value success">${dailyAtlas}</div>
+                    <div class="stat-label">Daily ATLAS</div>
                 </div>
             `;
-
-            // Current Operations (faction-specific)
+            
             const operations = [
-                { name: 'Mining Fleet Alpha', sector: fd.sectors[0], resource: fd.resources[0], status: 'Active', efficiency: 78 + (seed % 20) },
-                { name: 'Transport Fleet', sector: fd.sectors[1], resource: 'Cargo Run', status: 'Active', efficiency: 65 + (seed % 25) },
-                { name: 'Mining Fleet Beta', sector: fd.sectors[2], resource: fd.resources[1], status: seed % 3 === 0 ? 'Idle' : 'Active', efficiency: 45 + (seed % 40) }
+                { name: 'Mining Fleet Alpha', sector: fd.sectors[0], resource: fd.resources[0], eff: 78 + (seed % 20) },
+                { name: 'Transport Fleet', sector: fd.sectors[1], resource: 'Cargo Run', eff: 65 + (seed % 25) },
+                { name: 'Mining Fleet Beta', sector: fd.sectors[2], resource: fd.resources[1], eff: 45 + (seed % 40) }
             ];
-
+            
             document.getElementById('operations').innerHTML = operations.map(op => `
-                <div class="metric">
-                    <span>${op.name} → ${op.sector}</span>
-                    <span class="${op.efficiency > 75 ? 'good' : op.efficiency > 50 ? 'warning' : 'critical'}">
-                        ${op.status} (${op.efficiency}% eff)
-                    </span>
+                <div class="operation-item">
+                    <div class="operation-info">
+                        <div class="operation-icon">${op.resource.includes('Cargo') ? '🚀' : '⛏️'}</div>
+                        <div>
+                            <div class="operation-name">${op.name}</div>
+                            <div class="operation-detail">${op.sector} · ${op.resource}</div>
+                        </div>
+                    </div>
+                    <div class="operation-status">
+                        <div class="operation-badge ${op.eff > 75 ? 'high' : op.eff > 50 ? 'medium' : 'low'}">
+                            ${op.eff}% efficiency
+                        </div>
+                    </div>
                 </div>
             `).join('');
-
-            // Faction-specific Recommendations
+            
+            const crossFaction = faction === 'MUD' ? 'ONI' : faction === 'ONI' ? 'USTUR' : 'MUD';
             const recommendations = [
                 {
                     title: `Leverage ${fd.name} ${fd.advantage}`,
-                    description: `As a ${fd.name} player, your faction excels at ${fd.advantage.toLowerCase()}. Consider focusing ${fd.resources[0]} extraction in ${fd.sectors[0]} where your faction ships have +15% efficiency bonus.`,
+                    desc: `Your faction excels at ${fd.advantage.toLowerCase()}. Focus ${fd.resources[0]} extraction in ${fd.sectors[0]} for +15% efficiency bonus.`,
                     impact: 'high',
                     savings: `+${45 + (seed % 30)} ATLAS/day`
                 },
                 {
                     title: 'Cross-Faction Trade Opportunity',
-                    description: `${fd.resources[1]} from ${fd.name} territory is in high demand in ${faction === 'MUD' ? 'ONI' : faction === 'ONI' ? 'USTUR' : 'MUD'} sectors. Set up a trade route for ${18 + (seed % 12)}% profit margins.`,
+                    desc: `${fd.resources[1]} from ${fd.name} territory is in high demand in ${crossFaction} sectors. Set up a trade route for ${18 + (seed % 12)}% profit margins.`,
                     impact: 'high',
                     savings: `+${55 + (seed % 35)} ATLAS/day`
                 },
                 {
-                    title: 'Optimize Fleet Composition',
-                    description: `Your fleet could benefit from more ${fd.ships[seed % 3]} ships, which have native bonuses in ${fd.name} space. Consider upgrading ${2 + (seed % 3)} ships.`,
-                    impact: 'medium',
-                    savings: `+${20 + (seed % 15)} ATLAS/day`
-                },
-                {
                     title: 'Idle Ship Deployment',
-                    description: `Deploy your ${2 + (seed % 3)} idle ships to ${fd.sectors[2]} for ${fd.resources[2]} harvesting — currently yielding +${23 + (seed % 15)}% above average.`,
-                    impact: 'high',
+                    desc: `Deploy your ${2 + (seed % 3)} idle ships to ${fd.sectors[2]} for ${fd.resources[2]} harvesting — currently yielding +${23 + (seed % 15)}% above average.`,
+                    impact: 'medium',
                     savings: `+${60 + (seed % 40)} ATLAS/day`
                 }
             ];
-
+            
             document.getElementById('recommendations').innerHTML = recommendations.map(rec => `
                 <div class="recommendation ${rec.impact === 'high' ? 'high-impact' : ''}">
-                    <h4>${rec.title} <span class="impact-badge impact-${rec.impact}">${rec.impact.toUpperCase()} IMPACT</span></h4>
-                    <p>${rec.description}</p>
-                    <p style="color: #00ff88; margin-top: 10px;"><strong>Estimated: ${rec.savings}</strong></p>
+                    <div class="rec-header">
+                        <span class="rec-title">${rec.title}</span>
+                        <span class="rec-badge ${rec.impact}">${rec.impact} impact</span>
+                    </div>
+                    <p class="rec-description">${rec.desc}</p>
+                    <span class="rec-savings">Estimated: ${rec.savings}</span>
                 </div>
             `).join('');
-
-            // Projections
-            const currentDaily = dailyAtlas;
-            const optimizedDaily = Math.round(currentDaily * 1.45);
-            const monthlyGain = (optimizedDaily - currentDaily) * 30;
-
+            
+            const optimized = Math.round(dailyAtlas * 1.45);
+            const monthlyGain = (optimized - dailyAtlas) * 30;
+            
             document.getElementById('projections').innerHTML = `
-                <div class="metric">
-                    <span>Current Daily Revenue</span>
-                    <span class="warning">${currentDaily} ATLAS</span>
+                <div class="projection-row">
+                    <span class="projection-label">Current Daily Revenue</span>
+                    <span class="projection-value warning">${dailyAtlas} ATLAS</span>
                 </div>
-                <div class="metric">
-                    <span>Optimized Daily Revenue</span>
-                    <span class="good">${optimizedDaily} ATLAS</span>
+                <div class="projection-row">
+                    <span class="projection-label">Optimized Daily Revenue</span>
+                    <span class="projection-value success">${optimized} ATLAS</span>
                 </div>
-                <div class="metric">
-                    <span>Improvement</span>
-                    <span class="good">+45%</span>
+                <div class="projection-row">
+                    <span class="projection-label">Improvement</span>
+                    <span class="projection-value success">+45%</span>
                 </div>
-                <div class="metric">
-                    <span>Monthly Additional Revenue</span>
-                    <span class="good">+${monthlyGain.toLocaleString()} ATLAS</span>
+                <div class="projection-row">
+                    <span class="projection-label">Monthly Additional Revenue</span>
+                    <span class="projection-value success">+${monthlyGain.toLocaleString()} ATLAS</span>
                 </div>
-                <div style="margin-top: 20px; padding: 15px; background: rgba(0,255,136,0.1); border-radius: 4px;">
-                    <strong>🤖 SAGE-Agent Can Automate This</strong><br>
-                    <span style="color: #aaa; font-size: 0.9em;">
-                        Enable autonomous mode to have SAGE-Agent implement these optimizations 24/7, 
-                        rebalancing your operations in real-time as market conditions change.
-                    </span>
+                <div class="cta-box">
+                    <h4>🤖 SAGE-Agent Can Automate This</h4>
+                    <p>Enable autonomous mode to implement these optimizations 24/7, rebalancing in real-time as market conditions change.</p>
                 </div>
             `;
         }
-
-        // Allow Enter key to submit
-        document.getElementById('profile').addEventListener('keypress', function(e) {
+        
+        document.getElementById('profile').addEventListener('keypress', e => {
             if (e.key === 'Enter') analyzeProfile();
         });
     </script>
-    <div class="nav" style="text-align: center; margin-top: 40px; padding: 30px 0; border-top: 1px solid #222;">
-        <a href="../index.html" style="color: #00ff88; margin: 0 15px;">Home</a>
-        <a href="dashboard.html" style="color: #00ff88; margin: 0 15px;">Dashboard</a>
-        <a href="../docs/roadmap.html" style="color: #00ff88; margin: 0 15px;">Roadmap</a>
-        <a href="../docs/manifesto.html" style="color: #00ff88; margin: 0 15px;">Manifesto</a>
-    </div>
 </body>
 </html>
