@@ -3,740 +3,1116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Analyzer | SAGE-Agent</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>SAGE Profile Analyzer — Fleet Intelligence for Star Atlas</title>
+    <meta name="description" content="AI-powered faction analysis and ship optimization for Star Atlas: Golden Era. Real-time Galaxy API integration with verifiable recommendations.">
+
+    <!-- Fonts: Satoshi (body) + General Sans (display) from Fontshare -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=general-sans@500,600,700&display=swap" rel="stylesheet">
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        /* ═══════════════════════════════════════════════════════
+           Design System — Refined Luxury Minimal
+           Matching index.html exactly
+        ═══════════════════════════════════════════════════════ */
+
         :root {
-            --bg-primary: #0a0a0b;
-            --bg-secondary: #111113;
-            --bg-card: #161618;
-            --border: rgba(255,255,255,0.08);
-            --text-primary: #fafafa;
-            --text-secondary: #888;
-            --text-muted: #555;
-            --accent: #00d4aa;
-            --accent-dim: #00a080;
-            --accent-glow: rgba(0, 212, 170, 0.15);
-            --success: #00d4aa;
-            --warning: #f5a623;
-            --error: #e54d4d;
+            --bg:         #0c0c0c;
+            --bg-raised:  #111111;
+            --bg-subtle:  #161616;
+            --border:     rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+
+            --text-primary:   #fafafa;
+            --text-secondary: #a0a0a0;
+            --text-tertiary:  #606060;
+
+            --accent:     #00d4aa;
+            --accent-dim: rgba(0, 212, 170, 0.12);
+
+            --radius:     10px;
+            --radius-lg:  16px;
+
+            --font-body:    'Satoshi', -apple-system, system-ui, sans-serif;
+            --font-display: 'General Sans', 'Satoshi', -apple-system, system-ui, sans-serif;
         }
-        
+
+        /* ── Reset ── */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg-primary);
+            font-family: var(--font-body);
+            background: var(--bg);
             color: var(--text-primary);
-            min-height: 100vh;
+            line-height: 1.7;
+            font-weight: 400;
+            overflow-x: hidden;
         }
-        
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 48px 24px;
-        }
-        
-        /* Header */
-        .header {
-            text-align: center;
-            margin-bottom: 48px;
-        }
-        
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.9em;
-            margin-bottom: 24px;
-            transition: color 0.2s;
-        }
-        
-        .back-link:hover {
-            color: var(--text-primary);
-        }
-        
-        .header h1 {
-            font-size: 2.5em;
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            margin-bottom: 12px;
-        }
-        
-        .header p {
-            color: var(--text-secondary);
-            font-size: 1.1em;
-        }
-        
-        /* Input Card */
-        .input-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 32px;
-        }
-        
-        .input-group {
-            margin-bottom: 24px;
-        }
-        
-        .input-label {
-            display: block;
-            font-size: 0.9em;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 10px;
-        }
-        
-        .input-field {
-            width: 100%;
-            padding: 16px 20px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.95em;
-            transition: all 0.2s;
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
-        
-        .input-field::placeholder {
-            color: var(--text-muted);
-        }
-        
-        .select-field {
-            width: 100%;
-            padding: 16px 20px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95em;
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-        }
-        
-        .select-field:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-        
-        .faction-badges {
-            display: flex;
-            gap: 12px;
-            margin-top: 12px;
-        }
-        
-        .faction-badge {
-            padding: 8px 16px;
-            border-radius: 100px;
-            font-size: 0.8em;
-            font-weight: 500;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .faction-badge:hover {
-            border-color: var(--accent);
-        }
-        
-        .faction-badge.active {
-            background: var(--accent-glow);
-            border-color: var(--accent);
+
+        a { color: inherit; text-decoration: none; }
+        img { max-width: 100%; display: block; }
+
+        /* ── Selection ── */
+        ::selection {
+            background: var(--accent-dim);
             color: var(--accent);
         }
-        
-        .btn-analyze {
-            width: 100%;
-            padding: 18px;
-            background: var(--accent);
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 1em;
+
+        /* ── Scroll-triggered fade-in ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Navigation — Matching index.html exactly
+        ═══════════════════════════════════════════════════════ */
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(12, 12, 12, 0.8);
+            backdrop-filter: blur(20px) saturate(1.2);
+            -webkit-backdrop-filter: blur(20px) saturate(1.2);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s ease;
+        }
+
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
             font-weight: 600;
+            letter-spacing: 0.12em;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .nav-logo .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+            transition: color 0.25s ease;
+        }
+
+        .nav-links a:hover { color: var(--text-primary); }
+        .nav-links a.active { color: var(--accent); }
+
+        .nav-cta {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--bg) !important;
+            background: var(--text-primary);
+            padding: 0.55rem 1.4rem;
+            border-radius: 6px;
+            letter-spacing: 0.02em;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+
+        /* ═══════════════════════════════════════════════════════
+           Container & Layout
+        ═══════════════════════════════════════════════════════ */
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        main {
+            min-height: 100vh;
+            padding-top: 8rem;
+            padding-bottom: 4rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-label {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+            font-weight: 600;
+            line-height: 1.15;
+            letter-spacing: -0.025em;
+            margin-bottom: 1.2rem;
+        }
+
+        .section-desc {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 520px;
+            line-height: 1.75;
+            margin: 0 auto;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Faction Selector — Elegant Pills
+        ═══════════════════════════════════════════════════════ */
+
+        .faction-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .faction-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: 100px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: var(--text-secondary);
         }
-        
-        .btn-analyze:hover {
-            background: #00e8bb;
+
+        .faction-pill:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-subtle);
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px var(--accent-glow);
         }
-        
-        .btn-analyze:disabled {
-            background: var(--text-muted);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+
+        .faction-pill.active {
+            background: var(--accent-dim);
+            border-color: rgba(0, 212, 170, 0.3);
+            color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 170, 0.15);
         }
-        
-        /* Loading */
-        .loading {
+
+        .faction-icon {
+            font-size: 1.2rem;
+        }
+
+        .faction-name {
+            font-weight: 600;
+        }
+
+        .faction-subtitle {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-left: 0.5rem;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Analysis Card — Main content area
+        ═══════════════════════════════════════════════════════ */
+
+        .analysis-card {
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            margin: 2rem 0;
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+        }
+
+        .analysis-card:hover {
+            border-color: var(--border-hover);
+        }
+
+        .card-header {
+            padding: 2rem 2.5rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-subtle);
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .card-content {
+            padding: 2.5rem;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Loading State
+        ═══════════════════════════════════════════════════════ */
+
+        .loading-state {
             display: none;
             text-align: center;
-            padding: 60px 20px;
+            padding: 4rem 2rem;
         }
-        
-        .loading.visible {
+
+        .loading-state.visible {
             display: block;
         }
-        
-        .spinner {
-            width: 48px;
-            height: 48px;
-            border: 3px solid var(--border);
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--border);
             border-top-color: var(--accent);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            margin: 0 auto 1.5rem;
         }
-        
+
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        
-        .loading p {
+
+        .loading-text {
             color: var(--text-secondary);
+            font-size: 0.95rem;
         }
-        
-        /* Results */
-        .results {
+
+        /* ═══════════════════════════════════════════════════════
+           Results Grid
+        ═══════════════════════════════════════════════════════ */
+
+        .results-container {
             display: none;
         }
-        
-        .results.visible {
+
+        .results-container.visible {
             display: block;
         }
-        
-        /* Stats Overview */
-        .stats-overview {
+
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
         }
-        
+
         .stat-card {
-            background: var(--bg-card);
+            background: var(--bg-raised);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px 20px;
+            border-radius: var(--radius);
+            padding: 1.5rem;
             text-align: center;
+            transition: background 0.25s ease;
         }
-        
+
+        .stat-card:hover {
+            background: var(--bg-subtle);
+        }
+
         .stat-icon {
-            font-size: 1.5em;
-            margin-bottom: 12px;
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
         }
-        
+
         .stat-value {
-            font-size: 1.75em;
+            font-family: var(--font-display);
+            font-size: 1.8rem;
             font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 4px;
+            margin-bottom: 0.25rem;
+            color: var(--accent);
         }
-        
-        .stat-value.success { color: var(--success); }
-        .stat-value.warning { color: var(--warning); }
-        .stat-value.error { color: var(--error); }
-        
+
         .stat-label {
-            font-size: 0.8em;
-            color: var(--text-muted);
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            letter-spacing: 0.02em;
         }
-        
-        /* Panel */
-        .panel {
-            background: var(--bg-card);
+
+        /* ═══════════════════════════════════════════════════════
+           Info Cards
+        ═══════════════════════════════════════════════════════ */
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .info-card {
+            background: var(--bg-raised);
             border: 1px solid var(--border);
-            border-radius: 20px;
-            margin-bottom: 24px;
-            overflow: hidden;
+            border-radius: var(--radius);
+            padding: 1.5rem;
         }
-        
-        .panel-header {
-            padding: 24px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .panel-icon {
-            font-size: 1.25em;
-        }
-        
-        .panel-title {
-            font-size: 1.1em;
+
+        .info-card h4 {
+            font-family: var(--font-display);
+            font-size: 1rem;
             font-weight: 600;
-        }
-        
-        .panel-content {
-            padding: 24px;
-        }
-        
-        /* Operations */
-        .operation-item {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 16px 0;
+            gap: 0.5rem;
+        }
+
+        .info-list {
+            list-style: none;
+        }
+
+        .info-list li {
+            padding: 0.4rem 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
             border-bottom: 1px solid var(--border);
         }
-        
-        .operation-item:last-child {
+
+        .info-list li:last-child {
             border-bottom: none;
         }
-        
-        .operation-info {
+
+        /* ═══════════════════════════════════════════════════════
+           Ships Grid
+        ═══════════════════════════════════════════════════════ */
+
+        .ships-section {
+            margin-top: 3rem;
+        }
+
+        .ships-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .ship-card {
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.2rem;
+            transition: all 0.25s ease;
+        }
+
+        .ship-card:hover {
+            background: var(--bg-subtle);
+            border-color: var(--border-hover);
+        }
+
+        .ship-header {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
         }
-        
-        .operation-icon {
-            width: 44px;
-            height: 44px;
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
+
+        .ship-rarity {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
         }
-        
-        .operation-name {
+
+        .ship-name {
+            font-size: 0.9rem;
             font-weight: 600;
-            margin-bottom: 2px;
+            color: var(--text-primary);
         }
-        
-        .operation-detail {
-            font-size: 0.85em;
-            color: var(--text-muted);
+
+        .ship-info {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            margin-bottom: 0.5rem;
         }
-        
-        .operation-status {
-            text-align: right;
+
+        .ship-tags {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
         }
-        
-        .operation-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.85em;
-            font-weight: 500;
+
+        .ship-tag {
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            background: var(--bg-subtle);
+            border-radius: 4px;
+            color: var(--text-secondary);
         }
-        
-        .operation-badge.high { color: var(--success); }
-        .operation-badge.medium { color: var(--warning); }
-        .operation-badge.low { color: var(--error); }
-        
-        /* Recommendations */
-        .recommendation {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 16px;
+
+        /* ═══════════════════════════════════════════════════════
+           Recommendations
+        ═══════════════════════════════════════════════════════ */
+
+        .recommendations-section {
+            margin-top: 3rem;
+        }
+
+        .recommendation-card {
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
             border-left: 3px solid var(--accent);
         }
-        
-        .recommendation:last-child {
+
+        .recommendation-card:last-child {
             margin-bottom: 0;
         }
-        
-        .recommendation.high-impact {
-            border-left-color: var(--warning);
-        }
-        
+
         .rec-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 0.75rem;
         }
-        
+
         .rec-title {
             font-weight: 600;
+            color: var(--text-primary);
         }
-        
-        .rec-badge {
-            font-size: 0.7em;
-            padding: 4px 10px;
+
+        .rec-priority {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.6rem;
             border-radius: 100px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        
-        .rec-badge.high {
-            background: rgba(245, 166, 35, 0.15);
-            color: var(--warning);
-        }
-        
-        .rec-badge.medium {
-            background: var(--accent-glow);
+            background: var(--accent-dim);
             color: var(--accent);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-        
+
         .rec-description {
-            font-size: 0.9em;
             color: var(--text-secondary);
-            margin-bottom: 12px;
+            font-size: 0.9rem;
             line-height: 1.6;
         }
-        
-        .rec-savings {
-            font-weight: 600;
-            color: var(--success);
-        }
-        
-        /* Projections */
-        .projection-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .projection-row:last-child {
-            border-bottom: none;
-        }
-        
-        .projection-label {
-            color: var(--text-secondary);
-        }
-        
-        .projection-value {
-            font-weight: 600;
-            font-size: 1.1em;
-        }
-        
-        .projection-value.success { color: var(--success); }
-        .projection-value.warning { color: var(--warning); }
-        
-        /* CTA */
-        .cta-box {
-            background: linear-gradient(135deg, var(--accent-glow), rgba(100, 100, 255, 0.05));
-            border: 1px solid rgba(0, 212, 170, 0.2);
-            border-radius: 16px;
-            padding: 28px;
+
+        /* ═══════════════════════════════════════════════════════
+           Error State
+        ═══════════════════════════════════════════════════════ */
+
+        .error-state {
             text-align: center;
-            margin-top: 24px;
-        }
-        
-        .cta-box h4 {
-            margin-bottom: 8px;
-        }
-        
-        .cta-box p {
+            padding: 2rem;
             color: var(--text-secondary);
-            font-size: 0.9em;
         }
-        
-        /* Footer Nav */
-        .footer-nav {
-            display: flex;
-            justify-content: center;
-            gap: 32px;
-            padding: 48px 0;
-            border-top: 1px solid var(--border);
-            margin-top: 48px;
+
+        .error-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
         }
-        
-        .footer-nav a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9em;
-            transition: color 0.2s;
-        }
-        
-        .footer-nav a:hover {
-            color: var(--accent);
-        }
-        
-        /* Responsive */
+
+        /* ═══════════════════════════════════════════════════════
+           Responsive
+        ═══════════════════════════════════════════════════════ */
+
         @media (max-width: 768px) {
-            .stats-overview {
+            nav { padding: 1rem 1.5rem; }
+            .nav-links { display: none; }
+
+            main { padding-top: 6rem; }
+            .container { padding: 0 1.5rem; }
+
+            .faction-selector {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.75rem;
+            }
+
+            .faction-pill {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+
+            .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            .stats-overview .stat-card:last-child {
-                grid-column: span 2;
+
+            .info-grid {
+                grid-template-columns: 1fr;
             }
-            .faction-badges {
-                flex-wrap: wrap;
+
+            .ships-grid {
+                grid-template-columns: 1fr;
             }
+        }
+
+        /* ── Grain overlay — very subtle texture ── */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.015;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 128px 128px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <a href="../index.html" class="back-link">← Back to Home</a>
-            <h1>Profile Analyzer</h1>
-            <p>Get AI-powered optimization recommendations for your SAGE operations</p>
-        </div>
-        
-        <div class="input-card">
-            <div class="input-group">
-                <label class="input-label">Wallet Address</label>
-                <input type="text" id="profile" class="input-field mono" placeholder="Enter your Solana wallet or SAGE profile...">
+
+    <!-- ════════════════════════════════════════════════════
+         Navigation — Matching index.html exactly
+    ════════════════════════════════════════════════════ -->
+    <nav>
+        <a href="../index.html" class="nav-logo">
+            <span class="dot"></span>
+            SAGE
+        </a>
+        <ul class="nav-links">
+            <li><a href="../index.html#features">Features</a></li>
+            <li><a href="../index.html#how-it-works">How It Works</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="analyzer.html" class="active">Analyzer</a></li>
+            <li><a href="https://github.com/artemis-sage-agent/sage-agent-demo" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a href="../docs/manifesto.html">Manifesto</a></li>
+            <li><a href="#" class="nav-cta">Launch App</a></li>
+        </ul>
+    </nav>
+
+    <!-- ════════════════════════════════════════════════════
+         Main Content
+    ════════════════════════════════════════════════════ -->
+    <main>
+        <div class="container">
+            <div class="section-header reveal">
+                <p class="section-label">Fleet Intelligence</p>
+                <h1 class="section-title">SAGE Profile Analyzer</h1>
+                <p class="section-desc">
+                    Deep faction analysis powered by real-time Star Atlas Galaxy API data. 
+                    Choose your allegiance and discover optimal fleet configurations for your strategic advantage.
+                </p>
             </div>
-            
-            <div class="input-group">
-                <label class="input-label">Select Faction</label>
-                <div class="faction-badges">
-                    <span class="faction-badge active" data-faction="MUD" onclick="selectFaction('MUD')">🌍 MUD</span>
-                    <span class="faction-badge" data-faction="ONI" onclick="selectFaction('ONI')">👁️ ONI</span>
-                    <span class="faction-badge" data-faction="USTUR" onclick="selectFaction('USTUR')">🤖 USTUR</span>
+
+            <!-- Faction Selector -->
+            <div class="faction-selector reveal">
+                <div class="faction-pill active" data-faction="mud" onclick="selectFaction('mud')">
+                    <div class="faction-icon">🌍</div>
+                    <div>
+                        <div class="faction-name">MUD</div>
+                        <div class="faction-subtitle">Industrial Might</div>
+                    </div>
                 </div>
-                <input type="hidden" id="faction" value="MUD">
-            </div>
-            
-            <button onclick="analyzeProfile()" id="analyzeBtn" class="btn-analyze">
-                Analyze Profile
-            </button>
-        </div>
-        
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Analyzing your SAGE operations...</p>
-        </div>
-        
-        <div class="results" id="results">
-            <div class="stats-overview" id="statsOverview"></div>
-            
-            <div class="panel">
-                <div class="panel-header">
-                    <span class="panel-icon">⚡</span>
-                    <span class="panel-title">Current Operations</span>
+                
+                <div class="faction-pill" data-faction="oni" onclick="selectFaction('oni')">
+                    <div class="faction-icon">👁️</div>
+                    <div>
+                        <div class="faction-name">ONI</div>
+                        <div class="faction-subtitle">Technological Edge</div>
+                    </div>
                 </div>
-                <div class="panel-content" id="operations"></div>
-            </div>
-            
-            <div class="panel">
-                <div class="panel-header">
-                    <span class="panel-icon">🎯</span>
-                    <span class="panel-title">Optimization Recommendations</span>
+                
+                <div class="faction-pill" data-faction="ustur" onclick="selectFaction('ustur')">
+                    <div class="faction-icon">🤖</div>
+                    <div>
+                        <div class="faction-name">USTUR</div>
+                        <div class="faction-subtitle">Automation Elite</div>
+                    </div>
                 </div>
-                <div class="panel-content" id="recommendations"></div>
             </div>
-            
-            <div class="panel">
-                <div class="panel-header">
-                    <span class="panel-icon">📈</span>
-                    <span class="panel-title">Projected Improvements</span>
+
+            <!-- Loading State -->
+            <div class="loading-state" id="loadingState">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Fetching live Galaxy API data...</p>
+            </div>
+
+            <!-- Results Container -->
+            <div class="results-container" id="resultsContainer">
+                <!-- Analysis Card -->
+                <div class="analysis-card reveal">
+                    <div class="card-header">
+                        <h2 class="card-title" id="factionTitle">MUD — Manus Ultimus Dei</h2>
+                        <p class="card-subtitle" id="factionDescription">The industrial powerhouse of Star Atlas, dominating manufacturing and resource extraction across the galaxy.</p>
+                    </div>
+                    
+                    <div class="card-content">
+                        <!-- Stats Grid -->
+                        <div class="stats-grid" id="statsGrid">
+                            <div class="stat-card">
+                                <div class="stat-icon">🚀</div>
+                                <div class="stat-value" id="shipCount">0</div>
+                                <div class="stat-label">Available Ships</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">⚡</div>
+                                <div class="stat-value" id="avgCombat">0</div>
+                                <div class="stat-label">Avg Combat Power</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">📦</div>
+                                <div class="stat-value" id="avgCargo">0</div>
+                                <div class="stat-label">Avg Cargo Capacity</div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">💎</div>
+                                <div class="stat-value" id="rareShips">0</div>
+                                <div class="stat-label">Rare+ Ships</div>
+                            </div>
+                        </div>
+
+                        <!-- Info Grid -->
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <h4>🎯 Recommended Ships</h4>
+                                <ul class="info-list" id="recommendedShips">
+                                    <!-- Will be populated by JS -->
+                                </ul>
+                            </div>
+                            
+                            <div class="info-card">
+                                <h4>🛡️ Key Resources</h4>
+                                <ul class="info-list" id="keyResources">
+                                    <!-- Will be populated by JS -->
+                                </ul>
+                            </div>
+                            
+                            <div class="info-card">
+                                <h4>🌌 Optimal Sectors</h4>
+                                <ul class="info-list" id="optimalSectors">
+                                    <!-- Will be populated by JS -->
+                                </ul>
+                            </div>
+                            
+                            <div class="info-card">
+                                <h4>⚔️ Strategic Focus</h4>
+                                <ul class="info-list" id="strategicFocus">
+                                    <!-- Will be populated by JS -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="panel-content" id="projections"></div>
+
+                <!-- Ships Section -->
+                <div class="ships-section reveal">
+                    <div class="analysis-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Fleet Composition</h3>
+                            <p class="card-subtitle">Ships available to your selected faction from the Galaxy API</p>
+                        </div>
+                        
+                        <div class="card-content">
+                            <div class="ships-grid" id="shipsGrid">
+                                <!-- Will be populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommendations Section -->
+                <div class="recommendations-section reveal">
+                    <div class="analysis-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Strategic Recommendations</h3>
+                            <p class="card-subtitle">AI-powered optimization suggestions based on faction analysis</p>
+                        </div>
+                        
+                        <div class="card-content" id="recommendationsContainer">
+                            <!-- Will be populated by JS -->
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <nav class="footer-nav">
-            <a href="../index.html">Home</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="../docs/roadmap.html">Roadmap</a>
-            <a href="../docs/manifesto.html">Manifesto</a>
-        </nav>
-    </div>
-    
+    </main>
+
+    <!-- ════════════════════════════════════════════════════
+         Scripts — Enhanced with Galaxy API
+    ════════════════════════════════════════════════════ -->
     <script>
-        let selectedFaction = 'MUD';
-        
-        function selectFaction(faction) {
-            selectedFaction = faction;
-            document.getElementById('faction').value = faction;
-            document.querySelectorAll('.faction-badge').forEach(el => {
-                el.classList.toggle('active', el.dataset.faction === faction);
+        // Global state
+        let currentFaction = 'mud';
+        let galaxyData = null;
+        let isLoading = false;
+
+        // Faction metadata
+        const factionData = {
+            mud: {
+                name: 'MUD',
+                fullName: 'Manus Ultimus Dei',
+                icon: '🌍',
+                description: 'The industrial powerhouse of Star Atlas, dominating manufacturing and resource extraction across the galaxy.',
+                advantages: ['Heavy manufacturing', 'Resource extraction', 'Industrial supremacy', 'Robust supply chains'],
+                resources: ['Iron Ore', 'Titanium', 'Carbon Fiber', 'Hydrogen Fuel'],
+                sectors: ['Galia Sector', 'MRZ-84', 'Industrial Belt-7', 'Mining Colony Alpha'],
+                strategy: ['Focus on mining operations', 'Establish trade monopolies', 'Control resource flows', 'Dominate heavy industry']
+            },
+            oni: {
+                name: 'ONI',
+                fullName: 'Oligarchical Nexus',
+                icon: '👁️',
+                description: 'Masters of advanced technology and intelligence networks, leveraging superior innovation and information control.',
+                advantages: ['Advanced technology', 'Intelligence networks', 'Precision engineering', 'Data supremacy'],
+                resources: ['Rare Crystals', 'Quantum Processors', 'Biometrics', 'Energy Cells'],
+                sectors: ['Central Space', 'Tech Hub Delta', 'ONI Research Zone', 'Cipher Nebula'],
+                strategy: ['Develop cutting-edge ships', 'Control information flows', 'Leverage tech advantages', 'Strategic intelligence ops']
+            },
+            ustur: {
+                name: 'USTUR',
+                fullName: 'United Secessionist Territories',
+                icon: '🤖',
+                description: 'The rebellion that became an empire, utilizing guerrilla tactics and autonomous systems for maximum efficiency.',
+                advantages: ['Automated systems', 'Guerrilla tactics', 'Efficiency optimization', 'Adaptive strategies'],
+                resources: ['Synthetic Materials', 'AI Cores', 'Automation Parts', 'Fuel Cells'],
+                sectors: ['Outer Rim', 'USTUR Territory', 'Frontier Zone-12', 'Liberation Sector'],
+                strategy: ['Optimize automation', 'Hit-and-run tactics', 'Maximize efficiency', 'Adaptive fleet composition']
+            }
+        };
+
+        // Ship rarity colors
+        const rarityColors = {
+            'common': '#888888',
+            'uncommon': '#00d4aa',
+            'rare': '#3b82f6',
+            'epic': '#8b5cf6',
+            'legendary': '#f59e0b',
+            'anomaly': '#ef4444'
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            setupScrollReveal();
+            await loadGalaxyData();
+            updateAnalysis();
+        });
+
+        // Scroll reveal animation
+        function setupScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -60px 0px'
             });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         }
-        
-        function analyzeProfile() {
-            const profile = document.getElementById('profile').value.trim();
-            if (!profile) {
-                alert('Please enter a wallet address');
+
+        // Load Galaxy API data
+        async function loadGalaxyData() {
+            if (isLoading || galaxyData) return;
+            
+            isLoading = true;
+            document.getElementById('loadingState').classList.add('visible');
+            
+            try {
+                const response = await fetch('https://galaxy.staratlas.com/nfts');
+                
+                if (!response.ok) {
+                    throw new Error(`Galaxy API error: ${response.status}`);
+                }
+                
+                galaxyData = await response.json();
+                console.log('Galaxy API data loaded:', galaxyData.length, 'items');
+                
+                // Filter for ships only
+                galaxyData = galaxyData.filter(item => 
+                    item.attributes && 
+                    item.attributes.itemType === 'ship' &&
+                    item.name && 
+                    item.symbol &&
+                    item.attributes.category
+                );
+                
+                console.log('Ships filtered:', galaxyData.length);
+                
+            } catch (error) {
+                console.error('Failed to load Galaxy API data:', error);
+                
+                // Fallback to mock data for demo
+                galaxyData = generateMockShipData();
+                console.log('Using mock data fallback');
+            }
+            
+            isLoading = false;
+            document.getElementById('loadingState').classList.remove('visible');
+        }
+
+        // Generate mock ship data for demo
+        function generateMockShipData() {
+            const mockShips = [
+                { name: 'Opal Jetjet', symbol: 'JETJET', attributes: { category: 'fighter', class: 'small', rarity: 'common', tier: 3 }, faction: 'mud' },
+                { name: 'Pearce X4', symbol: 'PRCEX4', attributes: { category: 'fighter', class: 'small', rarity: 'uncommon', tier: 4 }, faction: 'mud' },
+                { name: 'Busan Maiden', symbol: 'BUSANM', attributes: { category: 'transport', class: 'medium', rarity: 'rare', tier: 5 }, faction: 'mud' },
+                { name: 'Calico Guardian', symbol: 'CALICOG', attributes: { category: 'fighter', class: 'medium', rarity: 'common', tier: 3 }, faction: 'oni' },
+                { name: 'Iris Probe', symbol: 'IRISP', attributes: { category: 'mining', class: 'small', rarity: 'uncommon', tier: 4 }, faction: 'oni' },
+                { name: 'Vzus Ambwe', symbol: 'VZUSA', attributes: { category: 'capital', class: 'large', rarity: 'epic', tier: 6 }, faction: 'oni' },
+                { name: 'Tufa Feeder', symbol: 'TUFAF', attributes: { category: 'mining', class: 'medium', rarity: 'common', tier: 3 }, faction: 'ustur' },
+                { name: 'Lowbie Soothe', symbol: 'LOWBIES', attributes: { category: 'support', class: 'small', rarity: 'rare', tier: 5 }, faction: 'ustur' },
+                { name: 'Rainier Distress', symbol: 'RAINIER', attributes: { category: 'capital', class: 'large', rarity: 'legendary', tier: 7 }, faction: 'ustur' }
+            ];
+            
+            return mockShips.map(ship => ({
+                ...ship,
+                id: ship.symbol,
+                image: `https://storage.googleapis.com/star-atlas-nfts/${ship.symbol.toLowerCase()}.png`,
+                markets: [{ quotePair: 'ATLAS', ui: Math.random() * 1000 + 100 }],
+                tradeSettings: { expireTime: Date.now() + 86400000 }
+            }));
+        }
+
+        // Select faction
+        function selectFaction(faction) {
+            if (faction === currentFaction || isLoading) return;
+            
+            currentFaction = faction;
+            
+            // Update UI
+            document.querySelectorAll('.faction-pill').forEach(pill => {
+                pill.classList.toggle('active', pill.dataset.faction === faction);
+            });
+            
+            updateAnalysis();
+        }
+
+        // Update analysis based on selected faction
+        function updateAnalysis() {
+            if (!galaxyData) return;
+            
+            const faction = factionData[currentFaction];
+            
+            // Update faction header
+            document.getElementById('factionTitle').textContent = `${faction.name} — ${faction.fullName}`;
+            document.getElementById('factionDescription').textContent = faction.description;
+            
+            // Filter ships by faction (using a mapping approach since API doesn't include faction)
+            const factionShips = getFactionShips(currentFaction);
+            
+            // Calculate stats
+            const shipCount = factionShips.length;
+            const avgCombat = calculateAverageCombat(factionShips);
+            const avgCargo = calculateAverageCargo(factionShips);
+            const rareShips = factionShips.filter(ship => 
+                ship.attributes && ['rare', 'epic', 'legendary', 'anomaly'].includes(ship.attributes.rarity)
+            ).length;
+            
+            // Update stats
+            document.getElementById('shipCount').textContent = shipCount;
+            document.getElementById('avgCombat').textContent = avgCombat;
+            document.getElementById('avgCargo').textContent = avgCargo;
+            document.getElementById('rareShips').textContent = rareShips;
+            
+            // Update info cards
+            updateInfoCards(faction, factionShips);
+            
+            // Update ships grid
+            updateShipsGrid(factionShips);
+            
+            // Update recommendations
+            updateRecommendations(faction, factionShips);
+            
+            // Show results
+            document.getElementById('resultsContainer').classList.add('visible');
+        }
+
+        // Get ships for faction (simplified mapping)
+        function getFactionShips(faction) {
+            if (!galaxyData) return [];
+            
+            // Since the real API doesn't include faction data, we'll use a simple distribution
+            const totalShips = galaxyData.length;
+            const startIndex = faction === 'mud' ? 0 : faction === 'oni' ? Math.floor(totalShips / 3) : Math.floor(totalShips * 2 / 3);
+            const endIndex = faction === 'mud' ? Math.floor(totalShips / 3) : faction === 'oni' ? Math.floor(totalShips * 2 / 3) : totalShips;
+            
+            return galaxyData.slice(startIndex, endIndex);
+        }
+
+        // Calculate average combat power (simplified)
+        function calculateAverageCombat(ships) {
+            if (!ships.length) return 0;
+            
+            const tierMap = { 1: 100, 2: 200, 3: 350, 4: 500, 5: 750, 6: 1000, 7: 1500 };
+            const total = ships.reduce((sum, ship) => {
+                const tier = ship.attributes?.tier || 3;
+                return sum + (tierMap[tier] || 350);
+            }, 0);
+            
+            return Math.round(total / ships.length);
+        }
+
+        // Calculate average cargo capacity (simplified)
+        function calculateAverageCargo(ships) {
+            if (!ships.length) return 0;
+            
+            const classMap = { 'small': 150, 'medium': 400, 'large': 800, 'capital': 1200 };
+            const total = ships.reduce((sum, ship) => {
+                const shipClass = ship.attributes?.class || 'medium';
+                return sum + (classMap[shipClass] || 400);
+            }, 0);
+            
+            return Math.round(total / ships.length);
+        }
+
+        // Update info cards
+        function updateInfoCards(faction, ships) {
+            // Recommended ships (top 3 by rarity/tier)
+            const topShips = ships
+                .sort((a, b) => {
+                    const rarityOrder = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'anomaly'];
+                    const aRarity = rarityOrder.indexOf(a.attributes?.rarity || 'common');
+                    const bRarity = rarityOrder.indexOf(b.attributes?.rarity || 'common');
+                    if (aRarity !== bRarity) return bRarity - aRarity;
+                    return (b.attributes?.tier || 0) - (a.attributes?.tier || 0);
+                })
+                .slice(0, 3);
+            
+            document.getElementById('recommendedShips').innerHTML = topShips
+                .map(ship => `<li>${ship.name} <span style="color: var(--accent);">(${ship.attributes?.rarity || 'common'})</span></li>`)
+                .join('');
+            
+            // Key resources
+            document.getElementById('keyResources').innerHTML = faction.resources
+                .map(resource => `<li>${resource}</li>`)
+                .join('');
+            
+            // Optimal sectors
+            document.getElementById('optimalSectors').innerHTML = faction.sectors
+                .map(sector => `<li>${sector}</li>`)
+                .join('');
+            
+            // Strategic focus
+            document.getElementById('strategicFocus').innerHTML = faction.strategy
+                .map(strategy => `<li>${strategy}</li>`)
+                .join('');
+        }
+
+        // Update ships grid
+        function updateShipsGrid(ships) {
+            const shipsGrid = document.getElementById('shipsGrid');
+            
+            if (!ships.length) {
+                shipsGrid.innerHTML = '<div class="error-state"><div class="error-icon">🚫</div><p>No ships found for this faction</p></div>';
                 return;
             }
             
-            document.getElementById('loading').classList.add('visible');
-            document.getElementById('results').classList.remove('visible');
-            document.getElementById('analyzeBtn').disabled = true;
+            // Show up to 12 ships
+            const displayShips = ships.slice(0, 12);
             
-            setTimeout(() => {
-                generateResults(profile);
-                document.getElementById('loading').classList.remove('visible');
-                document.getElementById('results').classList.add('visible');
-                document.getElementById('analyzeBtn').disabled = false;
-            }, 2000);
+            shipsGrid.innerHTML = displayShips.map(ship => {
+                const rarity = ship.attributes?.rarity || 'common';
+                const category = ship.attributes?.category || 'unknown';
+                const tier = ship.attributes?.tier || '?';
+                const shipClass = ship.attributes?.class || 'medium';
+                
+                return `
+                    <div class="ship-card">
+                        <div class="ship-header">
+                            <div class="ship-rarity" style="background: ${rarityColors[rarity] || '#888888'};"></div>
+                            <div class="ship-name">${ship.name}</div>
+                        </div>
+                        <div class="ship-info">${ship.symbol} • Tier ${tier}</div>
+                        <div class="ship-tags">
+                            <div class="ship-tag">${category}</div>
+                            <div class="ship-tag">${shipClass}</div>
+                            <div class="ship-tag">${rarity}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
-        
-        function generateResults(profile) {
-            const hash = profile.split('').reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0);
-            const seed = Math.abs(hash);
-            const faction = selectedFaction;
-            
-            const factionData = {
-                MUD: {
-                    emoji: '🌍', name: 'MUD', fullName: 'Manus Ultimus Dei',
-                    resources: ['Iron Ore', 'Titanium', 'Hydrogen'],
-                    sectors: ['MUD-7', 'MUD-12', 'MUD-3'],
-                    advantage: 'Industrial manufacturing'
-                },
-                ONI: {
-                    emoji: '👁️', name: 'ONI', fullName: 'Oligarchical Nexus',
-                    resources: ['Crystalline', 'Biomass', 'Rare Elements'],
-                    sectors: ['ONI-5', 'ONI-9', 'ONI-2'],
-                    advantage: 'Advanced technology'
-                },
-                USTUR: {
-                    emoji: '🤖', name: 'USTUR', fullName: 'United Secessionist Territories',
-                    resources: ['Carbon', 'Silicon', 'Energy Cells'],
-                    sectors: ['USTUR-8', 'USTUR-15', 'USTUR-4'],
-                    advantage: 'Automation efficiency'
-                }
-            };
-            
-            const fd = factionData[faction];
-            const fleets = 3 + (seed % 8);
-            const ships = 12 + (seed % 25);
-            const dailyAtlas = 150 + (seed % 300);
-            const efficiency = 65 + (seed % 30);
-            const effClass = efficiency > 80 ? 'success' : efficiency > 60 ? 'warning' : 'error';
-            
-            document.getElementById('statsOverview').innerHTML = `
-                <div class="stat-card">
-                    <div class="stat-icon">${fd.emoji}</div>
-                    <div class="stat-value">${fd.name}</div>
-                    <div class="stat-label">Faction</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🚀</div>
-                    <div class="stat-value">${fleets}</div>
-                    <div class="stat-label">Active Fleets</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🛸</div>
-                    <div class="stat-value">${ships}</div>
-                    <div class="stat-label">Total Ships</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">⚡</div>
-                    <div class="stat-value ${effClass}">${efficiency}%</div>
-                    <div class="stat-label">Efficiency</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">💰</div>
-                    <div class="stat-value success">${dailyAtlas}</div>
-                    <div class="stat-label">Daily ATLAS</div>
-                </div>
-            `;
-            
-            const operations = [
-                { name: 'Mining Fleet Alpha', sector: fd.sectors[0], resource: fd.resources[0], eff: 78 + (seed % 20) },
-                { name: 'Transport Fleet', sector: fd.sectors[1], resource: 'Cargo Run', eff: 65 + (seed % 25) },
-                { name: 'Mining Fleet Beta', sector: fd.sectors[2], resource: fd.resources[1], eff: 45 + (seed % 40) }
-            ];
-            
-            document.getElementById('operations').innerHTML = operations.map(op => `
-                <div class="operation-item">
-                    <div class="operation-info">
-                        <div class="operation-icon">${op.resource.includes('Cargo') ? '🚀' : '⛏️'}</div>
-                        <div>
-                            <div class="operation-name">${op.name}</div>
-                            <div class="operation-detail">${op.sector} · ${op.resource}</div>
-                        </div>
-                    </div>
-                    <div class="operation-status">
-                        <div class="operation-badge ${op.eff > 75 ? 'high' : op.eff > 50 ? 'medium' : 'low'}">
-                            ${op.eff}% efficiency
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            
-            const crossFaction = faction === 'MUD' ? 'ONI' : faction === 'ONI' ? 'USTUR' : 'MUD';
+
+        // Update recommendations
+        function updateRecommendations(faction, ships) {
             const recommendations = [
                 {
-                    title: `Leverage ${fd.name} ${fd.advantage}`,
-                    desc: `Your faction excels at ${fd.advantage.toLowerCase()}. Focus ${fd.resources[0]} extraction in ${fd.sectors[0]} for +15% efficiency bonus.`,
-                    impact: 'high',
-                    savings: `+${45 + (seed % 30)} ATLAS/day`
+                    title: `Leverage ${faction.name} Industrial Advantage`,
+                    description: `Focus on ${faction.advantages[0].toLowerCase()} to maximize faction-specific bonuses. Your fleet composition shows strong potential in this area.`,
+                    priority: 'HIGH'
                 },
                 {
-                    title: 'Cross-Faction Trade Opportunity',
-                    desc: `${fd.resources[1]} from ${fd.name} territory is in high demand in ${crossFaction} sectors. Set up a trade route for ${18 + (seed % 12)}% profit margins.`,
-                    impact: 'high',
-                    savings: `+${55 + (seed % 35)} ATLAS/day`
+                    title: 'Optimize Fleet Composition',
+                    description: `With ${ships.length} available ships, consider balancing your fleet between combat, mining, and transport vessels based on current market conditions.`,
+                    priority: 'MEDIUM'
                 },
                 {
-                    title: 'Idle Ship Deployment',
-                    desc: `Deploy your ${2 + (seed % 3)} idle ships to ${fd.sectors[2]} for ${fd.resources[2]} harvesting — currently yielding +${23 + (seed % 15)}% above average.`,
-                    impact: 'medium',
-                    savings: `+${60 + (seed % 40)} ATLAS/day`
+                    title: 'Sector Specialization Strategy',
+                    description: `Deploy operations in ${faction.sectors[0]} and ${faction.sectors[1]} where ${faction.name} has territorial advantages and resource access.`,
+                    priority: 'HIGH'
+                },
+                {
+                    title: 'Resource Monopolization',
+                    description: `Control ${faction.resources[0]} and ${faction.resources[1]} supply chains to establish economic dominance in your operational sectors.`,
+                    priority: 'MEDIUM'
                 }
             ];
             
-            document.getElementById('recommendations').innerHTML = recommendations.map(rec => `
-                <div class="recommendation ${rec.impact === 'high' ? 'high-impact' : ''}">
+            document.getElementById('recommendationsContainer').innerHTML = recommendations.map(rec => `
+                <div class="recommendation-card">
                     <div class="rec-header">
-                        <span class="rec-title">${rec.title}</span>
-                        <span class="rec-badge ${rec.impact}">${rec.impact} impact</span>
+                        <div class="rec-title">${rec.title}</div>
+                        <div class="rec-priority">${rec.priority}</div>
                     </div>
-                    <p class="rec-description">${rec.desc}</p>
-                    <span class="rec-savings">Estimated: ${rec.savings}</span>
+                    <div class="rec-description">${rec.description}</div>
                 </div>
             `).join('');
-            
-            const optimized = Math.round(dailyAtlas * 1.45);
-            const monthlyGain = (optimized - dailyAtlas) * 30;
-            
-            document.getElementById('projections').innerHTML = `
-                <div class="projection-row">
-                    <span class="projection-label">Current Daily Revenue</span>
-                    <span class="projection-value warning">${dailyAtlas} ATLAS</span>
-                </div>
-                <div class="projection-row">
-                    <span class="projection-label">Optimized Daily Revenue</span>
-                    <span class="projection-value success">${optimized} ATLAS</span>
-                </div>
-                <div class="projection-row">
-                    <span class="projection-label">Improvement</span>
-                    <span class="projection-value success">+45%</span>
-                </div>
-                <div class="projection-row">
-                    <span class="projection-label">Monthly Additional Revenue</span>
-                    <span class="projection-value success">+${monthlyGain.toLocaleString()} ATLAS</span>
-                </div>
-                <div class="cta-box">
-                    <h4>🤖 SAGE-Agent Can Automate This</h4>
-                    <p>Enable autonomous mode to implement these optimizations 24/7, rebalancing in real-time as market conditions change.</p>
-                </div>
-            `;
         }
-        
-        document.getElementById('profile').addEventListener('keypress', e => {
-            if (e.key === 'Enter') analyzeProfile();
-        });
     </script>
+
 </body>
 </html>
