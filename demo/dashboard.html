@@ -640,6 +640,501 @@
             }
         }
 
+        /* ═══════════════════════════════════════════════════════
+           Simulate Autonomous Mode Button & Modal
+        ═══════════════════════════════════════════════════════ */
+
+        .simulate-section {
+            margin-bottom: 3rem;
+        }
+
+        .simulate-btn {
+            background: linear-gradient(135deg, var(--accent) 0%, rgba(0, 212, 170, 0.8) 100%);
+            border: none;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .simulate-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 212, 170, 0.3);
+        }
+
+        .simulate-btn:active {
+            transform: translateY(-2px);
+        }
+
+        .simulate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .simulate-btn:hover::before {
+            left: 100%;
+        }
+
+        .simulate-btn-content {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            color: var(--bg);
+        }
+
+        .simulate-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .simulate-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .simulate-title {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            letter-spacing: -0.02em;
+        }
+
+        .simulate-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .simulate-arrow {
+            color: var(--bg);
+            opacity: 0.8;
+            transition: transform 0.3s ease;
+        }
+
+        .simulate-btn:hover .simulate-arrow {
+            transform: translateX(4px);
+        }
+
+        /* Simulation Modal */
+        .simulation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .simulation-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .simulation-modal {
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .simulation-overlay.active .simulation-modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .simulation-header {
+            padding: 2rem 2rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .simulation-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            letter-spacing: -0.02em;
+        }
+
+        .simulation-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .simulation-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .simulation-close:hover {
+            background: var(--bg-subtle);
+            color: var(--text-primary);
+        }
+
+        .simulation-progress {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--bg-subtle);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), rgba(0, 212, 170, 0.7));
+            width: 0%;
+            transition: width 2s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+            animation: scan 1.5s infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-20px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(20px); opacity: 0; }
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        #progressText {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        #progressStep {
+            color: var(--text-secondary);
+        }
+
+        .simulation-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .simulation-feed {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            max-height: 60vh;
+        }
+
+        .simulation-stats {
+            width: 200px;
+            padding: 2rem 2rem 2rem 0;
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: -0.02em;
+        }
+
+        /* Simulation Steps */
+        .sim-step {
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sim-step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .sim-timestamp {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            background: var(--bg-subtle);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            min-width: 120px;
+        }
+
+        .sim-action {
+            font-family: var(--font-display);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .sim-status {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sim-status.processing::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        .sim-status.complete::before {
+            content: '✓';
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .sim-content {
+            background: var(--bg-subtle);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-left: 1rem;
+        }
+
+        .sim-reasoning {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .sim-result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .sim-result-text {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .sim-result-value {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .sim-verification {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            font-family: monospace;
+            padding: 0.8rem;
+            background: var(--bg);
+            border-radius: 4px;
+            border: 1px dashed var(--border);
+        }
+
+        .sim-verification-label {
+            color: var(--text-secondary);
+            margin-right: 0.5rem;
+        }
+
+        /* Loading animation for processing steps */
+        .processing-dots {
+            display: inline-flex;
+            gap: 2px;
+        }
+
+        .processing-dots span {
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .processing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .processing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        .processing-dots span:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Summary styles */
+        .simulation-summary {
+            background: var(--bg-raised);
+            border: 2px solid var(--accent);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.95);
+            animation: summaryAppear 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes summaryAppear {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .summary-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .summary-stat {
+            text-align: center;
+        }
+
+        .summary-stat-value {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: block;
+        }
+
+        .summary-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .simulation-modal {
+                margin: 1rem;
+                max-height: 95vh;
+            }
+
+            .simulation-content {
+                flex-direction: column;
+            }
+
+            .simulation-stats {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid var(--border);
+                padding: 1.5rem 2rem;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .simulate-btn-content {
+                gap: 1rem;
+            }
+
+            .simulate-title {
+                font-size: 1.2rem;
+            }
+
+            .summary-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         /* ── Grain overlay — very subtle texture ── */
         body::after {
             content: '';
@@ -651,7 +1146,7 @@
             pointer-events: none;
             z-index: 9999;
             opacity: 0.015;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E%3C/svg%3E");
             background-repeat: repeat;
             background-size: 128px 128px;
         }
@@ -872,6 +1367,31 @@
             </div>
         </div>
 
+        <!-- Simulate Autonomous Mode Button -->
+        <div class="simulate-section fade-in">
+            <button class="simulate-btn" id="simulateBtn">
+                <div class="simulate-btn-content">
+                    <div class="simulate-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+                            <path d="M2 17L12 22L22 17"/>
+                            <path d="M2 12L12 17L22 12"/>
+                        </svg>
+                    </div>
+                    <div class="simulate-text">
+                        <span class="simulate-title">Simulate Autonomous Mode</span>
+                        <span class="simulate-subtitle">Watch AI agent make decisions in real-time</span>
+                    </div>
+                </div>
+                <div class="simulate-arrow">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12H19"/>
+                        <path d="L12 5L19 12L12 19"/>
+                    </svg>
+                </div>
+            </button>
+        </div>
+
         <!-- Section Label -->
         <div class="section-label fade-in">Autonomous Decisions</div>
 
@@ -923,6 +1443,61 @@
         </div>
     </main>
 
+    <!-- ═══════════════════════════════════════════════════════
+         Simulation Modal
+    ═══════════════════════════════════════════════════════ -->
+    <div class="simulation-overlay" id="simulationOverlay">
+        <div class="simulation-modal">
+            <div class="simulation-header">
+                <div class="simulation-title-section">
+                    <h2 class="simulation-title">Autonomous Mode Simulation</h2>
+                    <p class="simulation-subtitle">AI-driven fleet management in real-time</p>
+                </div>
+                <button class="simulation-close" id="simulationClose">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18"/>
+                        <path d="M6 6L18 18"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="simulation-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="progressText">Initializing autonomous session...</span>
+                    <span id="progressStep">Step 1 of 9</span>
+                </div>
+            </div>
+
+            <div class="simulation-content">
+                <div class="simulation-feed" id="simulationFeed">
+                    <!-- Simulation steps will be injected here -->
+                </div>
+
+                <div class="simulation-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">ATLAS Earned</span>
+                        <span class="stat-value" id="atlasEarned">0.00</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Resources Mined</span>
+                        <span class="stat-value" id="resourcesMined">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Trades Executed</span>
+                        <span class="stat-value" id="tradesExecuted">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Decisions Made</span>
+                        <span class="stat-value" id="decisionsMade">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ════════════════════════════════════════════════════
          Scripts — minimal, purposeful
     ════════════════════════════════════════════════════ -->
@@ -968,6 +1543,379 @@
                 }
             });
         }, 100);
+
+        // ═══════════════════════════════════════════════════════
+        // Simulation Mode Functionality
+        // ═══════════════════════════════════════════════════════
+
+        // Real ship and location data from SAGE
+        const shipData = {
+            'Armstrong IMP': { miningRate: 183.477, cargo: 524220, type: 'Miner' },
+            'Fimbul Sledbarge': { miningRate: 67.275, cargo: 608838, type: 'Freight' },
+            'Calico Guardian': { miningRate: 81.342, cargo: 242159, type: 'Multi-Role' },
+            'Pearce C9': { miningRate: 90.515, cargo: 227712, type: 'Fighter' },
+            'Ogrika Jod Asteris': { miningRate: 67.887, cargo: 316458, type: 'Transport' }
+        };
+
+        const starbases = [
+            'CSS Central Station', 'ONI-2 Starbase', 'ONI-3 Starbase', 'MUD-4 Starbase', 
+            'MUD-5 Starbase', 'UST-2 Starbase', 'UST-5 Starbase'
+        ];
+
+        const sectors = [
+            'MRZ-12', 'MRZ-8', 'MRZ-16', 'MRZ-31', 'MRZ-25', 'MRZ-6', 'MRZ-21', 
+            'MRZ-11', 'MRZ-13', 'MRZ-32', 'ONI-3', 'MUD-7', 'USTUR-12'
+        ];
+
+        const resources = [
+            { name: 'Diamond', rarity: 'Ultra Rare', basePrice: 2.4, hardness: 0.8 },
+            { name: 'Iron Ore', rarity: 'Common', basePrice: 0.12, hardness: 1.2 },
+            { name: 'Lumanite', rarity: 'Rare', basePrice: 0.85, hardness: 1.0 },
+            { name: 'Carbon', rarity: 'Common', basePrice: 0.08, hardness: 1.1 },
+            { name: 'Hydrogen', rarity: 'Common', basePrice: 0.05, hardness: 0.9 },
+            { name: 'Copper Ore', rarity: 'Common', basePrice: 0.15, hardness: 1.3 },
+            { name: 'Biomass', rarity: 'Common', basePrice: 0.07, hardness: 0.95 }
+        ];
+
+        // Generate realistic z.ink verification hash
+        function generateZkProof() {
+            const chars = '0123456789abcdef';
+            let hash = 'zk_';
+            for (let i = 0; i < 40; i++) {
+                hash += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return hash;
+        }
+
+        // Generate game timestamp (accelerated time)
+        function generateTimestamp(baseTime, offset) {
+            const time = new Date(baseTime + offset * 1000 * 60 * 15); // 15 min per step
+            return time.toISOString().slice(11, 19);
+        }
+
+        // Simulation data generator
+        function generateSimulationSteps() {
+            const baseTime = Date.now();
+            const selectedResource = resources[Math.floor(Math.random() * resources.length)];
+            const selectedShip = Object.keys(shipData)[Math.floor(Math.random() * Object.keys(shipData).length)];
+            const selectedSector = sectors[Math.floor(Math.random() * sectors.length)];
+            const selectedStation = starbases[Math.floor(Math.random() * starbases.length)];
+            const richness = 1 + Math.random() * 0.8; // 1.0 - 1.8x multiplier
+            
+            return [
+                {
+                    timestamp: generateTimestamp(baseTime, 0),
+                    action: "Initializing autonomous session",
+                    reasoning: "Verifying z.ink identity and establishing secure connection to SAGE network. Checking fleet availability and current market conditions.",
+                    result: "Session initialized",
+                    verification: generateZkProof(),
+                    type: 'init'
+                },
+                {
+                    timestamp: generateTimestamp(baseTime, 1),
+                    action: `Scanning sector ${selectedSector} for resources`,
+                    reasoning: `Analyzing Information Density across multiple sectors. ${selectedSector} shows optimal density for ${selectedResource.name} with ${richness.toFixed(1)}x richness multiplier.`,
+                    result: `${selectedResource.name} deposit located`,
+                    quantity: Math.floor(800 + Math.random() * 500),
+                    verification: generateZkProof(),
+                    type: 'scan',
+                    resource: selectedResource
+                },
+                {
+                    timestamp: generateTimestamp(baseTime, 2),
+                    action: `Analyzing fleet composition`,
+                    reasoning: `${selectedShip} available with mining rate ${shipData[selectedShip].miningRate}/hr. Calculating optimal resource extraction parameters based on asteroid hardness.`,
+                    result: `${selectedShip} dispatched`,
+                    ship: selectedShip,
+                    verification: generateZkProof(),
+                    type: 'fleet'
+                },
+                {
+                    timestamp: generateTimestamp(baseTime, 3),
+                    action: `Mining ${selectedResource.name} at ${selectedSector}`,
+                    reasoning: `Automated extraction protocol engaged. Resource hardness: ${selectedResource.hardness}, fleet efficiency: ${(92 + Math.random() * 8).toFixed(1)}%. Optimizing extraction patterns.`,
+                    result: `${Math.floor(shipData[selectedShip].miningRate * richness * 2.5)} ${selectedResource.name} extracted`,
+                    quantity: Math.floor(shipData[selectedShip].miningRate * richness * 2.5),
+                    verification: generateZkProof(),
+                    type: 'mining',
+                    resource: selectedResource
+                },
+                {
+                    timestamp: generateTimestamp(baseTime, 4),
+                    action: "Market price analysis",
+                    reasoning: `Cross-referencing prices across 48 local markets. ${selectedStation} offers premium pricing at ${(selectedResource.basePrice * (1.1 + Math.random() * 0.2)).toFixed(2)} ATLAS per unit, ${((Math.random() * 0.3 + 0.05) * 100).toFixed(1)}% above average.`,
+                    result: "Optimal market identified",
+                    marketPrice: (selectedResource.basePrice * (1.1 + Math.random() * 0.2)).toFixed(2),
+                    station: selectedStation,
+                    verification: generateZkProof(),
+                    type: 'analysis'
+                },
+                {
+                    timestamp: generateTimestamp(baseTime, 5),
+                    action: `Dispatching transport to ${selectedStation}`,
+                    reasoning: `Fimbul Sledbarge (cargo: 608,838) selected for transport mission. Route optimization complete. Estimated transit time: ${Math.floor(8 + Math.random() * 12)} minutes.`,
+                    result: "Transport en route",
+                    eta: Math.floor(8 + Math.random() * 12),
+                    verification: generateZkProof(),
+                    type: 'transport'
+                },
+                {
+                    timestamp: generateTimestamp(baseTime, 6),
+                    action: `Executing trade at ${selectedStation}`,
+                    reasoning: "Market order placed for immediate execution. Optimizing for minimal slippage while maximizing ATLAS returns. Transaction batched for efficiency.",
+                    result: `Trade completed`,
+                    atlasGained: Math.floor(shipData[selectedShip].miningRate * richness * 2.5 * selectedResource.basePrice * (1.1 + Math.random() * 0.2) * 100) / 100,
+                    verification: generateZkProof(),
+                    type: 'trade',
+                    resource: selectedResource,
+                    quantity: Math.floor(shipData[selectedShip].miningRate * richness * 2.5)
+                },
+                {
+                    timestamp: generateTimestamp(baseTime, 7),
+                    action: "Fleet maintenance and resupply",
+                    reasoning: `Fuel consumption analysis shows ${Math.floor(200000 + Math.random() * 50000)} units required for continued operations. Purchasing at optimal rates from local suppliers.`,
+                    result: "Resupply completed",
+                    fuelPurchased: Math.floor(200000 + Math.random() * 50000),
+                    verification: generateZkProof(),
+                    type: 'resupply'
+                },
+                {
+                    timestamp: generateTimestamp(baseTime, 8),
+                    action: "Session summary and verification",
+                    reasoning: "All autonomous decisions logged and verified on z.ink blockchain. Performance metrics analyzed for future optimization.",
+                    result: "Autonomous session complete",
+                    verification: generateZkProof(),
+                    type: 'complete'
+                }
+            ];
+        }
+
+        // Simulation controller
+        class SimulationController {
+            constructor() {
+                this.steps = [];
+                this.currentStep = 0;
+                this.isRunning = false;
+                this.stats = {
+                    atlasEarned: 0,
+                    resourcesMined: 0,
+                    tradesExecuted: 0,
+                    decisionsMade: 0
+                };
+            }
+
+            start() {
+                this.steps = generateSimulationSteps();
+                this.currentStep = 0;
+                this.isRunning = true;
+                this.stats = { atlasEarned: 0, resourcesMined: 0, tradesExecuted: 0, decisionsMade: 0 };
+                
+                // Clear previous simulation
+                document.getElementById('simulationFeed').innerHTML = '';
+                this.updateUI();
+                
+                // Start stepping through simulation
+                this.nextStep();
+            }
+
+            stop() {
+                this.isRunning = false;
+            }
+
+            nextStep() {
+                if (!this.isRunning || this.currentStep >= this.steps.length) {
+                    if (this.currentStep >= this.steps.length) {
+                        this.showSummary();
+                    }
+                    return;
+                }
+
+                const step = this.steps[this.currentStep];
+                this.renderStep(step);
+                this.updateStats(step);
+                this.updateProgress();
+                
+                this.currentStep++;
+                
+                // Continue to next step
+                if (this.currentStep < this.steps.length) {
+                    setTimeout(() => this.nextStep(), 2500); // 2.5 seconds per step
+                }
+            }
+
+            renderStep(step) {
+                const feed = document.getElementById('simulationFeed');
+                const stepElement = document.createElement('div');
+                stepElement.className = 'sim-step';
+                
+                let content = `
+                    <div class="sim-step-header">
+                        <div class="sim-timestamp">${step.timestamp}</div>
+                        <div class="sim-action">${step.action}</div>
+                        <div class="sim-status processing">Processing</div>
+                    </div>
+                    <div class="sim-content">
+                        <div class="sim-reasoning">${step.reasoning}</div>
+                `;
+
+                // Add step-specific result content
+                if (step.type === 'scan') {
+                    content += `
+                        <div class="sim-result">
+                            <span class="sim-result-text">${step.result} (${step.quantity} units estimated)</span>
+                            <span class="sim-result-value">${step.resource.rarity}</span>
+                        </div>
+                    `;
+                } else if (step.type === 'mining') {
+                    content += `
+                        <div class="sim-result">
+                            <span class="sim-result-text">${step.result}</span>
+                            <span class="sim-result-value">+${step.quantity} units</span>
+                        </div>
+                    `;
+                } else if (step.type === 'trade') {
+                    content += `
+                        <div class="sim-result">
+                            <span class="sim-result-text">${step.quantity} ${step.resource.name} → ${step.atlasGained} ATLAS</span>
+                            <span class="sim-result-value">+${step.atlasGained} ATLAS</span>
+                        </div>
+                    `;
+                } else {
+                    content += `
+                        <div class="sim-result">
+                            <span class="sim-result-text">${step.result}</span>
+                        </div>
+                    `;
+                }
+
+                content += `
+                        <div class="sim-verification">
+                            <span class="sim-verification-label">z.ink verification:</span>
+                            <code>${step.verification}</code>
+                        </div>
+                    </div>
+                `;
+
+                stepElement.innerHTML = content;
+                feed.appendChild(stepElement);
+
+                // Mark as complete after animation
+                setTimeout(() => {
+                    const statusElement = stepElement.querySelector('.sim-status');
+                    statusElement.className = 'sim-status complete';
+                    statusElement.textContent = 'Verified';
+                }, 1500);
+
+                // Scroll to bottom
+                setTimeout(() => {
+                    feed.scrollTop = feed.scrollHeight;
+                }, 100);
+            }
+
+            updateStats(step) {
+                if (step.type === 'trade' && step.atlasGained) {
+                    this.stats.atlasEarned += step.atlasGained;
+                    this.stats.tradesExecuted += 1;
+                }
+                if (step.type === 'mining' && step.quantity) {
+                    this.stats.resourcesMined += step.quantity;
+                }
+                this.stats.decisionsMade += 1;
+
+                // Update UI
+                document.getElementById('atlasEarned').textContent = this.stats.atlasEarned.toFixed(2);
+                document.getElementById('resourcesMined').textContent = this.stats.resourcesMined.toLocaleString();
+                document.getElementById('tradesExecuted').textContent = this.stats.tradesExecuted;
+                document.getElementById('decisionsMade').textContent = this.stats.decisionsMade;
+            }
+
+            updateProgress() {
+                const progress = (this.currentStep / this.steps.length) * 100;
+                document.getElementById('progressFill').style.width = progress + '%';
+                document.getElementById('progressText').textContent = this.steps[this.currentStep]?.action || 'Complete';
+                document.getElementById('progressStep').textContent = `Step ${this.currentStep + 1} of ${this.steps.length}`;
+            }
+
+            updateUI() {
+                document.getElementById('progressFill').style.width = '0%';
+                document.getElementById('progressText').textContent = 'Initializing autonomous session...';
+                document.getElementById('progressStep').textContent = 'Step 1 of 9';
+                
+                // Reset stats display
+                document.getElementById('atlasEarned').textContent = '0.00';
+                document.getElementById('resourcesMined').textContent = '0';
+                document.getElementById('tradesExecuted').textContent = '0';
+                document.getElementById('decisionsMade').textContent = '0';
+            }
+
+            showSummary() {
+                const feed = document.getElementById('simulationFeed');
+                const summaryElement = document.createElement('div');
+                summaryElement.className = 'simulation-summary';
+                summaryElement.innerHTML = `
+                    <div class="summary-title">Autonomous Session Complete ✓</div>
+                    <p>AI agent successfully executed ${this.stats.decisionsMade} decisions with full z.ink verification</p>
+                    <div class="summary-stats">
+                        <div class="summary-stat">
+                            <span class="summary-stat-value">${this.stats.atlasEarned.toFixed(2)}</span>
+                            <span class="summary-stat-label">ATLAS Earned</span>
+                        </div>
+                        <div class="summary-stat">
+                            <span class="summary-stat-value">${this.stats.resourcesMined.toLocaleString()}</span>
+                            <span class="summary-stat-label">Resources Mined</span>
+                        </div>
+                        <div class="summary-stat">
+                            <span class="summary-stat-value">${this.stats.tradesExecuted}</span>
+                            <span class="summary-stat-label">Trades Executed</span>
+                        </div>
+                        <div class="summary-stat">
+                            <span class="summary-stat-value">${this.stats.decisionsMade}</span>
+                            <span class="summary-stat-label">Decisions Made</span>
+                        </div>
+                    </div>
+                `;
+                feed.appendChild(summaryElement);
+                
+                // Final progress update
+                document.getElementById('progressFill').style.width = '100%';
+                document.getElementById('progressText').textContent = 'Session complete - all decisions verified on z.ink';
+                document.getElementById('progressStep').textContent = 'Complete';
+                
+                setTimeout(() => {
+                    feed.scrollTop = feed.scrollHeight;
+                }, 100);
+            }
+        }
+
+        // Initialize simulation controller
+        const simulation = new SimulationController();
+
+        // Event listeners
+        document.getElementById('simulateBtn').addEventListener('click', () => {
+            document.getElementById('simulationOverlay').classList.add('active');
+            setTimeout(() => simulation.start(), 500); // Start after modal animation
+        });
+
+        document.getElementById('simulationClose').addEventListener('click', () => {
+            document.getElementById('simulationOverlay').classList.remove('active');
+            simulation.stop();
+        });
+
+        // Close on overlay click
+        document.getElementById('simulationOverlay').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                document.getElementById('simulationOverlay').classList.remove('active');
+                simulation.stop();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('simulationOverlay').classList.remove('active');
+                simulation.stop();
+            }
+        });
     </script>
 
 </body>
