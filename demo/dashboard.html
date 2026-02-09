@@ -1737,9 +1737,11 @@
                 
                 this.currentStep++;
                 
-                // Continue to next step
+                // Continue to next step or show summary
                 if (this.currentStep < this.steps.length) {
                     setTimeout(() => this.nextStep(), 2500); // 2.5 seconds per step
+                } else {
+                    setTimeout(() => this.showSummary(), 2000); // Show summary after last step
                 }
             }
 
@@ -1830,7 +1832,7 @@
             }
 
             updateProgress() {
-                const progress = (this.currentStep / this.steps.length) * 100;
+                const progress = ((this.currentStep + 1) / this.steps.length) * 100;
                 document.getElementById('progressFill').style.width = progress + '%';
                 document.getElementById('progressText').textContent = this.steps[this.currentStep]?.action || 'Complete';
                 document.getElementById('progressStep').textContent = `Step ${this.currentStep + 1} of ${this.steps.length}`;
