@@ -1,6 +1,8 @@
-# SAGE-Agent 🏹
+# S.T.R.I.K.E. 🏹
 
-**Verifiable AI for the onchain economy**
+**SAGE Tactical Resource Intelligence & Kinetic Engine**
+
+*Verifiable AI for the onchain economy*
 
 > The first autonomous AI agent built for 24/7 gaming operations on production blockchain infrastructure
 
@@ -13,7 +15,7 @@
 
 ## Overview
 
-SAGE-Agent is an autonomous AI system that manages **Star Atlas SAGE** game fleets, making strategic decisions 24/7 while you focus on high-level strategy. Built on **z.ink (AtlasNet)** - production-grade blockchain infrastructure powering a $10M+ gaming economy.
+**S.T.R.I.K.E.** (SAGE Tactical Resource Intelligence & Kinetic Engine) is an autonomous AI system that manages **Star Atlas SAGE** game fleets, making strategic decisions 24/7 while you focus on high-level strategy. Built on **z.ink (AtlasNet)** - production-grade blockchain infrastructure powering a $10M+ gaming economy.
 
 ### What Makes It Different
 
@@ -26,7 +28,7 @@ SAGE-Agent is an autonomous AI system that manages **Star Atlas SAGE** game flee
 
 ## Live Demo
 
-Explore the complete SAGE-Agent system:
+Explore the complete S.T.R.I.K.E. system:
 
 | Component | Description | Link |
 |-----------|-------------|------|
@@ -42,7 +44,7 @@ Explore the complete SAGE-Agent system:
 
 ```mermaid
 graph TB
-    User[👤 Player] --> Dashboard[🎮 SAGE-Agent Dashboard]
+    User[👤 Player] --> Dashboard[🎮 S.T.R.I.K.E. Dashboard]
     Dashboard --> Agent[🤖 Autonomous Agent]
     
     Agent --> Galaxy[🌌 Galaxy API<br/>Fleet & NFT Data]
@@ -126,7 +128,7 @@ graph TB
 
 **Colosseum Agent Hackathon** | February 2026
 
-SAGE-Agent demonstrates the future of autonomous gaming economies where AI agents operate alongside human players in real economic systems. Our submission showcases:
+**S.T.R.I.K.E.** demonstrates the future of autonomous gaming economies where AI agents operate alongside human players in real economic systems. Our submission showcases:
 
 - **Production Infrastructure**: Built on z.ink, serving actual Star Atlas players
 - **Real Value Creation**: Agents optimize actual fleet operations worth real money  
@@ -134,7 +136,7 @@ SAGE-Agent demonstrates the future of autonomous gaming economies where AI agent
 - **Gaming-Native Design**: Purpose-built for complex gaming operations, not just trading
 
 ### Key Innovation
-While other agent projects focus on DeFi trading demos, SAGE-Agent tackles the complexity of autonomous gaming operations in a production environment with real economic stakes.
+While other agent projects focus on DeFi trading demos, S.T.R.I.K.E. tackles the complexity of autonomous gaming operations in a production environment with real economic stakes.
 
 ---
 
