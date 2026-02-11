@@ -5,861 +5,318 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>S.T.R.I.K.E. — SAGE Tactical Resource Intelligence & Kinetic Engine</title>
     <meta name="description" content="AI-powered autonomous fleet operations for Star Atlas: Golden Era. Verifiable decisions. Onchain execution.">
-    
-    <!-- Favicon -->
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-    <link rel="icon" href="assets/favicon.svg" type="image/x-icon">
-
-    <!-- Fonts: Satoshi (body) + General Sans (display) from Fontshare -->
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=general-sans@500,600,700&display=swap" rel="stylesheet">
-
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
     <style>
-        /* ═══════════════════════════════════════════════════════
-           Design System — Refined Luxury Minimal
-           Palette: Near-monochrome + single accent (#00d4aa)
-           Inspired by: Linear, Reflect, early Superhuman
-        ═══════════════════════════════════════════════════════ */
-
         :root {
-            --bg:         #0c0c0c;
-            --bg-raised:  #111111;
-            --bg-subtle:  #161616;
-            --border:     rgba(255, 255, 255, 0.06);
-            --border-hover: rgba(255, 255, 255, 0.12);
-
-            --text-primary:   #fafafa;
+            --bg: #0c0c0c;
+            --bg-raised: #111111;
+            --bg-subtle: #161616;
+            --border: rgba(255,255,255,0.06);
+            --border-hover: rgba(255,255,255,0.12);
+            --text-primary: #fafafa;
             --text-secondary: #a0a0a0;
-            --text-tertiary:  #606060;
-
-            --accent:     #00d4aa;
-            --accent-dim: rgba(0, 212, 170, 0.12);
-
-            --radius:     10px;
-            --radius-lg:  16px;
-
-            --font-body:    'Satoshi', -apple-system, system-ui, sans-serif;
-            --font-display: 'General Sans', 'Satoshi', -apple-system, system-ui, sans-serif;
-        }
-
-        /* ── Reset ── */
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-        html {
-            font-size: 16px;
-            scroll-behavior: smooth;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        body {
-            font-family: var(--font-body);
-            background: var(--bg);
-            color: var(--text-primary);
-            line-height: 1.7;
-            font-weight: 400;
-            overflow-x: hidden;
-        }
-
-        a { color: inherit; text-decoration: none; }
-        img { max-width: 100%; display: block; }
-
-        /* ── Selection ── */
-        ::selection {
-            background: var(--accent-dim);
-            color: var(--accent);
-        }
-
-        /* ── Scroll-triggered fade-in ── */
-        .reveal {
-            opacity: 0;
-            transform: translateY(24px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ── Hero stagger on load ── */
-        .hero-stagger { opacity: 0; transform: translateY(20px); }
-        .loaded .hero-stagger {
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .loaded .hero-stagger:nth-child(1) { transition-delay: 0.1s; }
-        .loaded .hero-stagger:nth-child(2) { transition-delay: 0.25s; }
-        .loaded .hero-stagger:nth-child(3) { transition-delay: 0.4s; }
-        .loaded .hero-stagger:nth-child(4) { transition-delay: 0.55s; }
-        .loaded .hero-stagger:nth-child(5) { transition-delay: 0.7s; }
-
-        /* ═══════════════════════════════════════════════════════
-           Navigation
-        ═══════════════════════════════════════════════════════ */
-
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 1.25rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(12, 12, 12, 0.8);
-            backdrop-filter: blur(20px) saturate(1.2);
-            -webkit-backdrop-filter: blur(20px) saturate(1.2);
-            border-bottom: 1px solid var(--border);
-            transition: background 0.3s ease;
-        }
-
-        .nav-logo {
-            font-family: var(--font-display);
-            font-size: 1.1rem;
-            font-weight: 600;
-            letter-spacing: 0.12em;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-
-        .nav-logo .dot {
-            width: 6px;
-            height: 6px;
-            background: var(--accent);
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 2.5rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            letter-spacing: 0.02em;
-            transition: color 0.25s ease;
-        }
-
-        .nav-links a:hover { color: var(--text-primary); }
-
-        .nav-cta {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--bg) !important;
-            background: var(--text-primary);
-            padding: 0.55rem 1.4rem;
-            border-radius: 6px;
-            letter-spacing: 0.02em;
-            transition: opacity 0.25s ease, transform 0.25s ease;
-        }
-
-        .nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
-
-        /* ═══════════════════════════════════════════════════════
-           Hero
-        ═══════════════════════════════════════════════════════ */
-
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 10rem 2rem 8rem;
-            position: relative;
-        }
-
-        /* Subtle radial glow behind hero — barely there */
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(0, 212, 170, 0.04) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .hero > * { position: relative; z-index: 1; }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.4rem 1rem;
-            border: 1px solid rgba(0, 212, 170, 0.25);
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--accent);
-            letter-spacing: 0.04em;
-            margin-bottom: 2.5rem;
-            background: var(--accent-dim);
-        }
-
-        .hero-badge .pulse {
-            width: 6px;
-            height: 6px;
-            background: var(--accent);
-            border-radius: 50%;
-            animation: pulse 2.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        .hero h1 {
-            font-family: var(--font-display);
-            font-size: clamp(2.8rem, 6vw, 5rem);
-            font-weight: 600;
-            line-height: 1.08;
-            letter-spacing: -0.03em;
-            max-width: 800px;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
-        }
-
-        .hero h1 em {
-            font-style: normal;
-            color: var(--accent);
-        }
-
-        /* Tactical acronym styling */
-        .tactical-acronym {
-            letter-spacing: 0.15em;
-            font-weight: 700;
-        }
-
-        .hero-sub {
-            font-size: clamp(1rem, 1.8vw, 1.2rem);
-            color: var(--text-secondary);
-            max-width: 520px;
-            line-height: 1.7;
-            margin-bottom: 3rem;
-            font-weight: 400;
-        }
-
-        .hero-actions {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-        }
-
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.85rem 2rem;
-            background: var(--accent);
-            color: #0c0c0c;
-            font-family: var(--font-body);
-            font-size: 0.9rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            letter-spacing: 0.01em;
-            transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .btn-primary:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 30px rgba(0, 212, 170, 0.15);
-        }
-
-        .btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.85rem 2rem;
-            background: transparent;
-            color: var(--text-secondary);
-            font-family: var(--font-body);
-            font-size: 0.9rem;
-            font-weight: 500;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            cursor: pointer;
-            letter-spacing: 0.01em;
-            transition: color 0.25s ease, border-color 0.25s ease;
-        }
-
-        .btn-secondary:hover {
-            color: var(--text-primary);
-            border-color: var(--border-hover);
-        }
-
-        /* ═══════════════════════════════════════════════════════
-           Section Shared
-        ═══════════════════════════════════════════════════════ */
-
-        section {
-            padding: 8rem 2rem;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .section-label {
-            font-family: var(--font-display);
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-        }
-
-        .section-title {
-            font-family: var(--font-display);
-            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-            font-weight: 600;
-            line-height: 1.15;
-            letter-spacing: -0.025em;
-            max-width: 600px;
-            margin-bottom: 1.2rem;
-        }
-
-        .section-desc {
-            font-size: 1.05rem;
-            color: var(--text-secondary);
-            max-width: 520px;
-            line-height: 1.75;
-        }
-
-        /* ═══════════════════════════════════════════════════════
-           Divider — thin horizontal rule
-        ═══════════════════════════════════════════════════════ */
-
-        .divider {
-            border: none;
-            height: 1px;
-            background: var(--border);
-            margin: 0 2rem;
-        }
-
-        /* ═══════════════════════════════════════════════════════
-           Features
-        ═══════════════════════════════════════════════════════ */
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1px;
-            margin-top: 4rem;
-            background: var(--border);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-        }
-
-        .feature-card {
-            background: var(--bg);
-            padding: 2.5rem;
-            transition: background 0.35s ease;
-        }
-
-        .feature-card:hover {
-            background: var(--bg-raised);
-        }
-
-        .feature-icon {
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            color: var(--text-tertiary);
-            transition: color 0.4s ease, transform 0.4s ease;
-        }
-
-        .feature-card:hover .feature-icon {
-            color: var(--accent);
-            transform: scale(1.1);
-        }
-
-        .feature-card h3 {
-            font-family: var(--font-display);
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.6rem;
-            letter-spacing: -0.01em;
-            transition: color 0.3s ease;
-        }
-
-        .feature-card:hover h3 {
-            color: var(--accent);
-        }
-
-        .feature-card p {
-            font-size: 0.88rem;
-            color: var(--text-secondary);
-            line-height: 1.65;
-        }
-
-        /* ═══════════════════════════════════════════════════════
-           How It Works — numbered steps
-        ═══════════════════════════════════════════════════════ */
-
-        .steps {
-            margin-top: 4rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-        }
-
-        .step {
-            display: grid;
-            grid-template-columns: 80px 1fr;
-            gap: 2rem;
-            padding: 3.5rem 0;
-            border-bottom: 1px solid var(--border);
-            align-items: start;
-        }
-
-        .step:first-child { border-top: 1px solid var(--border); }
-
-        .step-number {
-            font-family: var(--font-display);
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            color: var(--accent);
-            padding-top: 0.1rem;
-        }
-
-        .step h3 {
-            font-family: var(--font-display);
-            font-size: 1.15rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.01em;
-        }
-
-        .step:hover h3 {
-            color: var(--accent);
-            transition: color 0.3s ease;
-        }
-
-        .step p {
-            font-size: 0.92rem;
-            color: var(--text-secondary);
-            line-height: 1.7;
-            max-width: 500px;
-        }
-
-        /* ═══════════════════════════════════════════════════════
-           Stats bar
-        ═══════════════════════════════════════════════════════ */
-
-        .stats-section {
-            background: var(--bg-subtle);
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-        }
-
-        .stat {
-            text-align: center;
-            padding: 1rem 0;
-        }
-
-        .stat-value {
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 4vw, 2.8rem);
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            color: var(--accent);
-            line-height: 1.2;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-tertiary);
-            margin-top: 0.4rem;
-            letter-spacing: 0.03em;
-        }
-
-        /* ═══════════════════════════════════════════════════════
-           Trust / Social Proof
-        ═══════════════════════════════════════════════════════ */
-
-        .trust-grid {
-            margin-top: 3rem;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
-
-        .trust-card {
-            background: var(--bg-raised);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 2rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .trust-card:hover {
-            border-color: rgba(0, 212, 170, 0.2);
-        }
-
-        .trust-card blockquote {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            line-height: 1.7;
-            font-style: normal;
-            margin-bottom: 1.5rem;
-        }
-
-        .trust-author {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .trust-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--bg-subtle);
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: var(--text-tertiary);
-        }
-
-        .trust-name {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .trust-role {
-            font-size: 0.75rem;
-            color: var(--text-tertiary);
-        }
-
-        /* ═══════════════════════════════════════════════════════
-           CTA Section
-        ═══════════════════════════════════════════════════════ */
-
-        .cta-section {
-            text-align: center;
-            padding: 10rem 2rem;
-            position: relative;
-        }
-
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 2px;
-            background: var(--accent);
-            border-radius: 1px;
-        }
-
-        .cta-section .section-title {
-            max-width: 500px;
-            margin: 0 auto 1rem;
-        }
-
-        .cta-section .section-desc {
-            max-width: 420px;
-            margin: 0 auto 2.5rem;
-        }
-
-        /* ═══════════════════════════════════════════════════════
-           Footer
-        ═══════════════════════════════════════════════════════ */
-
-        footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 4rem 2rem 3rem;
-            margin-top: 6rem;
-            background: var(--bg-subtle);
-        }
-
-        .footer-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 4rem;
-            align-items: start;
-        }
-
-        .footer-logo {
-            font-family: var(--font-display);
-            font-size: 1.1rem;
-            font-weight: 600;
-            letter-spacing: 0.12em;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-
-        .footer-desc {
-            font-size: 0.85rem;
-            color: var(--text-tertiary);
-            margin: 0;
-        }
-
-        .footer-nav {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 3rem;
-        }
-
-        .footer-section h4 {
-            font-family: var(--font-display);
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-            letter-spacing: 0.02em;
-        }
-
-        .footer-section ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .footer-section li {
-            margin-bottom: 0.6rem;
-        }
-
-        .footer-section a {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            transition: color 0.25s ease;
-            letter-spacing: 0.01em;
-        }
-
-        .footer-section a:hover {
-            color: var(--accent);
-        }
-
-        .footer-section a[target="_blank"]::after {
-            content: '↗';
-            margin-left: 0.4rem;
-            font-size: 0.75rem;
-            opacity: 0.6;
-        }
-
-        /* ═══════════════════════════════════════════════════════
-           Responsive
-        ═══════════════════════════════════════════════════════ */
-
-        @media (max-width: 768px) {
-            nav { padding: 1rem 1.5rem; }
-            .nav-links { display: none; }
-
-            .hero { padding: 8rem 1.5rem 5rem; }
-
-            section { padding: 5rem 1.5rem; }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .trust-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .step {
-                grid-template-columns: 60px 1fr;
-                gap: 1rem;
-            }
-
-            .hero-actions {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .btn-primary, .btn-secondary {
-                width: 100%;
-                justify-content: center;
-            }
-
-            footer {
-                padding: 3rem 1.5rem 2rem;
-                margin-top: 4rem;
-            }
-            
-            .footer-inner {
-                grid-template-columns: 1fr;
-                gap: 2.5rem;
-                text-align: center;
-            }
-            
-            .footer-nav {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 2rem;
-            }
-
-            .cta-section { padding: 6rem 1.5rem; }
-        }
-
-        @media (max-width: 480px) {
-            .footer-nav {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-        }
-
-        /* ── Grain overlay — very subtle texture ── */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0.015;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            background-repeat: repeat;
-            background-size: 128px 128px;
-        }
+            --text-tertiary: #606060;
+            --accent: #00d4aa;
+            --accent-dim: rgba(0,212,170,0.08);
+            --accent-glow: rgba(0,212,170,0.15);
+            --font-body: 'Satoshi',-apple-system,system-ui,sans-serif;
+            --font-display: 'General Sans','Satoshi',-apple-system,system-ui,sans-serif;
+        }
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{font-size:16px;scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+        body{font-family:var(--font-body);background:var(--bg);color:var(--text-primary);line-height:1.7;overflow-x:hidden}
+        a{color:inherit;text-decoration:none}
+        img{max-width:100%;display:block}
+        ::selection{background:var(--accent-dim);color:var(--accent)}
+
+        /* ── Star field canvas ── */
+        #starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+        /* ── Grain overlay ── */
+        body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;opacity:0.018;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:128px 128px}
+
+        /* ── Scroll reveals ── */
+        .reveal{opacity:0;transform:translateY(40px);transition:opacity 0.9s cubic-bezier(0.16,1,0.3,1),transform 0.9s cubic-bezier(0.16,1,0.3,1)}
+        .reveal.visible{opacity:1;transform:translateY(0)}
+        .reveal-delay-1{transition-delay:0.1s}
+        .reveal-delay-2{transition-delay:0.2s}
+        .reveal-delay-3{transition-delay:0.3s}
+        .reveal-delay-4{transition-delay:0.4s}
+
+        /* ── Hero stagger ── */
+        .hero-stagger{opacity:0;transform:translateY(30px)}
+        .loaded .hero-stagger{opacity:1;transform:translateY(0);transition:opacity 1s cubic-bezier(0.16,1,0.3,1),transform 1s cubic-bezier(0.16,1,0.3,1)}
+        .loaded .hero-stagger:nth-child(1){transition-delay:0.15s}
+        .loaded .hero-stagger:nth-child(2){transition-delay:0.3s}
+        .loaded .hero-stagger:nth-child(3){transition-delay:0.45s}
+        .loaded .hero-stagger:nth-child(4){transition-delay:0.6s}
+        .loaded .hero-stagger:nth-child(5){transition-delay:0.75s}
+        .loaded .hero-stagger:nth-child(6){transition-delay:0.9s}
+
+        /* ═══ Navigation ═══ */
+        nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:100;padding:0.8rem 1.6rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;background:rgba(12,12,12,0.6);backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);border:1px solid rgba(255,255,255,0.06);border-radius:100px;max-width:900px;width:calc(100% - 2rem);transition:all 0.4s cubic-bezier(0.16,1,0.3,1)}
+        nav.scrolled{background:rgba(12,12,12,0.85);border-color:rgba(255,255,255,0.1);box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+        .nav-logo{font-family:var(--font-display);font-size:0.95rem;font-weight:600;letter-spacing:0.12em;color:var(--text-primary);display:flex;align-items:center;gap:0.5rem;white-space:nowrap}
+        .nav-logo .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 8px var(--accent)}
+        .nav-links{display:flex;align-items:center;gap:1.8rem;list-style:none}
+        .nav-links a{font-size:0.8rem;font-weight:500;color:var(--text-secondary);letter-spacing:0.02em;transition:color 0.3s;position:relative}
+        .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--accent);transition:width 0.3s}
+        .nav-links a:hover{color:var(--text-primary)}
+        .nav-links a:hover::after{width:100%}
+        .nav-cta{font-size:0.78rem!important;font-weight:600!important;color:var(--bg)!important;background:var(--text-primary);padding:0.45rem 1.2rem;border-radius:100px;transition:all 0.3s!important}
+        .nav-cta::after{display:none!important}
+        .nav-cta:hover{opacity:0.85;transform:translateY(-1px);box-shadow:0 4px 16px rgba(255,255,255,0.15)}
+
+        /* ═══ Hero ═══ */
+        .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:10rem 2rem 6rem;position:relative;z-index:1}
+
+        /* Aurora mesh behind hero */
+        .hero-aurora{position:absolute;top:-10%;left:50%;transform:translateX(-50%);width:140%;height:120%;pointer-events:none;z-index:0;overflow:hidden}
+        .hero-aurora .orb{position:absolute;border-radius:50%;filter:blur(120px);animation:orbFloat 20s ease-in-out infinite}
+        .hero-aurora .orb-1{width:600px;height:600px;background:rgba(0,212,170,0.07);top:10%;left:20%;animation-delay:0s}
+        .hero-aurora .orb-2{width:400px;height:400px;background:rgba(0,212,170,0.04);top:30%;right:15%;animation-delay:-7s}
+        .hero-aurora .orb-3{width:300px;height:300px;background:rgba(0,180,255,0.03);bottom:10%;left:40%;animation-delay:-14s}
+        @keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-40px) scale(1.05)}66%{transform:translate(-20px,30px) scale(0.95)}}
+
+        .hero>*{position:relative;z-index:1}
+
+        .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;padding:0.45rem 1.2rem;border:1px solid rgba(0,212,170,0.2);border-radius:100px;font-size:0.75rem;font-weight:500;color:var(--accent);letter-spacing:0.04em;margin-bottom:3rem;background:rgba(0,212,170,0.06);backdrop-filter:blur(10px)}
+        .hero-badge .pulse{width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 6px var(--accent);animation:pulse 2.5s ease-in-out infinite}
+        @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 6px var(--accent)}50%{opacity:0.3;box-shadow:0 0 2px var(--accent)}}
+
+        .hero h1{font-family:var(--font-display);font-size:clamp(3rem,7vw,5.5rem);font-weight:700;line-height:1.05;letter-spacing:-0.04em;max-width:900px;margin-bottom:1.5rem}
+        .hero h1 em{font-style:normal;color:var(--accent);text-shadow:0 0 60px rgba(0,212,170,0.3)}
+        .tactical-acronym{letter-spacing:0.08em;font-weight:700}
+
+        .hero-sub{font-size:clamp(1rem,1.8vw,1.15rem);color:var(--text-secondary);max-width:540px;line-height:1.7;margin-bottom:2rem;font-weight:400}
+        .hero-subtitle{font-size:0.9rem;color:var(--text-tertiary);letter-spacing:0.08em;font-weight:500;text-transform:uppercase;margin-bottom:1rem}
+
+        .hero-actions{display:flex;align-items:center;gap:1rem;margin-top:1rem}
+
+        .btn-primary{display:inline-flex;align-items:center;gap:0.5rem;padding:0.9rem 2.2rem;background:var(--accent);color:#0c0c0c;font-family:var(--font-body);font-size:0.9rem;font-weight:600;border:none;border-radius:100px;cursor:pointer;letter-spacing:0.01em;transition:all 0.3s;position:relative;overflow:hidden}
+        .btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,0.2) 50%,transparent 60%);transform:translateX(-100%);transition:transform 0.6s}
+        .btn-primary:hover::before{transform:translateX(100%)}
+        .btn-primary:hover{box-shadow:0 8px 40px rgba(0,212,170,0.25);transform:translateY(-2px)}
+
+        .btn-secondary{display:inline-flex;align-items:center;gap:0.5rem;padding:0.9rem 2.2rem;background:rgba(255,255,255,0.03);color:var(--text-secondary);font-family:var(--font-body);font-size:0.9rem;font-weight:500;border:1px solid var(--border);border-radius:100px;cursor:pointer;transition:all 0.3s}
+        .btn-secondary:hover{color:var(--text-primary);border-color:var(--border-hover);background:rgba(255,255,255,0.06);transform:translateY(-2px)}
+
+        /* ── Fleet Visualization (Hero) ── */
+        .fleet-viz{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:800px;opacity:0.12;pointer-events:none;z-index:0}
+
+        /* ═══ Section Shared ═══ */
+        section{padding:8rem 2rem;position:relative;z-index:1}
+        .container{max-width:1100px;margin:0 auto}
+        .section-label{font-family:var(--font-display);font-size:0.7rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;display:flex;align-items:center;gap:0.75rem}
+        .section-label::before{content:'';width:24px;height:1px;background:var(--accent)}
+        .section-title{font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.1;letter-spacing:-0.03em;max-width:650px;margin-bottom:1.2rem}
+        .section-desc{font-size:1.05rem;color:var(--text-secondary);max-width:520px;line-height:1.75}
+
+        /* ═══ Demo Video ═══ */
+        .demo-section{padding:4rem 2rem 8rem}
+        .demo-video-container{position:relative;max-width:960px;margin:0 auto;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);box-shadow:0 40px 100px rgba(0,0,0,0.5),0 0 80px rgba(0,212,170,0.05);transition:all 0.5s cubic-bezier(0.16,1,0.3,1)}
+        .demo-video-container:hover{transform:translateY(-4px);box-shadow:0 50px 120px rgba(0,0,0,0.6),0 0 100px rgba(0,212,170,0.08);border-color:rgba(255,255,255,0.12)}
+        .demo-video-container video{display:block;width:100%}
+        .demo-video-bar{display:flex;align-items:center;gap:6px;padding:12px 16px;background:rgba(22,22,22,0.9);border-bottom:1px solid var(--border)}
+        .demo-video-bar span{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.1)}
+        .demo-video-bar span:first-child{background:#ff5f57}
+        .demo-video-bar span:nth-child(2){background:#febc2e}
+        .demo-video-bar span:nth-child(3){background:#28c840}
+
+        /* ═══ Stats Bento Grid ═══ */
+        .stats-section{padding:6rem 2rem;position:relative;z-index:1}
+        .stats-bento{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:20px;overflow:hidden;border:1px solid var(--border)}
+        .stat-card{background:var(--bg);padding:3rem 2rem;text-align:center;position:relative;overflow:hidden;transition:all 0.4s}
+        .stat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(0,212,170,0.06) 0%,transparent 70%);opacity:0;transition:opacity 0.4s}
+        .stat-card:hover::before{opacity:1}
+        .stat-card:hover{background:var(--bg-raised)}
+        .stat-value{font-family:var(--font-display);font-size:clamp(2.2rem,4vw,3.2rem);font-weight:700;letter-spacing:-0.03em;color:var(--accent);line-height:1.1;margin-bottom:0.5rem}
+        .stat-label{font-size:0.78rem;color:var(--text-tertiary);letter-spacing:0.06em;text-transform:uppercase;font-weight:500}
+
+        /* ═══ Features ═══ */
+        .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:4rem;background:var(--border);border:1px solid var(--border);border-radius:20px;overflow:hidden}
+        .feature-card{background:var(--bg);padding:3rem 2.5rem;transition:all 0.4s;position:relative;overflow:hidden}
+        .feature-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity 0.4s}
+        .feature-card:hover{background:var(--bg-raised)}
+        .feature-card:hover::after{opacity:0.5}
+        .feature-icon{width:44px;height:44px;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;color:var(--text-tertiary);border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,0.02);transition:all 0.4s}
+        .feature-card:hover .feature-icon{color:var(--accent);border-color:rgba(0,212,170,0.3);background:rgba(0,212,170,0.06);transform:scale(1.05);box-shadow:0 0 20px rgba(0,212,170,0.1)}
+        .feature-card h3{font-family:var(--font-display);font-size:1.05rem;font-weight:600;margin-bottom:0.6rem;letter-spacing:-0.01em;transition:color 0.3s}
+        .feature-card:hover h3{color:var(--accent)}
+        .feature-card p{font-size:0.88rem;color:var(--text-secondary);line-height:1.65}
+
+        /* ═══ How It Works ═══ */
+        .steps{margin-top:4rem;display:flex;flex-direction:column}
+        .step{display:grid;grid-template-columns:80px 1fr;gap:2.5rem;padding:3.5rem 0;border-bottom:1px solid var(--border);align-items:start;transition:all 0.3s}
+        .step:first-child{border-top:1px solid var(--border)}
+        .step:hover{padding-left:1rem}
+        .step-number{font-family:var(--font-display);font-size:3rem;font-weight:700;color:rgba(0,212,170,0.15);line-height:1;transition:color 0.3s}
+        .step:hover .step-number{color:rgba(0,212,170,0.4)}
+        .step h3{font-family:var(--font-display);font-size:1.2rem;font-weight:600;margin-bottom:0.5rem;letter-spacing:-0.01em;transition:color 0.3s}
+        .step:hover h3{color:var(--accent)}
+        .step p{font-size:0.92rem;color:var(--text-secondary);line-height:1.7;max-width:500px}
+
+        /* ═══ Terminal Animation ═══ */
+        .terminal-section{padding:6rem 2rem;position:relative;z-index:1}
+        .terminal{max-width:700px;margin:3rem auto 0;background:#0a0a0a;border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.4)}
+        .terminal-bar{display:flex;align-items:center;gap:6px;padding:14px 18px;background:rgba(22,22,22,0.8);border-bottom:1px solid var(--border)}
+        .terminal-bar span{width:10px;height:10px;border-radius:50%}
+        .terminal-bar span:nth-child(1){background:#ff5f57}
+        .terminal-bar span:nth-child(2){background:#febc2e}
+        .terminal-bar span:nth-child(3){background:#28c840}
+        .terminal-bar .terminal-title{margin-left:auto;font-size:0.7rem;color:var(--text-tertiary);font-family:monospace;letter-spacing:0.05em}
+        .terminal-body{padding:1.5rem;font-family:'SF Mono','Fira Code','JetBrains Mono',monospace;font-size:0.82rem;line-height:1.8;color:var(--text-secondary);min-height:240px}
+        .terminal-line{opacity:0;transform:translateX(-10px);animation:terminalIn 0.4s forwards}
+        .terminal-line .prompt{color:var(--accent)}
+        .terminal-line .cmd{color:var(--text-primary)}
+        .terminal-line .output{color:var(--text-tertiary)}
+        .terminal-line .success{color:var(--accent)}
+        .terminal-line .dim{color:var(--text-tertiary)}
+        @keyframes terminalIn{to{opacity:1;transform:translateX(0)}}
+        .terminal-cursor{display:inline-block;width:8px;height:15px;background:var(--accent);animation:blink 1s step-end infinite;vertical-align:text-bottom;margin-left:2px}
+        @keyframes blink{50%{opacity:0}}
+
+        /* ═══ Trust / Pillars ═══ */
+        .trust-grid{margin-top:3rem;display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:20px;overflow:hidden}
+        .trust-card{background:var(--bg);padding:2.5rem;transition:all 0.4s;position:relative;overflow:hidden}
+        .trust-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(0,212,170,0.04) 0%,transparent 50%);opacity:0;transition:opacity 0.5s;pointer-events:none}
+        .trust-card:hover::before{opacity:1}
+        .trust-card:hover{background:var(--bg-raised)}
+        .trust-card blockquote{font-size:0.95rem;color:var(--text-secondary);line-height:1.7;font-style:normal;margin-bottom:1.5rem}
+        .trust-author{display:flex;align-items:center;gap:0.75rem}
+        .trust-avatar{width:36px;height:36px;border-radius:10px;background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.15);display:flex;align-items:center;justify-content:center;color:var(--accent);transition:all 0.3s}
+        .trust-card:hover .trust-avatar{background:rgba(0,212,170,0.1);border-color:rgba(0,212,170,0.3);box-shadow:0 0 16px rgba(0,212,170,0.1)}
+        .trust-name{font-size:0.88rem;font-weight:600;color:var(--text-primary)}
+        .trust-role{font-size:0.75rem;color:var(--text-tertiary)}
+
+        /* ═══ CTA ═══ */
+        .cta-section{text-align:center;padding:12rem 2rem 10rem;position:relative;overflow:hidden;z-index:1}
+        .cta-section .cta-glow{position:absolute;bottom:-200px;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(0,212,170,0.08) 0%,transparent 70%);pointer-events:none}
+        .cta-section .section-title{max-width:600px;margin:0 auto 1rem;font-size:clamp(2.2rem,5vw,3.5rem)}
+        .cta-section .section-desc{max-width:440px;margin:0 auto 3rem}
+
+        /* ═══ Dividers ═══ */
+        .divider{border:none;height:1px;background:var(--border);margin:0 2rem}
+
+        /* ═══ Footer ═══ */
+        footer{border-top:1px solid var(--border);padding:5rem 2rem 3rem;position:relative;z-index:1;background:var(--bg-subtle)}
+        .footer-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 2fr;gap:4rem;align-items:start}
+        .footer-logo{font-family:var(--font-display);font-size:0.95rem;font-weight:600;letter-spacing:0.12em;color:var(--text-primary);display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem}
+        .footer-desc{font-size:0.85rem;color:var(--text-tertiary);margin:0}
+        .footer-nav{display:grid;grid-template-columns:repeat(2,1fr);gap:3rem}
+        .footer-section h4{font-family:var(--font-display);font-size:0.85rem;font-weight:600;color:var(--text-primary);margin-bottom:1rem;letter-spacing:0.02em}
+        .footer-section ul{list-style:none}
+        .footer-section li{margin-bottom:0.5rem}
+        .footer-section a{font-size:0.85rem;color:var(--text-secondary);transition:color 0.3s}
+        .footer-section a:hover{color:var(--accent)}
+        .footer-section a[target="_blank"]::after{content:'↗';margin-left:0.3rem;font-size:0.7rem;opacity:0.5}
+        .footer-bottom{max-width:1100px;margin:3rem auto 0;padding-top:2rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:0.78rem;color:var(--text-tertiary)}
+
+        /* ═══ Responsive ═══ */
+        @media(max-width:768px){
+            nav{top:8px;padding:0.65rem 1.2rem;border-radius:16px}
+            .nav-links{display:none}
+            .hero{padding:8rem 1.5rem 5rem}
+            .hero h1{font-size:clamp(2.4rem,8vw,3.5rem)}
+            section{padding:5rem 1.5rem}
+            .features-grid,.trust-grid{grid-template-columns:1fr}
+            .stats-bento{grid-template-columns:repeat(2,1fr)}
+            .step{grid-template-columns:60px 1fr;gap:1rem}
+            .step:hover{padding-left:0}
+            .hero-actions{flex-direction:column;width:100%}
+            .btn-primary,.btn-secondary{width:100%;justify-content:center}
+            .fleet-viz{width:400px;height:400px}
+            .footer-inner{grid-template-columns:1fr;gap:2.5rem;text-align:center}
+            .footer-nav{grid-template-columns:repeat(2,1fr);gap:2rem}
+            .cta-section{padding:8rem 1.5rem 6rem}
+            .footer-bottom{flex-direction:column;gap:0.5rem;text-align:center}
+            .terminal{margin:2rem auto 0}
+        }
+        @media(max-width:480px){
+            .stats-bento{grid-template-columns:1fr 1fr}
+            .footer-nav{grid-template-columns:1fr;gap:1.5rem}
+        }
+
+        /* ── Smooth parallax helper ── */
+        .parallax-slow{will-change:transform}
     </style>
 </head>
 <body>
+    <canvas id="starfield"></canvas>
 
-    <!-- ════════════════════════════════════════════════════
-         Navigation
-    ════════════════════════════════════════════════════ -->
+    <!-- ═══ Navigation ═══ -->
     <nav>
         <div class="nav-logo">
-            <svg width="24" height="24" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
-              <defs>
-                <filter id="navNeonGlow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
-                  <feMerge> 
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              <polygon points="16,8 24,12 24,20 16,24 8,20 8,12" 
-                       fill="none" 
-                       stroke="#00d4aa" 
-                       stroke-width="2" 
-                       filter="url(#navNeonGlow)"/>
-              <circle cx="16" cy="16" r="2" fill="#00d4aa" filter="url(#navNeonGlow)"/>
-              <line x1="12" y1="16" x2="9" y2="16" stroke="#00d4aa" stroke-width="1" opacity="0.8"/>
-              <line x1="20" y1="16" x2="23" y2="16" stroke="#00d4aa" stroke-width="1" opacity="0.8"/>
-              <line x1="16" y1="12" x2="16" y2="9" stroke="#00d4aa" stroke-width="1" opacity="0.8"/>
-              <line x1="16" y1="20" x2="16" y2="23" stroke="#00d4aa" stroke-width="1" opacity="0.8"/>
-            </svg>
+            <span class="dot"></span>
             <span class="tactical-acronym">S.T.R.I.K.E.</span>
         </div>
         <ul class="nav-links">
             <li><a href="#features">Features</a></li>
-            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#how-it-works">Process</a></li>
             <li><a href="demo/dashboard.html">Dashboard</a></li>
             <li><a href="demo/analyzer.html">Analyzer</a></li>
             <li><a href="docs/manifesto.html">Manifesto</a></li>
             <li><a href="docs/roadmap.html">Roadmap</a></li>
             <li><a href="https://github.com/artemis-sage-agent/sage-agent-demo" target="_blank" rel="noopener">GitHub</a></li>
-            <li><a href="#" class="nav-cta">Launch App</a></li>
+            <li><a href="demo/dashboard.html" class="nav-cta">Launch App</a></li>
         </ul>
     </nav>
 
-    <!-- ════════════════════════════════════════════════════
-         Hero
-    ════════════════════════════════════════════════════ -->
+    <!-- ═══ Hero ═══ -->
     <section class="hero" id="hero">
+        <div class="hero-aurora">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+        </div>
+
+        <!-- Fleet route visualization -->
+        <svg class="fleet-viz" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00d4aa" stop-opacity="0"/><stop offset="50%" stop-color="#00d4aa" stop-opacity="1"/><stop offset="100%" stop-color="#00d4aa" stop-opacity="0"/></linearGradient>
+            </defs>
+            <!-- Orbital rings -->
+            <circle cx="400" cy="400" r="120" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+            <circle cx="400" cy="400" r="220" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="1"/>
+            <circle cx="400" cy="400" r="320" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="1"/>
+            <!-- Nodes -->
+            <circle cx="400" cy="400" r="4" fill="#00d4aa" filter="url(#glow)"/>
+            <circle cx="280" cy="300" r="3" fill="#00d4aa" opacity="0.7" filter="url(#glow)"/>
+            <circle cx="520" cy="310" r="3" fill="#00d4aa" opacity="0.7" filter="url(#glow)"/>
+            <circle cx="350" cy="520" r="2.5" fill="#00d4aa" opacity="0.6" filter="url(#glow)"/>
+            <circle cx="500" cy="500" r="2.5" fill="#00d4aa" opacity="0.6" filter="url(#glow)"/>
+            <circle cx="200" cy="420" r="2" fill="#00d4aa" opacity="0.5" filter="url(#glow)"/>
+            <circle cx="600" cy="380" r="2" fill="#00d4aa" opacity="0.5" filter="url(#glow)"/>
+            <circle cx="440" cy="200" r="2" fill="#00d4aa" opacity="0.5" filter="url(#glow)"/>
+            <circle cx="320" cy="180" r="1.5" fill="#00d4aa" opacity="0.4" filter="url(#glow)"/>
+            <circle cx="580" cy="520" r="1.5" fill="#00d4aa" opacity="0.4" filter="url(#glow)"/>
+            <!-- Routes with animated ships -->
+            <path id="route1" d="M280,300 Q340,250 400,400 Q460,350 520,310" fill="none" stroke="rgba(0,212,170,0.1)" stroke-width="1"/>
+            <path id="route2" d="M400,400 Q420,460 500,500 Q540,510 580,520" fill="none" stroke="rgba(0,212,170,0.1)" stroke-width="1"/>
+            <path id="route3" d="M200,420 Q280,380 400,400 Q460,200 440,200" fill="none" stroke="rgba(0,212,170,0.08)" stroke-width="1"/>
+            <path id="route4" d="M320,180 Q360,240 400,400 Q380,460 350,520" fill="none" stroke="rgba(0,212,170,0.08)" stroke-width="1"/>
+            <path id="route5" d="M600,380 Q550,340 520,310" fill="none" stroke="rgba(0,212,170,0.08)" stroke-width="1"/>
+            <!-- Animated ships -->
+            <circle r="2.5" fill="#00d4aa" filter="url(#glow)"><animateMotion dur="8s" repeatCount="indefinite"><mpath href="#route1"/></animateMotion></circle>
+            <circle r="2" fill="#00d4aa" filter="url(#glow)"><animateMotion dur="10s" repeatCount="indefinite"><mpath href="#route2"/></animateMotion></circle>
+            <circle r="2" fill="#00d4aa" opacity="0.7" filter="url(#glow)"><animateMotion dur="12s" repeatCount="indefinite"><mpath href="#route3"/></animateMotion></circle>
+            <circle r="1.5" fill="#00d4aa" opacity="0.6" filter="url(#glow)"><animateMotion dur="9s" repeatCount="indefinite"><mpath href="#route4"/></animateMotion></circle>
+            <circle r="1.5" fill="#00d4aa" opacity="0.6" filter="url(#glow)"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#route5"/></animateMotion></circle>
+        </svg>
+
         <div class="hero-badge hero-stagger">
             <span class="pulse"></span>
             Built for the Solana Agent Hackathon
         </div>
 
-        <div class="hero-logo hero-stagger" style="margin-bottom: 2rem;">
-            <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="heroScanLines" patternUnits="userSpaceOnUse" width="2" height="4">
-                  <rect width="2" height="2" fill="#00d4aa" opacity="0.05"/>
-                  <rect y="2" width="2" height="2" fill="transparent"/>
-                </pattern>
-                <filter id="heroNeonGlow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                  <feMerge> 
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-                <radialGradient id="heroCyberpunkGrad" cx="50%" cy="30%" r="70%">
-                  <stop offset="0%" style="stop-color:#00d4aa;stop-opacity:0.15"/>
-                  <stop offset="100%" style="stop-color:#00d4aa;stop-opacity:0"/>
-                </radialGradient>
-              </defs>
-              <circle cx="60" cy="60" r="50" fill="url(#heroCyberpunkGrad)"/>
-              <circle cx="60" cy="60" r="45" fill="none" stroke="#fafafa" stroke-width="0.5" opacity="0.3"/>
-              <path d="M25 35 L35 25 L85 25 L95 35 L95 85 L85 95 L35 95 L25 85 Z" fill="none" stroke="#fafafa" stroke-width="1.5" opacity="0.6"/>
-              <polygon points="60,30 75,40 75,60 60,70 45,60 45,40" fill="none" stroke="#00d4aa" stroke-width="2" filter="url(#heroNeonGlow)"/>
-              <line x1="40" y1="50" x2="50" y2="50" stroke="#00d4aa" stroke-width="1.5" opacity="0.8"/>
-              <line x1="70" y1="50" x2="80" y2="50" stroke="#00d4aa" stroke-width="1.5" opacity="0.8"/>
-              <line x1="50" y1="40" x2="50" y2="30" stroke="#00d4aa" stroke-width="1.5" opacity="0.8"/>
-              <line x1="50" y1="80" x2="50" y2="90" stroke="#00d4aa" stroke-width="1.5" opacity="0.8"/>
-              <line x1="70" y1="70" x2="80" y2="80" stroke="#00d4aa" stroke-width="1.5" opacity="0.8"/>
-              <line x1="70" y1="70" x2="80" y2="60" stroke="#00d4aa" stroke-width="1.5" opacity="0.8"/>
-              <circle cx="60" cy="50" r="3" fill="#00d4aa" filter="url(#heroNeonGlow)"/>
-              <rect width="120" height="120" fill="url(#heroScanLines)" opacity="0.4"/>
-              <path d="M20 30 L20 20 L30 20" fill="none" stroke="#00d4aa" stroke-width="1" opacity="0.6"/>
-              <path d="M90 20 L100 20 L100 30" fill="none" stroke="#00d4aa" stroke-width="1" opacity="0.6"/>
-              <path d="M100 90 L100 100 L90 100" fill="none" stroke="#00d4aa" stroke-width="1" opacity="0.6"/>
-              <path d="M30 100 L20 100 L20 90" fill="none" stroke="#00d4aa" stroke-width="1" opacity="0.6"/>
-              <circle cx="75" cy="25" r="1" fill="#fafafa" opacity="0.5"/>
-              <circle cx="25" cy="75" r="1" fill="#fafafa" opacity="0.5"/>
-              <circle cx="95" cy="60" r="1" fill="#fafafa" opacity="0.5"/>
-            </svg>
-        </div>
-
         <h1 class="hero-stagger">
-            <em class="tactical-acronym">S.T.R.I.K.E.</em><br>Verifiable AI for the<br>onchain economy
+            <em class="tactical-acronym">S.T.R.I.K.E.</em><br>
+            Verifiable AI for the<br>onchain economy
         </h1>
 
-        <p class="hero-sub hero-stagger" style="font-size: 1rem; margin-bottom: 1rem; color: var(--text-secondary); font-weight: 500;">
-            SAGE Tactical Resource Intelligence & Kinetic Engine
-        </p>
+        <p class="hero-subtitle hero-stagger">SAGE Tactical Resource Intelligence & Kinetic Engine</p>
 
         <p class="hero-sub hero-stagger">
             Autonomous fleet operations for Star Atlas — mining, trading, and cross-sector arbitrage — with cryptographically verifiable AI decisions and ZK proof transparency.
@@ -877,129 +334,96 @@
         </div>
     </section>
 
-    <!-- ════════════════════════════════════════════════════
-         Demo Video
-    ════════════════════════════════════════════════════ -->
-    <section id="demo" style="padding: 6rem 2rem;">
+    <!-- ═══ Demo Video ═══ -->
+    <section class="demo-section" id="demo">
         <div class="container">
-            <div class="reveal" style="text-align: center;">
-                <p class="section-label">DEMO</p>
-                <h2 class="section-title" style="margin: 0 auto 3rem;">See it in action</h2>
-                <div class="demo-video-wrapper">
-                    <video 
-                        controls 
-                        poster="assets/demo-video-final.mp4"
-                        preload="metadata"
-                        style="
-                            width: 100%; 
-                            max-width: 900px; 
-                            border-radius: 16px; 
-                            border: 1px solid rgba(255,255,255,0.06); 
-                            box-shadow: 0 20px 60px rgba(0, 212, 170, 0.08), 0 8px 30px rgba(0,0,0,0.4);
-                            transition: transform 0.3s ease, box-shadow 0.3s ease;
-                        "
-                        onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 25px 70px rgba(0, 212, 170, 0.12), 0 12px 40px rgba(0,0,0,0.5)';"
-                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 20px 60px rgba(0, 212, 170, 0.08), 0 8px 30px rgba(0,0,0,0.4)';"
-                    >
-                        <source src="assets/demo-video-final.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+            <div class="reveal" style="text-align:center;">
+                <p class="section-label" style="justify-content:center">Demo</p>
+                <h2 class="section-title" style="margin:0 auto 3rem;max-width:500px">See it in action</h2>
+            </div>
+            <div class="demo-video-container reveal reveal-delay-1">
+                <div class="demo-video-bar">
+                    <span></span><span></span><span></span>
                 </div>
+                <video controls preload="metadata">
+                    <source src="assets/demo-video-final.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
         </div>
     </section>
 
-    <hr class="divider">
-
-    <!-- ════════════════════════════════════════════════════
-         Stats
-    ════════════════════════════════════════════════════ -->
+    <!-- ═══ Stats Bento ═══ -->
     <section class="stats-section">
         <div class="container">
-            <div class="stats-grid reveal">
-                <div class="stat">
-                    <div class="stat-value">382</div>
+            <div class="stats-bento reveal">
+                <div class="stat-card">
+                    <div class="stat-value" data-target="382" data-suffix="">0</div>
                     <div class="stat-label">Ships Indexed</div>
                 </div>
-                <div class="stat">
-                    <div class="stat-value">3</div>
+                <div class="stat-card">
+                    <div class="stat-value" data-target="3" data-suffix="">0</div>
                     <div class="stat-label">Faction Strategies</div>
                 </div>
-                <div class="stat">
-                    <div class="stat-value">24/7</div>
+                <div class="stat-card">
+                    <div class="stat-value" data-static="24/7">24/7</div>
                     <div class="stat-label">Autonomous Ops</div>
                 </div>
-                <div class="stat">
-                    <div class="stat-value">ZK</div>
+                <div class="stat-card">
+                    <div class="stat-value" data-static="ZK">ZK</div>
                     <div class="stat-label">Verifiable Decisions</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <hr class="divider">
-
-    <!-- ════════════════════════════════════════════════════
-         Features
-    ════════════════════════════════════════════════════ -->
+    <!-- ═══ Features ═══ -->
     <section id="features">
         <div class="container">
             <div class="reveal">
                 <p class="section-label">Capabilities</p>
-                <h2 class="section-title">Everything your fleet needs. Nothing it doesn't.</h2>
+                <h2 class="section-title">Everything your fleet needs.<br>Nothing it doesn't.</h2>
                 <p class="section-desc">Six core modules working in concert — each decision verifiable, every action onchain.</p>
             </div>
-
-            <div class="features-grid reveal">
+            <div class="features-grid reveal reveal-delay-1">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <!-- Hexagon — coordination/network -->
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg>
                     </div>
                     <h3>Fleet Orchestration</h3>
                     <p>Coordinate mining, transport, and combat fleets across sectors with optimal resource allocation.</p>
                 </div>
-
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <!-- Diamond — value/market -->
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,1 23,12 12,23 1,12"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,1 23,12 12,23 1,12"/></svg>
                     </div>
                     <h3>Market Intelligence</h3>
                     <p>Real-time price feeds and cross-sector arbitrage detection for optimal trading windows.</p>
                 </div>
-
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <!-- Shield/triangle — security/verification -->
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 22,8 22,16 12,22 2,16 2,8"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 22,8 22,16 12,22 2,16 2,8"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
                     </div>
                     <h3>ZK Verification</h3>
                     <p>Every autonomous decision cryptographically provable via z.ink's zero-knowledge identity layer.</p>
                 </div>
-
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <!-- Triangle trio — factions -->
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,3 20,19 4,19"/><line x1="12" y1="11" x2="8" y2="19"/><line x1="12" y1="11" x2="16" y2="19"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,3 20,19 4,19"/><line x1="12" y1="11" x2="8" y2="19"/><line x1="12" y1="11" x2="16" y2="19"/></svg>
                     </div>
                     <h3>Faction Strategy</h3>
                     <p>MUD, ONI, or USTUR — optimized strategies tailored to your faction's unique resources and sectors.</p>
                 </div>
-
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <!-- Circle — continuous/cycle -->
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
                     </div>
                     <h3>Autonomous Cycles</h3>
                     <p>Set parameters once. SAGE runs continuous optimization loops — 24/7 fleet management while you sleep.</p>
                 </div>
-
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <!-- Square bracket — code/open -->
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="8,4 4,4 4,20 8,20"/><polyline points="16,4 20,4 20,20 16,20"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="8,4 4,4 4,20 8,20"/><polyline points="16,4 20,4 20,20 16,20"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
                     </div>
                     <h3>Open Protocol</h3>
                     <p>Fully open-source. Extend with custom strategies via the SAGE SDK and TypeScript bindings.</p>
@@ -1008,18 +432,31 @@
         </div>
     </section>
 
-    <hr class="divider">
+    <!-- ═══ Terminal ═══ -->
+    <section class="terminal-section">
+        <div class="container">
+            <div class="reveal" style="text-align:center">
+                <p class="section-label" style="justify-content:center">Live Operations</p>
+                <h2 class="section-title" style="margin:0 auto 0.5rem;max-width:500px">Fleet commands in real-time</h2>
+                <p class="section-desc" style="margin:0 auto">Watch SAGE coordinate autonomous operations across the Star Atlas galaxy.</p>
+            </div>
+            <div class="terminal reveal reveal-delay-1" id="terminal">
+                <div class="terminal-bar">
+                    <span></span><span></span><span></span>
+                    <span class="terminal-title">sage@strike ~ fleet</span>
+                </div>
+                <div class="terminal-body" id="terminal-body"></div>
+            </div>
+        </div>
+    </section>
 
-    <!-- ════════════════════════════════════════════════════
-         How It Works
-    ════════════════════════════════════════════════════ -->
+    <!-- ═══ How It Works ═══ -->
     <section id="how-it-works">
         <div class="container">
             <div class="reveal">
                 <p class="section-label">Process</p>
                 <h2 class="section-title">Three steps to autonomous operations</h2>
             </div>
-
             <div class="steps">
                 <div class="step reveal">
                     <div class="step-number">01</div>
@@ -1046,11 +483,7 @@
         </div>
     </section>
 
-    <hr class="divider">
-
-    <!-- ════════════════════════════════════════════════════
-         Trust / Social Proof
-    ════════════════════════════════════════════════════ -->
+    <!-- ═══ Trust / Technology ═══ -->
     <section id="trust">
         <div class="container">
             <div class="reveal">
@@ -1058,17 +491,12 @@
                 <h2 class="section-title">Four pillars of verifiable autonomy</h2>
                 <p class="section-desc">Each layer solves a distinct problem. Together they create something new — AI agents you can actually trust.</p>
             </div>
-
-            <div class="trust-grid">
-                <div class="trust-card reveal">
+            <div class="trust-grid reveal reveal-delay-1">
+                <div class="trust-card">
                     <blockquote>The SVM gave us speed. z.ink adds identity. Together they make autonomous agents not just fast — but trustworthy.</blockquote>
                     <div class="trust-author">
-                        <div class="trust-avatar" style="color: var(--accent);">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/>
-                                <circle cx="12" cy="12" r="3"/>
-                                <path d="m12 1 0 6 m0 4 0 6"/>
-                            </svg>
+                        <div class="trust-avatar">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/><circle cx="12" cy="12" r="3"/></svg>
                         </div>
                         <div>
                             <div class="trust-name">Verifiable Identity</div>
@@ -1076,15 +504,11 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="trust-card reveal">
+                <div class="trust-card">
                     <blockquote>Every program battle-tested onchain for years. Starframe outperforms Anchor in every benchmark. This isn't theoretical — it's production infrastructure.</blockquote>
                     <div class="trust-author">
-                        <div class="trust-avatar" style="color: var(--accent);">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <polygon points="13,2 3,14 12,22 22,10"/>
-                                <path d="m12 6 3 3-3 3"/>
-                            </svg>
+                        <div class="trust-avatar">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13,2 3,14 12,22 22,10"/><path d="m12 6 3 3-3 3"/></svg>
                         </div>
                         <div>
                             <div class="trust-name">SVM-Native Performance</div>
@@ -1092,14 +516,11 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="trust-card reveal">
+                <div class="trust-card">
                     <blockquote>382 ships. Three factions. A real economy with real stakes. SAGE isn't a toy — it's the most complex onchain game economy ever built.</blockquote>
                     <div class="trust-author">
-                        <div class="trust-avatar" style="color: var(--accent);">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <polygon points="12,2 15.09,8.26 22,9 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9 8.91,8.26"/>
-                            </svg>
+                        <div class="trust-avatar">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 15.09,8.26 22,9 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9 8.91,8.26"/></svg>
                         </div>
                         <div>
                             <div class="trust-name">Real Economy</div>
@@ -1107,15 +528,11 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="trust-card reveal">
+                <div class="trust-card">
                     <blockquote>Open source from day one. Every line auditable, every strategy reproducible. Trust through transparency, not authority.</blockquote>
                     <div class="trust-author">
-                        <div class="trust-avatar" style="color: var(--accent);">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
+                        <div class="trust-avatar">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </div>
                         <div>
                             <div class="trust-name">Radical Transparency</div>
@@ -1127,18 +544,15 @@
         </div>
     </section>
 
-    <hr class="divider">
-
-    <!-- ════════════════════════════════════════════════════
-         CTA
-    ════════════════════════════════════════════════════ -->
+    <!-- ═══ CTA ═══ -->
     <section class="cta-section">
+        <div class="cta-glow"></div>
         <div class="container">
             <div class="reveal">
-                <p class="section-label">Get Started</p>
+                <p class="section-label" style="justify-content:center">Get Started</p>
                 <h2 class="section-title">Your fleet is waiting</h2>
                 <p class="section-desc">Explore the live dashboard, analyze your fleet composition, or read the technical manifesto.</p>
-                <div class="hero-actions" style="justify-content: center; margin-top: 2.5rem;">
+                <div class="hero-actions" style="justify-content:center;margin-top:2.5rem">
                     <a href="demo/dashboard.html" class="btn-primary">
                         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M13 7l5 5-5 5M6 12h12"/></svg>
                         Open Dashboard
@@ -1149,20 +563,12 @@
         </div>
     </section>
 
-    <!-- ════════════════════════════════════════════════════
-         Footer - Consistent Navigation Sitemap
-    ════════════════════════════════════════════════════ -->
+    <!-- ═══ Footer ═══ -->
     <footer>
         <div class="footer-inner">
-            <div class="footer-left">
+            <div>
                 <div class="footer-logo">
-                    <svg width="20" height="20" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
-                      <polygon points="16,8 24,12 24,20 16,24 8,20 8,12" 
-                               fill="none" 
-                               stroke="#00d4aa" 
-                               stroke-width="2"/>
-                      <circle cx="16" cy="16" r="2" fill="#00d4aa"/>
-                    </svg>
+                    <span style="color:var(--accent)">◆</span>
                     <span class="tactical-acronym">S.T.R.I.K.E.</span>
                 </div>
                 <p class="footer-desc">Built for Colosseum Agent Hackathon</p>
@@ -1186,43 +592,125 @@
                 </div>
             </div>
         </div>
+        <div class="footer-bottom">
+            <span>© 2025 S.T.R.I.K.E. — All rights reserved</span>
+            <span>Powered by Solana · Star Atlas · z.ink</span>
+        </div>
     </footer>
 
-    <!-- ════════════════════════════════════════════════════
-         Scripts — minimal, purposeful
-    ════════════════════════════════════════════════════ -->
     <script>
-        // Hero stagger — trigger on load
-        window.addEventListener('load', () => {
-            document.body.classList.add('loaded');
-        });
+    // ── Star Field ──
+    (function(){
+        const c=document.getElementById('starfield'),ctx=c.getContext('2d');
+        let w,h,stars=[];
+        function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight}
+        function init(){stars=[];for(let i=0;i<200;i++)stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.2+0.2,a:Math.random()*0.5+0.1,s:Math.random()*0.15+0.02,d:Math.random()*Math.PI*2})}
+        function draw(){ctx.clearRect(0,0,w,h);for(const s of stars){s.a+=Math.sin(Date.now()*0.001+s.d)*0.002;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(250,250,250,${Math.max(0.03,Math.min(0.4,s.a))})`;ctx.fill()}requestAnimationFrame(draw)}
+        resize();init();draw();
+        window.addEventListener('resize',()=>{resize();init()});
+    })();
 
-        // Scroll-triggered reveals — IntersectionObserver
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
+    // ── Hero load ──
+    window.addEventListener('load',()=>document.body.classList.add('loaded'));
+
+    // ── Nav scroll ──
+    let lastScroll=0;
+    window.addEventListener('scroll',()=>{
+        const s=window.scrollY;
+        document.querySelector('nav').classList.toggle('scrolled',s>80);
+        lastScroll=s;
+    },{passive:true});
+
+    // ── Scroll reveals ──
+    const obs=new IntersectionObserver(entries=>{
+        entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});
+    },{threshold:0.1,rootMargin:'0px 0px -60px 0px'});
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+    // ── Animated counters ──
+    const counterObs=new IntersectionObserver(entries=>{
+        entries.forEach(e=>{
+            if(!e.isIntersecting)return;
+            e.target.querySelectorAll('.stat-value[data-target]').forEach(el=>{
+                const target=parseInt(el.dataset.target);
+                const suffix=el.dataset.suffix||'';
+                const duration=1500;
+                const start=performance.now();
+                function tick(now){
+                    const p=Math.min((now-start)/duration,1);
+                    const eased=1-Math.pow(1-p,3);
+                    el.textContent=Math.round(target*eased)+suffix;
+                    if(p<1)requestAnimationFrame(tick);
                 }
+                requestAnimationFrame(tick);
             });
-        }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -60px 0px'
+            counterObs.unobserve(e.target);
         });
+    },{threshold:0.3});
+    document.querySelectorAll('.stats-bento').forEach(el=>counterObs.observe(el));
 
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        // Smooth scroll for nav links
-        document.querySelectorAll('a[href^="#"]').forEach(link => {
-            link.addEventListener('click', (e) => {
-                const target = document.querySelector(link.getAttribute('href'));
-                if (target) {
-                    e.preventDefault();
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // ── Terminal animation ──
+    const terminalLines=[
+        {type:'cmd',text:'sage fleet scan --sector MUD-2'},
+        {type:'output',text:'Scanning sector MUD-2... 61 ships detected'},
+        {type:'success',text:'✓ Fleet roster synchronized from blockchain'},
+        {type:'cmd',text:'sage strategy optimize --risk moderate'},
+        {type:'output',text:'Analyzing market conditions across 3 sectors...'},
+        {type:'success',text:'✓ Optimal route: MUD-2 → ONI-7 (arbitrage: +12.4%)'},
+        {type:'cmd',text:'sage deploy --verify --zk-proof'},
+        {type:'output',text:'Generating ZK proof for decision tree...'},
+        {type:'success',text:'✓ Proof verified on-chain: tx 7xK2...mF9q'},
+        {type:'output',text:'Fleet deployed. 24/7 autonomous operations active.'},
+    ];
+    const termObs=new IntersectionObserver(entries=>{
+        entries.forEach(e=>{
+            if(!e.isIntersecting)return;
+            const body=document.getElementById('terminal-body');
+            body.innerHTML='';
+            let i=0;
+            function addLine(){
+                if(i>=terminalLines.length){
+                    // Add blinking cursor at end
+                    const cursor=document.createElement('div');
+                    cursor.className='terminal-line';
+                    cursor.style.animationDelay=`0s`;
+                    cursor.innerHTML=`<span class="prompt">$ </span><span class="terminal-cursor"></span>`;
+                    body.appendChild(cursor);
+                    return;
                 }
-            });
+                const line=terminalLines[i];
+                const div=document.createElement('div');
+                div.className='terminal-line';
+                div.style.animationDelay=`${i*0.08}s`;
+                if(line.type==='cmd')div.innerHTML=`<span class="prompt">$ </span><span class="cmd">${line.text}</span>`;
+                else if(line.type==='success')div.innerHTML=`<span class="success">${line.text}</span>`;
+                else div.innerHTML=`<span class="output">${line.text}</span>`;
+                body.appendChild(div);
+                i++;
+                setTimeout(addLine,line.type==='cmd'?600:350);
+            }
+            addLine();
+            termObs.unobserve(e.target);
         });
+    },{threshold:0.3});
+    document.querySelectorAll('#terminal').forEach(el=>termObs.observe(el));
+
+    // ── Smooth scroll ──
+    document.querySelectorAll('a[href^="#"]').forEach(link=>{
+        link.addEventListener('click',e=>{
+            const t=document.querySelector(link.getAttribute('href'));
+            if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}
+        });
+    });
+
+    // ── Parallax on scroll ──
+    window.addEventListener('scroll',()=>{
+        const s=window.scrollY;
+        const viz=document.querySelector('.fleet-viz');
+        if(viz)viz.style.transform=`translate(-50%,-50%) rotate(${s*0.02}deg)`;
+        const aurora=document.querySelector('.hero-aurora');
+        if(aurora)aurora.style.transform=`translateX(-50%) translateY(${s*0.1}px)`;
+    },{passive:true});
     </script>
-
 </body>
 </html>
