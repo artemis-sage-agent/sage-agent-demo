@@ -1679,6 +1679,93 @@
         }
 
         // Main wallet analysis function
+        // ============================================================
+        // SAGE Program Constants for Fleet Lookup
+        // ============================================================
+        const SAGE_PROGRAM_ID = 'SAGE2HAwep459SNq61LHvjxPk4pLPEJLoMETef7f7EE';
+        const PLAYER_PROFILE_PROGRAM_ID = 'pprofELXjL5Kck7Jn5hCpwAL82DpTkSYBENzahVtbc9';
+        const SAGE_GAME_ID = 'GAMEzqJehF8yAnKiTARUuhZMvLvkZVAsCVri5vSfemLr';
+        const IRONFORGE_RPC = 'https://rpc.ironforge.network/mainnet?apiKey=01JKXP5WV0M8A3F2S5EYSK6WXZ';
+
+        // Precomputed Anchor account discriminators (first 8 bytes of sha256("account:<Name>"))
+        // Profile: sha256("account:Profile") -> b865a5bc5f3f7fbc
+        // Fleet:   sha256("account:Fleet")   -> 6dcffb306a0288a3
+        const DISCRIMINATOR_PROFILE = [0xb8, 0x65, 0xa5, 0xbc, 0x5f, 0x3f, 0x7f, 0xbc];
+        const DISCRIMINATOR_FLEET = [0x6d, 0xcf, 0xfb, 0x30, 0x6a, 0x02, 0x88, 0xa3];
+
+        // Base58 encoding for discriminators (for RPC memcmp filters)
+        function bytesToBase58(bytes) {
+            const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+            let num = BigInt(0);
+            for (const b of bytes) num = num * 256n + BigInt(b);
+            let encoded = '';
+            while (num > 0n) {
+                encoded = ALPHABET[Number(num % 58n)] + encoded;
+                num = num / 58n;
+            }
+            for (const b of bytes) {
+                if (b === 0) encoded = '1' + encoded;
+                else break;
+            }
+            return encoded || '1';
+        }
+
+        const DISC_PROFILE_B58 = bytesToBase58(DISCRIMINATOR_PROFILE);
+        const DISC_FLEET_B58 = bytesToBase58(DISCRIMINATOR_FLEET);
+
+        // Helper: make RPC call to Ironforge
+        async function sageRpc(method, params) {
+            const response = await fetch(IRONFORGE_RPC, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params })
+            });
+            const data = await response.json();
+            if (data.error) throw new Error(`RPC ${method}: ${data.error.message}`);
+            return data.result;
+        }
+
+        // Helper: decode base64 account data to Uint8Array
+        function decodeAccountData(base64Data) {
+            const binary = atob(base64Data);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            return bytes;
+        }
+
+        // Helper: read a 32-byte public key from buffer at offset, return base58
+        function readPubkey(buf, offset) {
+            const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+            const bytes = buf.slice(offset, offset + 32);
+            let num = BigInt(0);
+            for (const b of bytes) num = num * 256n + BigInt(b);
+            let encoded = '';
+            while (num > 0n) {
+                encoded = ALPHABET[Number(num % 58n)] + encoded;
+                num = num / 58n;
+            }
+            for (const b of bytes) {
+                if (b === 0) encoded = '1' + encoded;
+                else break;
+            }
+            return encoded || '1';
+        }
+
+        // Helper: read u32 little-endian
+        function readU32LE(buf, offset) {
+            return buf[offset] | (buf[offset+1] << 8) | (buf[offset+2] << 16) | (buf[offset+3] << 24);
+        }
+
+        // Helper: read u64 little-endian (as Number, safe for ship counts)
+        function readU64LE(buf, offset) {
+            const lo = buf[offset] | (buf[offset+1] << 8) | (buf[offset+2] << 16) | (buf[offset+3] << 24);
+            const hi = buf[offset+4] | (buf[offset+5] << 8) | (buf[offset+6] << 16) | (buf[offset+7] << 24);
+            return (hi >>> 0) * 0x100000000 + (lo >>> 0);
+        }
+
+        // ============================================================
+        // Main Wallet Analysis - Real SAGE Fleet Lookup
+        // ============================================================
         async function analyzeWallet() {
             const walletInput = document.getElementById('walletInput');
             const address = walletInput.value.trim();
@@ -1693,42 +1780,242 @@
             // Show loading state
             const analyzeBtn = document.getElementById('analyzeFleetBtn');
             const originalText = analyzeBtn.innerHTML;
-            analyzeBtn.innerHTML = '<div class="loading-spinner" style="width:16px;height:16px;margin:0;border-width:1px;"></div> Analyzing...';
+            analyzeBtn.innerHTML = '<div class="loading-spinner" style="width:16px;height:16px;margin:0;border-width:1px;"></div> Scanning SAGE fleets...';
             analyzeBtn.disabled = true;
             
             try {
-                // Fetch player's token accounts
-                const tokenAccounts = await fetchPlayerTokens(address);
+                // Try real SAGE fleet lookup first
+                const fleetResult = await fetchSageFleets(address);
                 
-                if (!tokenAccounts || tokenAccounts.length === 0) {
-                    showNoFleetFound();
-                    return;
-                }
-                
-                // Cross-reference with Galaxy API data
-                const starAtlasAssets = await crossReferenceAssets(tokenAccounts);
-                
-                if (starAtlasAssets.length === 0) {
-                    showNoFleetFound();
-                } else {
-                    // Enhance with real stats
-                    const enhancedFleet = enhanceFleetWithStats(starAtlasAssets);
+                if (fleetResult && fleetResult.ships.length > 0) {
+                    // Enhance with SAGE stats
+                    const enhancedFleet = enhanceFleetWithStats(fleetResult.ships);
                     
                     playerFleet = {
                         walletAddress: address,
-                        ships: enhancedFleet
+                        ships: enhancedFleet,
+                        fleetDetails: fleetResult.fleetDetails,
+                        profileAddress: fleetResult.profileAddress,
+                        source: 'sage'
                     };
                     showPlayerFleet();
                     showPersonalizedRecommendations();
+                } else {
+                    // Fallback: try token account scanning for unstaked ships
+                    console.log('No SAGE fleets found, falling back to token scan...');
+                    analyzeBtn.innerHTML = '<div class="loading-spinner" style="width:16px;height:16px;margin:0;border-width:1px;"></div> Checking wallet tokens...';
+                    
+                    const tokenAccounts = await fetchPlayerTokens(address);
+                    if (!tokenAccounts || tokenAccounts.length === 0) {
+                        showNoFleetFound();
+                        return;
+                    }
+                    
+                    const starAtlasAssets = await crossReferenceAssets(tokenAccounts);
+                    if (starAtlasAssets.length === 0) {
+                        showNoFleetFound();
+                    } else {
+                        const enhancedFleet = enhanceFleetWithStats(starAtlasAssets);
+                        playerFleet = {
+                            walletAddress: address,
+                            ships: enhancedFleet,
+                            source: 'token'
+                        };
+                        showPlayerFleet();
+                        showPersonalizedRecommendations();
+                    }
                 }
                 
             } catch (error) {
                 console.error('Error analyzing wallet:', error);
                 showWalletError('Failed to analyze wallet. Please try again or use the demo.');
             } finally {
-                // Restore button
                 analyzeBtn.innerHTML = originalText;
                 analyzeBtn.disabled = false;
+            }
+        }
+
+        // ============================================================
+        // SAGE Fleet Lookup via Ironforge RPC
+        // ============================================================
+        async function fetchSageFleets(walletAddress) {
+            try {
+                // Load Galaxy data first if needed (for mint → name mapping)
+                if (!galaxyData) {
+                    await loadGalaxyData();
+                }
+                const mintToShipInfo = new Map();
+                if (galaxyData) {
+                    galaxyData.forEach(item => {
+                        if (item.attributes?.itemType === 'ship' && item.mint) {
+                            mintToShipInfo.set(item.mint, item);
+                        }
+                    });
+                }
+
+                // Step 1: Find PlayerProfile by wallet key at offset 28
+                console.log('[SAGE] Looking up PlayerProfile for', walletAddress);
+                const profiles = await sageRpc('getProgramAccounts', [
+                    PLAYER_PROFILE_PROGRAM_ID,
+                    {
+                        encoding: 'base64',
+                        filters: [
+                            { memcmp: { offset: 0, bytes: DISC_PROFILE_B58 } },
+                            { memcmp: { offset: 28, bytes: walletAddress } },
+                        ],
+                    }
+                ]);
+
+                if (!profiles || profiles.length === 0) {
+                    console.log('[SAGE] No PlayerProfile found for wallet');
+                    return null;
+                }
+
+                const profileAddress = profiles[0].pubkey;
+                console.log('[SAGE] Found profile:', profileAddress);
+
+                // Step 2: Find all Fleet accounts for this profile
+                const fleetAccounts = await sageRpc('getProgramAccounts', [
+                    SAGE_PROGRAM_ID,
+                    {
+                        encoding: 'base64',
+                        filters: [
+                            { memcmp: { offset: 0, bytes: DISC_FLEET_B58 } },
+                            { memcmp: { offset: 41, bytes: profileAddress } },
+                        ],
+                    }
+                ]);
+
+                if (!fleetAccounts || fleetAccounts.length === 0) {
+                    console.log('[SAGE] No fleets found for profile');
+                    return null;
+                }
+
+                console.log(`[SAGE] Found ${fleetAccounts.length} fleet(s)`);
+
+                // Parse fleet data and collect FleetShips keys
+                const fleetDetails = [];
+                const fleetShipsKeys = [];
+                for (const f of fleetAccounts) {
+                    const buf = decodeAccountData(f.account.data[0]);
+                    const fleetShipsKey = readPubkey(buf, 73);
+                    const faction = buf[169];
+                    const labelBytes = buf.slice(170, 202);
+                    const label = String.fromCharCode(...labelBytes).replace(/\0/g, '');
+                    
+                    fleetDetails.push({
+                        address: f.pubkey,
+                        fleetShipsKey,
+                        faction,
+                        label: label || 'Unnamed Fleet',
+                    });
+                    fleetShipsKeys.push(fleetShipsKey);
+                }
+
+                // Step 3: Batch fetch all FleetShips accounts
+                const fsAccounts = await sageRpc('getMultipleAccounts', [
+                    fleetShipsKeys, { encoding: 'base64' }
+                ]);
+
+                // Collect all unique ship account keys
+                const allShipKeys = new Set();
+                const fleetShipEntries = [];
+                
+                for (let i = 0; i < fleetDetails.length; i++) {
+                    const fsAccount = fsAccounts.value[i];
+                    if (!fsAccount) { fleetShipEntries.push([]); continue; }
+                    
+                    const fsBuf = decodeAccountData(fsAccount.data[0]);
+                    const count = readU32LE(fsBuf, 41);
+                    const ships = [];
+                    
+                    for (let j = 0; j < count; j++) {
+                        const off = 46 + (j * 48);
+                        if (off + 40 > fsBuf.length) break;
+                        const shipAcctKey = readPubkey(fsBuf, off);
+                        const amount = readU64LE(fsBuf, off + 32);
+                        ships.push({ shipAcctKey, amount });
+                        allShipKeys.add(shipAcctKey);
+                    }
+                    fleetShipEntries.push(ships);
+                }
+
+                // Step 4: Batch fetch all Ship accounts to resolve mints
+                const shipKeysArr = [...allShipKeys];
+                let shipMintMap = {};
+                
+                // Batch in groups of 100 (RPC limit)
+                for (let i = 0; i < shipKeysArr.length; i += 100) {
+                    const batch = shipKeysArr.slice(i, i + 100);
+                    const shipAccounts = await sageRpc('getMultipleAccounts', [
+                        batch, { encoding: 'base64' }
+                    ]);
+                    for (let j = 0; j < batch.length; j++) {
+                        if (!shipAccounts.value[j]) continue;
+                        const sBuf = decodeAccountData(shipAccounts.value[j].data[0]);
+                        // Ship account: disc(8) + version(1) + gameId(32) + mint(32)
+                        shipMintMap[batch[j]] = readPubkey(sBuf, 41);
+                    }
+                }
+
+                // Step 5: Build aggregated ship list for the analyzer
+                // Aggregate ships across all fleets by mint
+                const shipAggregation = new Map(); // mint -> { info, totalOwned, fleets[] }
+                
+                for (let i = 0; i < fleetDetails.length; i++) {
+                    for (const entry of fleetShipEntries[i]) {
+                        const mint = shipMintMap[entry.shipAcctKey];
+                        if (!mint) continue;
+                        
+                        const galaxyInfo = mintToShipInfo.get(mint);
+                        if (!galaxyInfo) continue;
+                        
+                        const key = mint;
+                        if (!shipAggregation.has(key)) {
+                            shipAggregation.set(key, {
+                                galaxyInfo,
+                                mint,
+                                totalOwned: 0,
+                                fleets: []
+                            });
+                        }
+                        const agg = shipAggregation.get(key);
+                        agg.totalOwned += entry.amount;
+                        agg.fleets.push({
+                            label: fleetDetails[i].label,
+                            amount: entry.amount
+                        });
+                    }
+                }
+
+                // Convert to format expected by the rest of the analyzer
+                const ships = [];
+                for (const [mint, agg] of shipAggregation) {
+                    ships.push({
+                        ...agg.galaxyInfo,
+                        mint: agg.mint,
+                        owned: agg.totalOwned,
+                        symbol: agg.galaxyInfo.symbol,
+                        name: agg.galaxyInfo.name,
+                        markets: agg.galaxyInfo.markets || [{ ui: 0 }],
+                        fleetAssignments: agg.fleets,
+                        source: 'sage'
+                    });
+                }
+
+                console.log(`[SAGE] Resolved ${ships.length} unique ship types, ${ships.reduce((s, sh) => s + sh.owned, 0)} total ships`);
+
+                return {
+                    profileAddress,
+                    fleetDetails,
+                    ships,
+                    totalFleets: fleetDetails.length,
+                    totalShips: ships.reduce((s, sh) => s + sh.owned, 0)
+                };
+
+            } catch (error) {
+                console.error('[SAGE] Fleet lookup failed:', error);
+                return null; // Will fall back to token scanning
             }
         }
 
@@ -1758,7 +2045,7 @@
         async function fetchPlayerTokens(walletAddress) {
             try {
                 // Query Solana RPC for token accounts
-                const response = await fetch('https://solana-rpc.publicnode.com', {
+                const response = await fetch(IRONFORGE_RPC, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1877,15 +2164,27 @@
             const statsContainer = document.getElementById('fleetStats');
             const scoreContainer = document.getElementById('compositionScore');
             
-            // Display wallet address (truncated)
+            // Display wallet address (truncated) with data source badge
             const address = playerFleet.walletAddress;
-            addressDisplay.textContent = `${address.slice(0, 6)}...${address.slice(-4)}`;
+            const sourceBadge = playerFleet.source === 'sage' 
+                ? '<span style="background:rgba(76,175,80,0.2);color:#4CAF50;padding:2px 8px;border-radius:4px;font-size:0.7rem;margin-left:8px;">⚡ SAGE ON-CHAIN</span>'
+                : '<span style="background:rgba(255,152,0,0.2);color:#FF9800;padding:2px 8px;border-radius:4px;font-size:0.7rem;margin-left:8px;">📦 WALLET TOKENS</span>';
+            addressDisplay.innerHTML = `${address.slice(0, 6)}...${address.slice(-4)}${sourceBadge}`;
             
             // Calculate real fleet statistics
             const fleetAnalysis = calculateRealFleetStats(playerFleet.ships);
             
+            // Show fleet count if from SAGE
+            const fleetCountHtml = playerFleet.fleetDetails 
+                ? `<div class="fleet-stat">
+                    <div class="fleet-stat-value">${playerFleet.fleetDetails.length}</div>
+                    <div class="fleet-stat-label">Active Fleets</div>
+                   </div>` 
+                : '';
+            
             // Update stats display
             statsContainer.innerHTML = `
+                ${fleetCountHtml}
                 <div class="fleet-stat">
                     <div class="fleet-stat-value">${fleetAnalysis.totalShips}</div>
                     <div class="fleet-stat-label">Total Ships</div>
@@ -1911,6 +2210,35 @@
                 <div class="score-value">${compositionScore}/100</div>
                 <div class="score-desc">Based on mining capacity, cargo efficiency, and crew optimization with real SAGE statistics</div>
             `;
+            
+            // Show fleet breakdown if available
+            if (playerFleet.fleetDetails && playerFleet.fleetDetails.length > 0) {
+                const factionNames = { 0: 'Unaligned', 1: 'MUD', 2: 'ONI', 3: 'USTUR' };
+                let fleetBreakdownHtml = '<div style="margin-top:1.5rem;"><h3 style="color:#e0e0e0;font-size:1rem;margin-bottom:0.75rem;">🚀 Fleet Breakdown</h3>';
+                fleetBreakdownHtml += '<div style="display:grid;gap:0.5rem;">';
+                
+                for (const fleet of playerFleet.fleetDetails) {
+                    // Find ships assigned to this fleet
+                    const assignedShips = playerFleet.ships
+                        .filter(s => s.fleetAssignments?.some(fa => fa.label === fleet.label))
+                        .map(s => {
+                            const assignment = s.fleetAssignments.find(fa => fa.label === fleet.label);
+                            return `${s.name} x${assignment.amount}`;
+                        });
+                    
+                    const factionBadge = factionNames[fleet.faction] || `Faction ${fleet.faction}`;
+                    fleetBreakdownHtml += `
+                        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.6rem 0.8rem;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <span style="color:#e0e0e0;font-weight:500;font-size:0.85rem;">${fleet.label}</span>
+                                <span style="color:#888;font-size:0.7rem;">${factionBadge}</span>
+                            </div>
+                            <div style="color:#aaa;font-size:0.75rem;margin-top:0.3rem;">${assignedShips.join(' · ') || 'Ships loading...'}</div>
+                        </div>`;
+                }
+                fleetBreakdownHtml += '</div></div>';
+                scoreContainer.insertAdjacentHTML('afterend', fleetBreakdownHtml);
+            }
             
             section.classList.add('visible');
         }
