@@ -2770,8 +2770,8 @@
                 const totalPoints = ships.reduce((sum, ship) => 
                     sum + (classPoints[ship.stats?.class] || 1) * ship.owned, 0
                 );
-                // Perfect score at 290 points (max), declining below 200
-                score += Math.min(25, (totalPoints / 290) * 25);
+                // Perfect score at 145 points (max), declining below 100
+                score += Math.min(25, (totalPoints / 145) * 25);
             } else {
                 // Fallback for legacy calls
                 score += Math.min(25, analysis.totalShips * 2);
@@ -2896,11 +2896,11 @@
                 return sum + (classPoints[ship.stats?.class] || 1) * ship.owned;
             }, 0);
             
-            if (totalPoints < 200) {
+            if (totalPoints < 100) {
                 recommendations.push({
                     icon: '<polygon points="13,2 3,14 12,22 22,10"/>',
                     title: '⚡ Fleet Expansion Opportunity',
-                    description: `Your fleet uses ${totalPoints}/290 fleet points. Add more ships to maximize autonomous capabilities. Priority: Armstrong IMP (36 pts, zero ammo), VZUS opod (16 pts, scanning), Fimbul Sledbarge (36 pts, massive cargo).`
+                    description: `Your fleet uses ${totalPoints}/145 fleet points. Add more ships to maximize your fleet. Priority: Armstrong IMP (16 pts, zero ammo mining), Pearce X4 (1 pt, cheap fleet filler), VZUS opod (16 pts, scanning).`
                 });
             }
             
