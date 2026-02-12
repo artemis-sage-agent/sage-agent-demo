@@ -1756,23 +1756,116 @@
 
         // Fetch player's token accounts from Solana RPC
         async function fetchPlayerTokens(walletAddress) {
-            // This is simplified for demo - in real implementation would use proper RPC calls
-            const demoTokens = [
-                { symbol: 'IMP3', name: 'Armstrong IMP', amount: 1 },
-                { symbol: 'CALG', name: 'Calico Guardian', amount: 2 },
-                { symbol: 'PF4', name: 'Pearce F4', amount: 1 }
-            ];
-            
-            return demoTokens;
+            try {
+                // Query Solana RPC for token accounts
+                const response = await fetch('https://solana-rpc.publicnode.com', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        id: 1,
+                        method: 'getTokenAccountsByOwner',
+                        params: [
+                            walletAddress,
+                            { programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' },
+                            { encoding: 'jsonParsed' }
+                        ]
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`RPC request failed: ${response.status}`);
+                }
+
+                const rpcData = await response.json();
+                
+                if (rpcData.error) {
+                    throw new Error(`RPC error: ${rpcData.error.message}`);
+                }
+
+                // Get token accounts with balances
+                const tokenAccounts = rpcData.result?.value || [];
+                
+                // Filter for accounts with balance > 0 and get mint addresses
+                const ownedTokens = tokenAccounts
+                    .filter(account => {
+                        const amount = account.account.data.parsed.info.tokenAmount.uiAmount;
+                        return amount && amount > 0;
+                    })
+                    .map(account => ({
+                        mint: account.account.data.parsed.info.mint,
+                        amount: account.account.data.parsed.info.tokenAmount.uiAmount
+                    }));
+
+                return ownedTokens;
+                
+            } catch (error) {
+                console.error('Error fetching token accounts:', error);
+                // Fallback to demo data on error
+                const demoTokens = [
+                    { symbol: 'IMP3', name: 'Armstrong IMP', amount: 1 },
+                    { symbol: 'CALG', name: 'Calico Guardian', amount: 2 },
+                    { symbol: 'PF4', name: 'Pearce F4', amount: 1 }
+                ];
+                return demoTokens;
+            }
         }
 
         // Cross-reference token accounts with Star Atlas NFTs
         async function crossReferenceAssets(tokenAccounts) {
-            return tokenAccounts.map(token => ({
-                ...token,
-                owned: token.amount || 1,
-                markets: [{ ui: Math.random() * 5000 + 500 }]
-            }));
+            try {
+                // Fetch Galaxy API data if we don't have it already
+                if (!galaxyData) {
+                    await loadGalaxyData();
+                }
+
+                // Create a map of mint addresses to Galaxy data for ships
+                const shipMintMap = new Map();
+                if (galaxyData) {
+                    galaxyData.forEach(item => {
+                        if (item.attributes?.itemType === 'ship' && item.mint) {
+                            shipMintMap.set(item.mint, item);
+                        }
+                    });
+                }
+
+                // Cross-reference player's tokens with Star Atlas ships
+                const starAtlasShips = [];
+                
+                tokenAccounts.forEach(token => {
+                    if (token.mint) {
+                        // Check if this mint is a Star Atlas ship
+                        const shipData = shipMintMap.get(token.mint);
+                        if (shipData) {
+                            starAtlasShips.push({
+                                ...shipData,
+                                owned: token.amount || 1,
+                                mint: token.mint
+                            });
+                        }
+                    } else if (token.symbol) {
+                        // Fallback for demo data format
+                        starAtlasShips.push({
+                            ...token,
+                            owned: token.amount || 1,
+                            symbol: token.symbol,
+                            name: token.name,
+                            markets: [{ ui: Math.random() * 5000 + 500 }]
+                        });
+                    }
+                });
+
+                return starAtlasShips;
+                
+            } catch (error) {
+                console.error('Error cross-referencing assets:', error);
+                // Fallback: treat input as ship data for demo
+                return tokenAccounts.map(token => ({
+                    ...token,
+                    owned: token.amount || 1,
+                    markets: [{ ui: Math.random() * 5000 + 500 }]
+                }));
+            }
         }
 
         // Show player's fleet with real stats
@@ -1812,7 +1905,7 @@
             `;
             
             // Show Fleet Composition Score
-            const compositionScore = calculateFleetCompositionScore(fleetAnalysis);
+            const compositionScore = calculateFleetCompositionScore(fleetAnalysis, playerFleet.ships);
             scoreContainer.innerHTML = `
                 <div class="score-title">Fleet Composition Score</div>
                 <div class="score-value">${compositionScore}/100</div>
@@ -1855,21 +1948,54 @@
         }
 
         // Calculate fleet composition score
-        function calculateFleetCompositionScore(analysis) {
+        function calculateFleetCompositionScore(analysis, ships = null) {
             let score = 0;
             
-            // Mining efficiency (0-30 points)
-            score += Math.min(30, analysis.totalMiningRate / 10);
+            // 1. Mining Efficiency with Consumable Consideration (0-25 points)
+            if (ships) {
+                const impShips = ships.filter(s => s.stats?.ammoConsumptionRate === 0 && s.stats?.miningRate > 0);
+                const impMiningRate = impShips.reduce((sum, s) => sum + s.stats.miningRate * s.owned, 0);
+                const totalMiningRate = analysis.totalMiningRate;
+                
+                // Reward zero-ammo mining heavily
+                const impRatio = totalMiningRate > 0 ? impMiningRate / totalMiningRate : 0;
+                score += Math.min(25, (analysis.totalMiningRate / 50) * (1 + impRatio));
+            } else {
+                score += Math.min(25, analysis.totalMiningRate / 50);
+            }
             
-            // Cargo capacity (0-25 points)
-            score += Math.min(25, analysis.totalCargoCapacity / 50000);
+            // 2. Cargo-to-Mining Balance (0-25 points)
+            if (analysis.totalMiningRate > 0) {
+                const hoursToFillCargo = analysis.totalCargoCapacity / (analysis.totalMiningRate * 24);
+                // Perfect score if cargo lasts 8+ hours, declining below that
+                score += Math.min(25, hoursToFillCargo * 3);
+            }
             
-            // Fleet size diversity (0-20 points)
-            score += Math.min(20, analysis.totalShips * 2);
+            // 3. Activity Diversification (0-25 points)
+            if (ships) {
+                const hasDataRunner = ships.some(s => s.stats?.spec === 'Data Runner');
+                const hasFreighter = ships.some(s => s.stats?.cargoCapacity > 100000);
+                const hasMiner = ships.some(s => s.stats?.miningRate > 10);
+                
+                let diversityScore = 0;
+                if (hasMiner) diversityScore += 8;
+                if (hasDataRunner) diversityScore += 9; // SDU generation is valuable
+                if (hasFreighter) diversityScore += 8;
+                
+                score += diversityScore;
+            }
             
-            // Crew efficiency (0-25 points) - lower crew per ship is better
-            if (analysis.avgCrewPerShip > 0) {
-                score += Math.min(25, 25 - analysis.avgCrewPerShip);
+            // 4. Fleet Point Utilization (0-25 points) 
+            if (ships) {
+                const classPoints = { '1': 1, '2': 4, '3': 9, '4': 16, '5': 25, '6': 36, '7': 49, '9': 81 };
+                const totalPoints = ships.reduce((sum, ship) => 
+                    sum + (classPoints[ship.stats?.class] || 1) * ship.owned, 0
+                );
+                // Perfect score at 290 points (max), declining below 200
+                score += Math.min(25, (totalPoints / 290) * 25);
+            } else {
+                // Fallback for legacy calls
+                score += Math.min(25, analysis.totalShips * 2);
             }
             
             return Math.round(Math.max(0, Math.min(100, score)));
@@ -1906,7 +2032,7 @@
             
             // Add real earnings estimate
             const fleetStats = calculateRealFleetStats(playerFleet.ships);
-            const estimatedDaily = calculateRealEarnings(fleetStats);
+            const estimatedDaily = calculateRealEarnings(fleetStats, playerFleet.ships);
             html += `
                 <div class="earnings-estimate">
                     <div class="earnings-title">Estimated Daily Mining Potential</div>
@@ -1924,53 +2050,78 @@
             const recommendations = [];
             const fleetStats = calculateRealFleetStats(ships);
             
-            // Mining optimization
-            if (fleetStats.totalMiningRate > 100) {
+            // Check for Armstrong IMP advantage (zero ammo cost)
+            const impShips = ships.filter(ship => 
+                ship.stats && ship.stats.manufacturer === 'Armstrong' && 
+                ship.stats.ammoConsumptionRate === 0
+            );
+            
+            const nonImpMiners = ships.filter(ship => 
+                ship.stats && ship.stats.miningRate > 0 && ship.stats.ammoConsumptionRate > 0
+            );
+            
+            if (impShips.length > 0) {
+                const impMiningRate = impShips.reduce((sum, ship) => sum + (ship.stats.miningRate * ship.owned), 0);
                 recommendations.push({
                     icon: '<circle cx="12" cy="12" r="10"/><line x1="22" y1="2" x2="11" y2="13"/>',
-                    title: 'High-Output Mining Fleet Detected',
-                    description: `Your fleet has excellent mining capability (${Math.round(fleetStats.totalMiningRate)} total mining rate). Focus operations on high-richness asteroids and ensure adequate transport capacity for your output.`
+                    title: '🏆 Armstrong IMP Advantage Detected',
+                    description: `Your ${impShips.length} Armstrong IMP ships (${Math.round(impMiningRate)} mining rate) consume ZERO ammunition during mining. This makes them significantly more profitable than other miners. Deploy these for primary mining operations in high-richness sectors (MRZ-8, MRZ-16, MRZ-31 for Iron Ore).`
+                });
+            } else if (nonImpMiners.length > 0) {
+                recommendations.push({
+                    icon: '<circle cx="12" cy="12" r="10"/><line x1="22" y1="2" x2="11" y2="13"/>',
+                    title: '⚠️ High Ammo Costs Detected',
+                    description: `Your mining ships consume ammunition (${nonImpMiners.length} ships affected). Consider upgrading to Armstrong IMP series (IMP Tip, IMP Tap, or IMP) for zero-ammo mining operations. This could dramatically improve profitability over 24-hour autonomous cycles.`
                 });
             }
             
-            // Cargo efficiency
-            if (fleetStats.avgCargoCapacity > 50000) {
+            // Data Runner opportunity
+            const dataRunners = ships.filter(ship => 
+                ship.stats && ship.stats.spec === 'Data Runner'
+            );
+            
+            if (dataRunners.length > 0) {
+                const totalScanValue = dataRunners.reduce((sum, ship) => 
+                    sum + (ship.stats.sduPerScan * ship.owned), 0
+                );
                 recommendations.push({
                     icon: '<path d="M13 7l5 5-5 5"/><path d="M6 12h12"/>',
-                    title: 'Excellent Cargo Capacity',
-                    description: `Average cargo capacity of ${Math.round(fleetStats.avgCargoCapacity).toLocaleString()} per ship enables efficient long-distance trade routes. Consider specializing in bulk commodity transport.`
+                    title: '💎 Data Runner Fleet Excellence',
+                    description: `Your ${dataRunners.length} Data Runner ships generate ${totalScanValue} SDU per scan cycle with ZERO scan costs and no food consumption during scanning. Focus these on high Information Density sectors for Infrastructure Contract SDU requirements (5 SDU per contract = 2 ATLAS).`
+                });
+            } else if (fleetStats.totalShips > 0) {
+                recommendations.push({
+                    icon: '<path d="M13 7l5 5-5 5"/><path d="M6 12h12"/>',
+                    title: '📡 Missing Data Runner Capability',
+                    description: `Consider adding VZUS opod, Fimbul BYOS Ranger, or Opal Rayfam for efficient scanning operations. These ships have zero scan costs and generate high SDU yields for Infrastructure Contract production (guaranteed 2 ATLAS per contract).`
                 });
             }
             
-            // Crew optimization
-            if (fleetStats.avgCrewPerShip < 5) {
+            // Cargo-to-mining ratio analysis
+            if (fleetStats.totalMiningRate > 0) {
+                const cargoFillHours = fleetStats.totalCargoCapacity / (fleetStats.totalMiningRate * 24);
+                if (cargoFillHours < 1) {
+                    recommendations.push({
+                        icon: '<path d="M14 7V4a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v3"/>',
+                        title: '🚛 Cargo Bottleneck Identified',
+                        description: `Your fleet will fill cargo in ${cargoFillHours.toFixed(1)} hours but mines 24/7. Add transport ships (Fimbul Sledbarge: 609K cargo, Pearce D9: 553K cargo) or set up automated cargo runs to prevent mining downtime.`
+                    });
+                }
+            }
+            
+            // Fleet point efficiency
+            const totalPoints = ships.reduce((sum, ship) => {
+                const classPoints = {
+                    '1': 1, '2': 4, '3': 9, '4': 16, '5': 25, '6': 36, '7': 49, '9': 81
+                };
+                return sum + (classPoints[ship.stats?.class] || 1) * ship.owned;
+            }, 0);
+            
+            if (totalPoints < 200) {
                 recommendations.push({
                     icon: '<polygon points="13,2 3,14 12,22 22,10"/>',
-                    title: 'Crew-Efficient Operations',
-                    description: `Your fleet requires only ${Math.round(fleetStats.avgCrewPerShip)} crew per ship on average. This efficiency allows for scaled operations with minimal human resource investment.`
-                });
-            } else if (fleetStats.avgCrewPerShip > 20) {
-                recommendations.push({
-                    icon: '<path d="M12 1l3 3v6a6 6 0 1 1-12 0V4l3-3z"/>',
-                    title: 'High-Crew Capital Ships',
-                    description: `Your capital ships require significant crew (${Math.round(fleetStats.avgCrewPerShip)} average per ship). Focus on high-value operations that justify the crew investment.`
-                });
-            }
-            
-            // Fleet specialization recommendation
-            const shipTypes = {};
-            ships.forEach(ship => {
-                if (ship.stats) {
-                    shipTypes[ship.stats.spec] = (shipTypes[ship.stats.spec] || 0) + ship.owned;
-                }
-            });
-            
-            const dominantType = Object.entries(shipTypes).sort(([,a], [,b]) => b - a)[0];
-            if (dominantType) {
-                recommendations.push({
-                    icon: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
-                    title: `${dominantType[0]} Specialization Detected`,
-                    description: `Your fleet is specialized in ${dominantType[0]} operations with ${dominantType[1]} ships. This focus allows for optimized workflows and specialized crew training.`
+                    title: '⚡ Fleet Expansion Opportunity',
+                    description: `Your fleet uses ${totalPoints}/290 fleet points. Add more ships to maximize autonomous capabilities. Priority: Armstrong IMP (36 pts, zero ammo), VZUS opod (16 pts, scanning), Fimbul Sledbarge (36 pts, massive cargo).`
                 });
             }
             
@@ -1978,16 +2129,50 @@
         }
 
         // Calculate real earnings potential
-        function calculateRealEarnings(fleetStats) {
-            // Base calculation on actual mining rates and assume 24 hours of operation
-            // Note: Real mining rate = miningRate * richness / hardness
+        function calculateRealEarnings(fleetStats, ships = null) {
+            // Improved calculation including consumable costs
             const hoursPerDay = 24;
-            const baseRichness = 1; // Default richness
+            const baseRichness = 1; // Default richness (can be 1.5x or 2.0x in better sectors)
             const baseHardness = 1; // Default hardness
             
-            const dailyMiningOutput = fleetStats.totalMiningRate * (baseRichness / baseHardness) * hoursPerDay;
+            // Estimate resource price in ATLAS (simplified)
+            const avgResourcePrice = 0.001; // ATLAS per unit of raw material
             
-            return Math.round(dailyMiningOutput);
+            // Estimate consumable prices (ATLAS per unit)
+            const fuelPrice = 0.0001;
+            const foodPrice = 0.0002; 
+            const ammoPrice = 0.0001;
+            
+            // Calculate gross mining output
+            const effectiveMiningRate = fleetStats.totalMiningRate * (baseRichness / baseHardness);
+            const grossDailyOutput = effectiveMiningRate * hoursPerDay;
+            const grossDailyValue = grossDailyOutput * avgResourcePrice;
+            
+            // Calculate consumable costs if we have ship details
+            let totalDailyConsumableCosts = 0;
+            
+            if (ships && Array.isArray(ships)) {
+                ships.forEach(ship => {
+                    const count = ship.owned || 1;
+                    if (ship.stats) {
+                        // Daily fuel cost (assume mix of mining and movement)
+                        const dailyFuelCost = ship.stats.subwarpFuelConsumptionRate * 6 * fuelPrice * count; // 6h movement per day
+                        
+                        // Daily food cost (during active mining)
+                        const dailyFoodCost = ship.stats.foodConsumptionRate * hoursPerDay * foodPrice * count;
+                        
+                        // Daily ammo cost (only if ship consumes ammo - Armstrong IMP series = 0)
+                        const dailyAmmoCost = (ship.stats.ammoConsumptionRate || 0) * hoursPerDay * ammoPrice * count;
+                        
+                        totalDailyConsumableCosts += dailyFuelCost + dailyFoodCost + dailyAmmoCost;
+                    }
+                });
+            }
+            
+            // Net daily profit
+            const netDailyProfit = grossDailyValue - totalDailyConsumableCosts;
+            
+            return Math.round(Math.max(0, netDailyProfit * 1000)); // Convert back to units for display
         }
 
         // Show no fleet found state
@@ -2054,7 +2239,7 @@
             document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         }
 
-        // Load Galaxy API data (simplified for demo)
+        // Load Galaxy API data
         async function loadGalaxyData() {
             if (isLoading || galaxyData) return;
             
@@ -2062,7 +2247,41 @@
             document.getElementById('loadingState').classList.add('visible');
             
             try {
-                // For demo purposes, use our real stats data
+                // Fetch from Galaxy API
+                const response = await fetch('https://galaxy.staratlas.com/nfts');
+                if (!response.ok) {
+                    throw new Error(`Galaxy API failed: ${response.status}`);
+                }
+                
+                const allNfts = await response.json();
+                
+                // Filter for ships only
+                const ships = allNfts.filter(nft => 
+                    nft.attributes && nft.attributes.itemType === 'ship'
+                );
+                
+                console.log(`Galaxy API loaded: ${ships.length} ships from ${allNfts.length} total NFTs`);
+                
+                // Merge with our SAGE stats data
+                galaxyData = ships.map(ship => {
+                    // Find matching stats from our CSV data
+                    const stats = SAGE_SHIP_STATS.find(stat => 
+                        stat.symbol === ship.symbol || 
+                        stat.shipName.toLowerCase() === ship.name.toLowerCase()
+                    );
+                    
+                    return {
+                        ...ship,
+                        stats: stats,
+                        realStats: !!stats
+                    };
+                });
+                
+                console.log(`Merged data: ${galaxyData.filter(s => s.stats).length} ships with stats`);
+                
+            } catch (error) {
+                console.error('Failed to load Galaxy data, falling back to static data:', error);
+                // Fallback to static data
                 galaxyData = SAGE_SHIP_STATS.map(ship => ({
                     name: ship.shipName,
                     symbol: ship.symbol,
@@ -2077,12 +2296,6 @@
                     stats: ship,
                     realStats: true
                 }));
-                
-                console.log('Real SAGE ship data loaded:', galaxyData.length, 'ships');
-                
-            } catch (error) {
-                console.error('Failed to process ship data:', error);
-                galaxyData = [];
             }
             
             isLoading = false;
