@@ -372,7 +372,9 @@
             gap: 1rem;
             margin: 1.5rem 0;
             color: var(--text-tertiary);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
         }
         .wallet-connect-divider::before,
         .wallet-connect-divider::after {
@@ -383,21 +385,26 @@
         }
 
         .wallet-btn-connect {
-            background: linear-gradient(135deg, #9945FF, #14F195);
-            color: #fff;
-            font-weight: 700;
+            background: var(--accent);
+            color: var(--bg);
+            font-family: var(--font-display);
+            font-weight: 600;
             letter-spacing: 0.02em;
             padding: 0.85rem 2rem;
             border: none;
+            border-radius: var(--radius);
             position: relative;
             overflow: hidden;
+            transition: all 0.25s ease;
         }
         .wallet-btn-connect:hover {
+            background: #00c499;
             transform: translateY(-1px);
-            box-shadow: 0 4px 20px rgba(153, 69, 255, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 212, 170, 0.15);
         }
         .wallet-btn-connect:disabled {
-            opacity: 0.5;
+            background: var(--text-tertiary);
+            color: var(--bg);
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
@@ -405,6 +412,16 @@
         .wallet-btn-connect .wallet-icon {
             width: 18px;
             height: 18px;
+        }
+        .wallet-btn-connect.connected {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid rgba(0, 212, 170, 0.3);
+        }
+        .wallet-btn-connect.connected:hover {
+            border-color: rgba(0, 212, 170, 0.5);
+            background: var(--accent-dim);
+            box-shadow: none;
         }
 
         /* ═══════════════════════════════════════════════════════
@@ -465,10 +482,10 @@
             font-weight: 600;
             letter-spacing: 0.03em;
         }
-        .faction-mud { background: rgba(139,69,19,0.2); color: #cd853f; }
-        .faction-oni { background: rgba(220,20,60,0.2); color: #ff6b6b; }
-        .faction-ustur { background: rgba(65,105,225,0.2); color: #7b9cf7; }
-        .faction-unknown { background: rgba(128,128,128,0.2); color: #999; }
+        .faction-mud { background: rgba(205,133,63,0.1); color: #b8956a; }
+        .faction-oni { background: rgba(255,107,107,0.1); color: #d48a8a; }
+        .faction-ustur { background: rgba(123,156,247,0.1); color: #8ea8d4; }
+        .faction-unknown { background: rgba(255,255,255,0.04); color: var(--text-tertiary); }
 
         .fleet-card-ships {
             padding: 0 1rem 0.75rem;
@@ -1426,7 +1443,7 @@
                     </div>
                     
                     <p class="wallet-helper">
-                        <strong>🔒 Read-only access</strong> — we never request transaction signing permissions. 
+                        🔒 Read-only access — we never request transaction signing.
                         Your wallet connection is used solely to read your public address.
                     </p>
                 </div>
@@ -1915,9 +1932,7 @@
                 
                 // Update UI
                 label.textContent = `${publicKey.slice(0, 4)}...${publicKey.slice(-4)}`;
-                btn.style.background = 'rgba(76,175,80,0.2)';
-                btn.style.color = '#4CAF50';
-                btn.style.border = '1px solid rgba(76,175,80,0.3)';
+                btn.classList.add('connected');
                 
                 // Fill the input and auto-analyze
                 document.getElementById('walletInput').value = publicKey;
@@ -1952,9 +1967,7 @@
             const btn = document.getElementById('walletConnectBtn');
             const label = document.getElementById('walletConnectLabel');
             label.textContent = 'Connect Wallet';
-            btn.style.background = '';
-            btn.style.color = '';
-            btn.style.border = '';
+            btn.classList.remove('connected');
             
             document.getElementById('walletInput').value = '';
             console.log('[Wallet] Disconnected');
@@ -2522,8 +2535,8 @@
             // Display wallet address with data source badge
             const address = playerFleet.walletAddress;
             const sourceBadge = playerFleet.source === 'sage' 
-                ? '<span style="background:rgba(76,175,80,0.2);color:#4CAF50;padding:2px 8px;border-radius:4px;font-size:0.7rem;margin-left:8px;">⚡ SAGE ON-CHAIN</span>'
-                : '<span style="background:rgba(255,152,0,0.2);color:#FF9800;padding:2px 8px;border-radius:4px;font-size:0.7rem;margin-left:8px;">📦 WALLET TOKENS</span>';
+                ? '<span style="background:var(--accent-dim);color:var(--accent);padding:2px 8px;border-radius:4px;font-size:0.7rem;font-family:var(--font-display);font-weight:500;margin-left:8px;letter-spacing:0.03em;">⚡ SAGE ON-CHAIN</span>'
+                : '<span style="background:rgba(255,255,255,0.05);color:var(--text-secondary);padding:2px 8px;border-radius:4px;font-size:0.7rem;font-family:var(--font-display);font-weight:500;margin-left:8px;letter-spacing:0.03em;">📦 WALLET TOKENS</span>';
             addressDisplay.innerHTML = `${address.slice(0, 6)}...${address.slice(-4)}${sourceBadge}`;
             
             // Calculate real fleet statistics
@@ -2654,11 +2667,11 @@
                             <span class="ship-roster-class">${sizeClass}</span>
                         </div>
                         ${stats ? `
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.25rem;margin-top:0.5rem;font-size:0.7rem;color:var(--text-tertiary);">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.25rem;margin-top:0.5rem;font-size:0.7rem;color:var(--text-tertiary);font-family:var(--font-display);">
                             <span>⛏ ${miningRate}</span>
                             <span>📦 ${cargo}</span>
                         </div>` : ''}
-                        ${fleetInfo ? `<div style="font-size:0.65rem;color:var(--text-tertiary);margin-top:0.35rem;opacity:0.7;">Fleet: ${fleetInfo}</div>` : ''}
+                        ${fleetInfo ? `<div style="font-size:0.65rem;color:var(--text-tertiary);margin-top:0.35rem;opacity:0.6;font-family:var(--font-display);letter-spacing:0.02em;">${fleetInfo}</div>` : ''}
                     </div>`;
                 }
                 
