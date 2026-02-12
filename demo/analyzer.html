@@ -366,6 +366,196 @@
             line-height: 1.6;
         }
 
+        .wallet-connect-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: var(--text-tertiary);
+            font-size: 0.8rem;
+        }
+        .wallet-connect-divider::before,
+        .wallet-connect-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .wallet-btn-connect {
+            background: linear-gradient(135deg, #9945FF, #14F195);
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            padding: 0.85rem 2rem;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .wallet-btn-connect:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(153, 69, 255, 0.3);
+        }
+        .wallet-btn-connect:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .wallet-btn-connect .wallet-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           Fleet Breakdown & Ship Roster
+        ═══════════════════════════════════════════════════════ */
+        .fleet-breakdown {
+            padding: 0 2.5rem 2rem;
+        }
+        .fleet-breakdown-title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .fleet-card {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .fleet-card:hover {
+            border-color: var(--border-hover);
+        }
+        .fleet-card-header {
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        .fleet-card-header:hover {
+            background: rgba(255,255,255,0.02);
+        }
+        .fleet-card-name {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+        .fleet-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+        .faction-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+        .faction-mud { background: rgba(139,69,19,0.2); color: #cd853f; }
+        .faction-oni { background: rgba(220,20,60,0.2); color: #ff6b6b; }
+        .faction-ustur { background: rgba(65,105,225,0.2); color: #7b9cf7; }
+        .faction-unknown { background: rgba(128,128,128,0.2); color: #999; }
+
+        .fleet-card-ships {
+            padding: 0 1rem 0.75rem;
+            display: none;
+        }
+        .fleet-card-ships.expanded {
+            display: block;
+        }
+        .fleet-ship-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.35rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            font-size: 0.8rem;
+        }
+        .fleet-ship-row:last-child {
+            border-bottom: none;
+        }
+        .fleet-ship-name {
+            color: var(--text-secondary);
+        }
+        .fleet-ship-count {
+            color: var(--accent);
+            font-weight: 600;
+            font-family: var(--font-display);
+        }
+        .fleet-card-toggle {
+            transition: transform 0.2s;
+            color: var(--text-tertiary);
+        }
+        .fleet-card-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .ship-roster {
+            padding: 0 2.5rem 2rem;
+        }
+        .ship-roster-title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .ship-roster-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 0.75rem;
+        }
+        .ship-roster-card {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.75rem 1rem;
+            transition: border-color 0.2s;
+        }
+        .ship-roster-card:hover {
+            border-color: var(--accent);
+        }
+        .ship-roster-name {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        .ship-roster-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .ship-roster-qty {
+            color: var(--accent);
+            font-weight: 700;
+            font-family: var(--font-display);
+        }
+        .ship-roster-class {
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
         /* ═══════════════════════════════════════════════════════
            Your Fleet Section
         ═══════════════════════════════════════════════════════ */
@@ -1185,6 +1375,20 @@
                 <p class="wallet-subtitle">Connect your wallet to see personalized fleet recommendations with real ship stats</p>
                 
                 <div class="wallet-input-group">
+                    <!-- Wallet Connect Button -->
+                    <div class="wallet-buttons" style="margin-bottom:0">
+                        <button class="wallet-btn wallet-btn-connect" id="walletConnectBtn" onclick="connectWallet()">
+                            <svg class="wallet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="6" width="20" height="14" rx="2"/>
+                                <path d="M2 10h20"/>
+                                <circle cx="17" cy="15" r="1.5" fill="currentColor"/>
+                            </svg>
+                            <span id="walletConnectLabel">Connect Wallet</span>
+                        </button>
+                    </div>
+
+                    <div class="wallet-connect-divider">or enter address manually</div>
+
                     <input 
                         type="text" 
                         class="wallet-input" 
@@ -1222,8 +1426,8 @@
                     </div>
                     
                     <p class="wallet-helper">
-                        Enter your Solana wallet address to analyze your Star Atlas fleet with real ship statistics. 
-                        No wallet connection required — we only read public blockchain data.
+                        <strong>🔒 Read-only access</strong> — we never request transaction signing permissions. 
+                        Your wallet connection is used solely to read your public address.
                     </p>
                 </div>
             </div>
@@ -1248,6 +1452,16 @@
                 </div>
                 
                 <div class="composition-score" id="compositionScore">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+
+                <!-- Fleet Breakdown (populated when SAGE data available) -->
+                <div class="fleet-breakdown" id="fleetBreakdown" style="display:none;">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+
+                <!-- Complete Ship Roster -->
+                <div class="ship-roster" id="shipRoster" style="display:none;">
                     <!-- Will be populated by JavaScript -->
                 </div>
             </div>
@@ -1630,6 +1844,7 @@
             await loadGalaxyData();
             updateAnalysis();
             setupWalletInput();
+            setupWalletListeners();
         });
 
         // Setup wallet input event listeners
@@ -1648,6 +1863,144 @@
                     analyzeWallet();
                 }
             });
+        }
+
+        // ============================================================
+        // Secure Wallet Connect (Read-Only)
+        // ============================================================
+        // Security principles:
+        // 1. We ONLY request the public key — never sign transactions
+        // 2. No private keys ever touch our code
+        // 3. Connection is read-only for address extraction
+        // 4. Works with Phantom, Solflare, Backpack, and other Solana wallets
+        // 5. No external wallet adapter libraries — minimal attack surface
+        
+        let connectedWallet = null;
+        
+        async function connectWallet() {
+            const btn = document.getElementById('walletConnectBtn');
+            const label = document.getElementById('walletConnectLabel');
+            
+            // If already connected, disconnect
+            if (connectedWallet) {
+                disconnectWallet();
+                return;
+            }
+            
+            // Detect available wallet providers
+            const provider = detectWalletProvider();
+            if (!provider) {
+                showWalletError('No Solana wallet detected. Please install Phantom, Solflare, or Backpack.');
+                return;
+            }
+            
+            btn.disabled = true;
+            label.textContent = 'Connecting...';
+            
+            try {
+                // Request ONLY the public key — no signing permissions
+                const response = await provider.connect({ onlyIfTrusted: false });
+                const publicKey = response.publicKey.toString();
+                
+                // Validate the returned address
+                if (!validateWalletAddress(publicKey)) {
+                    throw new Error('Invalid public key received from wallet');
+                }
+                
+                connectedWallet = {
+                    publicKey,
+                    provider,
+                    providerName: getProviderName(provider)
+                };
+                
+                // Update UI
+                label.textContent = `${publicKey.slice(0, 4)}...${publicKey.slice(-4)}`;
+                btn.style.background = 'rgba(76,175,80,0.2)';
+                btn.style.color = '#4CAF50';
+                btn.style.border = '1px solid rgba(76,175,80,0.3)';
+                
+                // Fill the input and auto-analyze
+                document.getElementById('walletInput').value = publicKey;
+                clearWalletError();
+                
+                console.log(`[Wallet] Connected via ${connectedWallet.providerName}: ${publicKey}`);
+                
+                // Auto-analyze the connected wallet
+                await analyzeWallet();
+                
+            } catch (error) {
+                console.error('[Wallet] Connection failed:', error);
+                if (error.code === 4001 || error.message?.includes('rejected')) {
+                    // User rejected — that's fine
+                    showWalletError('Connection cancelled by user.');
+                } else {
+                    showWalletError('Failed to connect wallet. Please try again.');
+                }
+                connectedWallet = null;
+                label.textContent = 'Connect Wallet';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+        
+        function disconnectWallet() {
+            if (connectedWallet?.provider?.disconnect) {
+                try { connectedWallet.provider.disconnect(); } catch(e) { /* silent */ }
+            }
+            connectedWallet = null;
+            
+            const btn = document.getElementById('walletConnectBtn');
+            const label = document.getElementById('walletConnectLabel');
+            label.textContent = 'Connect Wallet';
+            btn.style.background = '';
+            btn.style.color = '';
+            btn.style.border = '';
+            
+            document.getElementById('walletInput').value = '';
+            console.log('[Wallet] Disconnected');
+        }
+        
+        function detectWalletProvider() {
+            // Priority order: Phantom > Solflare > Backpack > generic
+            // Each uses the window.solana or provider-specific namespace
+            if (window.phantom?.solana?.isPhantom) return window.phantom.solana;
+            if (window.solflare?.isSolflare) return window.solflare;
+            if (window.backpack?.isBackpack) return window.backpack;
+            if (window.solana?.isPhantom) return window.solana;
+            if (window.solana) return window.solana;
+            return null;
+        }
+        
+        function getProviderName(provider) {
+            if (provider.isPhantom) return 'Phantom';
+            if (provider.isSolflare) return 'Solflare';
+            if (provider.isBackpack) return 'Backpack';
+            return 'Solana Wallet';
+        }
+        
+        // Listen for wallet disconnect events
+        function setupWalletListeners() {
+            const provider = detectWalletProvider();
+            if (provider) {
+                provider.on?.('disconnect', () => {
+                    if (connectedWallet) {
+                        console.log('[Wallet] Wallet disconnected externally');
+                        disconnectWallet();
+                    }
+                });
+                provider.on?.('accountChanged', (publicKey) => {
+                    if (publicKey && connectedWallet) {
+                        console.log('[Wallet] Account changed to:', publicKey.toString());
+                        connectedWallet.publicKey = publicKey.toString();
+                        document.getElementById('walletInput').value = publicKey.toString();
+                        document.getElementById('walletConnectLabel').textContent = 
+                            `${publicKey.toString().slice(0, 4)}...${publicKey.toString().slice(-4)}`;
+                        analyzeWallet();
+                    } else {
+                        disconnectWallet();
+                    }
+                });
+            }
         }
 
         // Validate Solana wallet address format
@@ -2163,8 +2516,10 @@
             const addressDisplay = document.getElementById('fleetWalletAddress');
             const statsContainer = document.getElementById('fleetStats');
             const scoreContainer = document.getElementById('compositionScore');
+            const breakdownContainer = document.getElementById('fleetBreakdown');
+            const rosterContainer = document.getElementById('shipRoster');
             
-            // Display wallet address (truncated) with data source badge
+            // Display wallet address with data source badge
             const address = playerFleet.walletAddress;
             const sourceBadge = playerFleet.source === 'sage' 
                 ? '<span style="background:rgba(76,175,80,0.2);color:#4CAF50;padding:2px 8px;border-radius:4px;font-size:0.7rem;margin-left:8px;">⚡ SAGE ON-CHAIN</span>'
@@ -2181,13 +2536,20 @@
                     <div class="fleet-stat-label">Active Fleets</div>
                    </div>` 
                 : '';
+
+            // Calculate total ship count
+            const totalShipCount = playerFleet.ships.reduce((sum, s) => sum + (s.owned || 1), 0);
             
             // Update stats display
             statsContainer.innerHTML = `
                 ${fleetCountHtml}
                 <div class="fleet-stat">
-                    <div class="fleet-stat-value">${fleetAnalysis.totalShips}</div>
+                    <div class="fleet-stat-value">${totalShipCount}</div>
                     <div class="fleet-stat-label">Total Ships</div>
+                </div>
+                <div class="fleet-stat">
+                    <div class="fleet-stat-value">${playerFleet.ships.length}</div>
+                    <div class="fleet-stat-label">Ship Types</div>
                 </div>
                 <div class="fleet-stat">
                     <div class="fleet-stat-value">${Math.round(fleetAnalysis.avgMiningRate).toLocaleString()}</div>
@@ -2197,10 +2559,6 @@
                     <div class="fleet-stat-value">${Math.round(fleetAnalysis.avgCargoCapacity).toLocaleString()}</div>
                     <div class="fleet-stat-label">Avg Cargo</div>
                 </div>
-                <div class="fleet-stat">
-                    <div class="fleet-stat-value">${fleetAnalysis.totalCrewRequired}</div>
-                    <div class="fleet-stat-label">Required Crew</div>
-                </div>
             `;
             
             // Show Fleet Composition Score
@@ -2208,39 +2566,119 @@
             scoreContainer.innerHTML = `
                 <div class="score-title">Fleet Composition Score</div>
                 <div class="score-value">${compositionScore}/100</div>
-                <div class="score-desc">Based on mining capacity, cargo efficiency, and crew optimization with real SAGE statistics</div>
+                <div class="score-desc">Based on mining capacity, cargo efficiency, and fleet diversification with real SAGE statistics</div>
             `;
             
-            // Show fleet breakdown if available
+            // ────────────────────────────────────────────────────
+            // Fleet Breakdown (expandable fleet cards)
+            // ────────────────────────────────────────────────────
             if (playerFleet.fleetDetails && playerFleet.fleetDetails.length > 0) {
-                const factionNames = { 0: 'Unaligned', 1: 'MUD', 2: 'ONI', 3: 'USTUR' };
-                let fleetBreakdownHtml = '<div style="margin-top:1.5rem;"><h3 style="color:#e0e0e0;font-size:1rem;margin-bottom:0.75rem;">🚀 Fleet Breakdown</h3>';
-                fleetBreakdownHtml += '<div style="display:grid;gap:0.5rem;">';
+                const factionMap = { 0: ['Unknown','faction-unknown'], 1: ['MUD','faction-mud'], 2: ['ONI','faction-oni'], 3: ['USTUR','faction-ustur'] };
                 
-                for (const fleet of playerFleet.fleetDetails) {
-                    // Find ships assigned to this fleet
-                    const assignedShips = playerFleet.ships
-                        .filter(s => s.fleetAssignments?.some(fa => fa.label === fleet.label))
-                        .map(s => {
-                            const assignment = s.fleetAssignments.find(fa => fa.label === fleet.label);
-                            return `${s.name} x${assignment.amount}`;
-                        });
+                let html = '<h3 class="fleet-breakdown-title">🚀 Fleet Breakdown</h3>';
+                
+                for (let fi = 0; fi < playerFleet.fleetDetails.length; fi++) {
+                    const fleet = playerFleet.fleetDetails[fi];
+                    const [factionName, factionClass] = factionMap[fleet.faction] || factionMap[0];
                     
-                    const factionBadge = factionNames[fleet.faction] || `Faction ${fleet.faction}`;
-                    fleetBreakdownHtml += `
-                        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.6rem 0.8rem;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <span style="color:#e0e0e0;font-weight:500;font-size:0.85rem;">${fleet.label}</span>
-                                <span style="color:#888;font-size:0.7rem;">${factionBadge}</span>
+                    // Find ships assigned to this fleet
+                    const assignedShips = [];
+                    let fleetShipTotal = 0;
+                    for (const ship of playerFleet.ships) {
+                        if (!ship.fleetAssignments) continue;
+                        for (const fa of ship.fleetAssignments) {
+                            if (fa.label === fleet.label) {
+                                assignedShips.push({ name: ship.name, amount: fa.amount, symbol: ship.symbol });
+                                fleetShipTotal += fa.amount;
+                            }
+                        }
+                    }
+                    
+                    html += `
+                    <div class="fleet-card">
+                        <div class="fleet-card-header" onclick="toggleFleetCard(this)">
+                            <div>
+                                <span class="fleet-card-name">${fleet.label}</span>
                             </div>
-                            <div style="color:#aaa;font-size:0.75rem;margin-top:0.3rem;">${assignedShips.join(' · ') || 'Ships loading...'}</div>
-                        </div>`;
+                            <div class="fleet-card-meta">
+                                <span class="faction-badge ${factionClass}">${factionName}</span>
+                                <span>${fleetShipTotal} ship${fleetShipTotal !== 1 ? 's' : ''}</span>
+                                <svg class="fleet-card-toggle" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                        </div>
+                        <div class="fleet-card-ships" id="fleetCard${fi}">
+                            ${assignedShips.map(s => `
+                                <div class="fleet-ship-row">
+                                    <span class="fleet-ship-name">${s.name}</span>
+                                    <span class="fleet-ship-count">×${s.amount}</span>
+                                </div>
+                            `).join('')}
+                            ${assignedShips.length === 0 ? '<div class="fleet-ship-row"><span class="fleet-ship-name" style="color:var(--text-tertiary);">No ship data resolved</span></div>' : ''}
+                        </div>
+                    </div>`;
                 }
-                fleetBreakdownHtml += '</div></div>';
-                scoreContainer.insertAdjacentHTML('afterend', fleetBreakdownHtml);
+                
+                breakdownContainer.innerHTML = html;
+                breakdownContainer.style.display = 'block';
+            } else {
+                breakdownContainer.style.display = 'none';
+            }
+            
+            // ────────────────────────────────────────────────────
+            // Complete Ship Roster (all unique ship types)
+            // ────────────────────────────────────────────────────
+            if (playerFleet.ships.length > 0) {
+                // Sort ships by quantity (descending)
+                const sortedShips = [...playerFleet.ships].sort((a, b) => (b.owned || 1) - (a.owned || 1));
+                
+                let rosterHtml = '<h3 class="ship-roster-title">📋 Ship Roster</h3>';
+                rosterHtml += '<div class="ship-roster-grid">';
+                
+                for (const ship of sortedShips) {
+                    const qty = ship.owned || 1;
+                    const stats = ship.stats;
+                    const sizeClass = stats ? (['','XXS','XS','S','M','L','Capital','Commander','Titan'][stats.sizeClass] || '?') : '?';
+                    const miningRate = stats ? stats.miningRate.toLocaleString() : '—';
+                    const cargo = stats ? stats.cargoCapacity.toLocaleString() : '—';
+                    
+                    // Fleet assignments
+                    const fleetInfo = ship.fleetAssignments 
+                        ? ship.fleetAssignments.map(fa => fa.label).join(', ')
+                        : '';
+                    
+                    rosterHtml += `
+                    <div class="ship-roster-card">
+                        <div class="ship-roster-name">${ship.name}</div>
+                        <div class="ship-roster-details">
+                            <span class="ship-roster-qty">×${qty}</span>
+                            <span class="ship-roster-class">${sizeClass}</span>
+                        </div>
+                        ${stats ? `
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.25rem;margin-top:0.5rem;font-size:0.7rem;color:var(--text-tertiary);">
+                            <span>⛏ ${miningRate}</span>
+                            <span>📦 ${cargo}</span>
+                        </div>` : ''}
+                        ${fleetInfo ? `<div style="font-size:0.65rem;color:var(--text-tertiary);margin-top:0.35rem;opacity:0.7;">Fleet: ${fleetInfo}</div>` : ''}
+                    </div>`;
+                }
+                
+                rosterHtml += '</div>';
+                rosterContainer.innerHTML = rosterHtml;
+                rosterContainer.style.display = 'block';
+            } else {
+                rosterContainer.style.display = 'none';
             }
             
             section.classList.add('visible');
+        }
+
+        // Toggle fleet card expansion
+        function toggleFleetCard(headerEl) {
+            const card = headerEl.closest('.fleet-card');
+            const ships = card.querySelector('.fleet-card-ships');
+            const toggle = card.querySelector('.fleet-card-toggle');
+            ships.classList.toggle('expanded');
+            toggle.classList.toggle('open');
         }
 
         // Calculate real fleet statistics using SAGE data
