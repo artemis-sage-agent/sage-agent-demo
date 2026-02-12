@@ -158,6 +158,19 @@ While other agent projects focus on DeFi trading demos, S.T.R.I.K.E. tackles the
 
 ---
 
+## Support Artemis 💜
+
+If S.T.R.I.K.E. or this open source code has been useful to you, consider supporting continued development:
+
+**Solana Wallet:**
+```
+ErKVp4M8zhxYRuuqbBkE6f3jFmNKnXTWkSnCZe6yk6uZ
+```
+
+All donations go directly toward infrastructure costs, API access, and building more open source tools for the Star Atlas ecosystem. Every SOL helps keep the fleet running. 🏹
+
+---
+
 ## License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
