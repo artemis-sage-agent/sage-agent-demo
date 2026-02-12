@@ -2550,8 +2550,16 @@
                    </div>` 
                 : '';
 
-            // Calculate total ship count
+            // Calculate total ship count and fleet points
             const totalShipCount = playerFleet.ships.reduce((sum, s) => sum + (s.owned || 1), 0);
+            const classPoints = { '1': 1, '2': 4, '3': 9, '4': 16, '5': 25, '6': 36, '7': 49, '9': 81 };
+            const totalFleetPoints = playerFleet.ships.reduce((sum, ship) => 
+                sum + (classPoints[ship.stats?.class] || 1) * ship.owned, 0
+            );
+            
+            // Fleet points utilization display
+            const pointsPerFleet = playerFleet.fleetDetails ? Math.ceil(totalFleetPoints / playerFleet.fleetDetails.length) : totalFleetPoints;
+            const pointsColor = totalFleetPoints <= 145 ? 'var(--accent)' : '#f59e0b';
             
             // Update stats display
             statsContainer.innerHTML = `
@@ -2561,8 +2569,8 @@
                     <div class="fleet-stat-label">Total Ships</div>
                 </div>
                 <div class="fleet-stat">
-                    <div class="fleet-stat-value">${playerFleet.ships.length}</div>
-                    <div class="fleet-stat-label">Ship Types</div>
+                    <div class="fleet-stat-value" style="color:${pointsColor};">${totalFleetPoints}</div>
+                    <div class="fleet-stat-label">Fleet Points ${playerFleet.fleetDetails ? `(~${pointsPerFleet}/fleet)` : ''}</div>
                 </div>
                 <div class="fleet-stat">
                     <div class="fleet-stat-value">${Math.round(fleetAnalysis.avgMiningRate).toLocaleString()}</div>
@@ -2597,21 +2605,34 @@
                     // Find ships assigned to this fleet
                     const assignedShips = [];
                     let fleetShipTotal = 0;
+                    let fleetPointsUsed = 0;
+                    const classPoints = { '1': 1, '2': 4, '3': 9, '4': 16, '5': 25, '6': 36, '7': 49, '9': 81 };
+                    
                     for (const ship of playerFleet.ships) {
                         if (!ship.fleetAssignments) continue;
                         for (const fa of ship.fleetAssignments) {
                             if (fa.label === fleet.label) {
-                                assignedShips.push({ name: ship.name, amount: fa.amount, symbol: ship.symbol });
+                                assignedShips.push({ name: ship.name, amount: fa.amount, symbol: ship.symbol, stats: ship.stats });
                                 fleetShipTotal += fa.amount;
+                                // Calculate fleet points for this ship
+                                if (ship.stats && ship.stats.class) {
+                                    fleetPointsUsed += (classPoints[ship.stats.class] || 1) * fa.amount;
+                                }
                             }
                         }
                     }
+                    
+                    // Fleet point utilization color coding
+                    const pointsColor = fleetPointsUsed <= 100 ? 'var(--text-secondary)' : 
+                                       fleetPointsUsed <= 130 ? 'var(--accent)' : '#f59e0b';
+                    const pointsStyle = fleetPointsUsed > 145 ? 'color:#ef4444;font-weight:700;' : `color:${pointsColor};`;
                     
                     html += `
                     <div class="fleet-card">
                         <div class="fleet-card-header" onclick="toggleFleetCard(this)">
                             <div>
                                 <span class="fleet-card-name">${fleet.label}</span>
+                                <div style="font-size:0.7rem;${pointsStyle}margin-top:0.15rem;font-family:var(--font-display);font-weight:600;letter-spacing:0.02em;">${fleetPointsUsed}/145 pts</div>
                             </div>
                             <div class="fleet-card-meta">
                                 <span class="faction-badge ${factionClass}">${factionName}</span>
@@ -2620,12 +2641,15 @@
                             </div>
                         </div>
                         <div class="fleet-card-ships" id="fleetCard${fi}">
-                            ${assignedShips.map(s => `
+                            ${assignedShips.map(s => {
+                                const shipPoints = s.stats ? (classPoints[s.stats.class] || 1) * s.amount : s.amount;
+                                const pointsText = s.stats ? ` (${shipPoints}pts)` : '';
+                                return `
                                 <div class="fleet-ship-row">
-                                    <span class="fleet-ship-name">${s.name}</span>
+                                    <span class="fleet-ship-name">${s.name}${pointsText}</span>
                                     <span class="fleet-ship-count">×${s.amount}</span>
                                 </div>
-                            `).join('')}
+                            `}).join('')}
                             ${assignedShips.length === 0 ? '<div class="fleet-ship-row"><span class="fleet-ship-name" style="color:var(--text-tertiary);">No ship data resolved</span></div>' : ''}
                         </div>
                     </div>`;
@@ -2764,14 +2788,24 @@
                 score += diversityScore;
             }
             
-            // 4. Fleet Point Utilization (0-25 points) 
+            // 4. Fleet Point Utilization (0-25 points) - Reality: 145pt cap
             if (ships) {
                 const classPoints = { '1': 1, '2': 4, '3': 9, '4': 16, '5': 25, '6': 36, '7': 49, '9': 81 };
                 const totalPoints = ships.reduce((sum, ship) => 
                     sum + (classPoints[ship.stats?.class] || 1) * ship.owned, 0
                 );
-                // Perfect score at 145 points (max), declining below 100
-                score += Math.min(25, (totalPoints / 145) * 25);
+                
+                // Optimal utilization: 120-145 points (allows tactical flexibility)
+                // Penalty for going over 145 (impossible in SAGE)
+                if (totalPoints > 145) {
+                    score += Math.max(0, 25 - ((totalPoints - 145) * 2)); // Heavy penalty for violations
+                } else if (totalPoints >= 120) {
+                    score += 25; // Perfect score for 120-145 range
+                } else if (totalPoints >= 100) {
+                    score += 20 + ((totalPoints - 100) / 20) * 5; // Good utilization
+                } else {
+                    score += Math.min(20, (totalPoints / 100) * 20); // Declining below 100
+                }
             } else {
                 // Fallback for legacy calls
                 score += Math.min(25, analysis.totalShips * 2);
@@ -2888,7 +2922,7 @@
                 }
             }
             
-            // Fleet point efficiency
+            // Fleet point efficiency with improved 145pt cap analysis
             const totalPoints = ships.reduce((sum, ship) => {
                 const classPoints = {
                     '1': 1, '2': 4, '3': 9, '4': 16, '5': 25, '6': 36, '7': 49, '9': 81
@@ -2896,11 +2930,25 @@
                 return sum + (classPoints[ship.stats?.class] || 1) * ship.owned;
             }, 0);
             
-            if (totalPoints < 100) {
+            const pointsRemaining = 145 - totalPoints;
+            
+            if (totalPoints > 145) {
                 recommendations.push({
                     icon: '<polygon points="13,2 3,14 12,22 22,10"/>',
-                    title: '⚡ Fleet Expansion Opportunity',
-                    description: `Your fleet uses ${totalPoints}/145 fleet points. Add more ships to maximize your fleet. Priority: Armstrong IMP (16 pts, zero ammo mining), Pearce X4 (1 pt, cheap fleet filler), VZUS opod (16 pts, scanning).`
+                    title: '⚠️ Fleet Exceeds Point Cap',
+                    description: `Your fleet uses ${totalPoints}/145 points (${totalPoints - 145} over). SAGE enforces a 145-point limit per fleet. Consider redistributing ships across multiple fleets or replacing large ships with smaller efficient alternatives.`
+                });
+            } else if (pointsRemaining >= 25) {
+                recommendations.push({
+                    icon: '<polygon points="13,2 3,14 12,22 22,10"/>',
+                    title: '⚡ Efficient Fleet Expansion',
+                    description: `Your fleet uses ${totalPoints}/145 points (${pointsRemaining} remaining). Optimal additions: Armstrong IMP series (16pts, zero-ammo mining), Class-3 specialists (9pts), or multiple Pearce X4s (1pt each) for cost-effective fleet filling.`
+                });
+            } else if (pointsRemaining > 0) {
+                recommendations.push({
+                    icon: '<polygon points="13,2 3,14 12,22 22,10"/>',
+                    title: '🎯 Near-Optimal Fleet Size',
+                    description: `Your fleet uses ${totalPoints}/145 points (${pointsRemaining} remaining). You're near the cap! Add small ships like Pearce X4 (1pt) or optimize composition with Class-2/3 swaps for better efficiency.`
                 });
             }
             
