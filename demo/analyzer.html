@@ -1903,8 +1903,8 @@
         let playerFleet = null;
         let selectedObjective = 'balanced'; // 'mining', 'scanning', 'crafting', 'balanced'
 
-        // Demo wallet address (known Star Atlas whale)
-        const DEMO_WALLET = '3v7CfLCPQn3iLhGjXk8nj9XGD3vVBQ1Z8w2AKsKKr3YL';
+        // Demo wallet address (known Star Atlas player with 23 fleets)
+        const DEMO_WALLET = '6BLffwKceYy2fYczkRwZ6gXZ7rJ9HfVQC1MNAZWjTQ7L';
 
         // Ship rarity colors
         const rarityColors = {
@@ -2156,7 +2156,7 @@
         const IRONFORGE_RPC = 'https://rpc.ironforge.network/mainnet?apiKey=01JKXP5WV0M8A3F2S5EYSK6WXZ';
 
         // Precomputed Anchor account discriminators (first 8 bytes of sha256("account:<Name>"))
-        // Profile: sha256("account:Profile") -> b865a5bc5f3f7fbc
+        // Profile: sha256("account:Profile") -> b865a5bc5f3f7fbc (wallet key at offset 30)
         // Fleet:   sha256("account:Fleet")   -> 6dcffb306a0288a3
         const DISCRIMINATOR_PROFILE = [0xb8, 0x65, 0xa5, 0xbc, 0x5f, 0x3f, 0x7f, 0xbc];
         const DISCRIMINATOR_FLEET = [0x6d, 0xcf, 0xfb, 0x30, 0x6a, 0x02, 0x88, 0xa3];
@@ -2322,7 +2322,7 @@
                     });
                 }
 
-                // Step 1: Find PlayerProfile by wallet key at offset 28
+                // Step 1: Find PlayerProfile by wallet key at offset 30
                 console.log('[SAGE] Looking up PlayerProfile for', walletAddress);
                 const profiles = await sageRpc('getProgramAccounts', [
                     PLAYER_PROFILE_PROGRAM_ID,
@@ -2330,7 +2330,7 @@
                         encoding: 'base64',
                         filters: [
                             { memcmp: { offset: 0, bytes: DISC_PROFILE_B58 } },
-                            { memcmp: { offset: 28, bytes: walletAddress } },
+                            { memcmp: { offset: 30, bytes: walletAddress } },
                         ],
                     }
                 ]);
