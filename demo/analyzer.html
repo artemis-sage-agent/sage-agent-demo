@@ -521,6 +521,96 @@
             transform: rotate(180deg);
         }
 
+        /* Per-fleet stats grid inside expanded card */
+        .fleet-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.5rem;
+            margin: 0.75rem 0;
+            padding: 0.75rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        .fleet-stat-mini {
+            text-align: center;
+        }
+        .fleet-stat-mini-value {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--accent);
+        }
+        .fleet-stat-mini-label {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            color: var(--text-tertiary);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-top: 0.1rem;
+        }
+        .fleet-perf-rating {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-family: var(--font-display);
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            margin-top: 0.5rem;
+        }
+        .fleet-rec {
+            margin-top: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: var(--accent-dim);
+            border-radius: var(--radius);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .fleet-rec strong { color: var(--accent); }
+
+        /* Target Objective Selector */
+        .objective-selector {
+            padding: 0 2.5rem 1.5rem;
+        }
+        .objective-selector-title {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .objective-pills {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .objective-pill {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: var(--bg-raised);
+            color: var(--text-secondary);
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .objective-pill:hover {
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+        .objective-pill.active {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
         .ship-roster {
             padding: 0 2.5rem 2rem;
         }
@@ -1472,6 +1562,17 @@
                     <!-- Will be populated by JavaScript -->
                 </div>
 
+                <!-- Target Objective Selector -->
+                <div class="objective-selector" id="objectiveSelector" style="display:none;">
+                    <div class="objective-selector-title">Target Objective</div>
+                    <div class="objective-pills">
+                        <div class="objective-pill active" data-objective="balanced" onclick="selectObjective('balanced')">⚖️ Balanced</div>
+                        <div class="objective-pill" data-objective="mining" onclick="selectObjective('mining')">⛏️ Mining</div>
+                        <div class="objective-pill" data-objective="scanning" onclick="selectObjective('scanning')">📡 Scanning</div>
+                        <div class="objective-pill" data-objective="crafting" onclick="selectObjective('crafting')">🏗️ Crafting</div>
+                    </div>
+                </div>
+
                 <!-- Fleet Breakdown (populated when SAGE data available) -->
                 <div class="fleet-breakdown" id="fleetBreakdown" style="display:none;">
                     <!-- Will be populated by JavaScript -->
@@ -1800,6 +1901,7 @@
         let galaxyData = null;
         let isLoading = false;
         let playerFleet = null;
+        let selectedObjective = 'balanced'; // 'mining', 'scanning', 'crafting', 'balanced'
 
         // Demo wallet address (known Star Atlas whale)
         const DEMO_WALLET = '3v7CfLCPQn3iLhGjXk8nj9XGD3vVBQ1Z8w2AKsKKr3YL';
@@ -2161,6 +2263,7 @@
                         walletAddress: address,
                         ships: enhancedFleet,
                         fleetDetails: fleetResult.fleetDetails,
+                        fleets: fleetResult.fleets,
                         profileAddress: fleetResult.profileAddress,
                         source: 'sage'
                     };
@@ -2371,9 +2474,24 @@
 
                 console.log(`[SAGE] Resolved ${ships.length} unique ship types, ${ships.reduce((s, sh) => s + sh.owned, 0)} total ships`);
 
+                // Build per-fleet ship arrays with resolved stats
+                const fleetsWithShips = fleetDetails.map((fd, i) => ({
+                    ...fd,
+                    ships: fleetShipEntries[i].map(entry => {
+                        const mint = shipMintMap[entry.shipAcctKey];
+                        const galaxyInfo = mint ? mintToShipInfo.get(mint) : null;
+                        const stats = galaxyInfo ? SAGE_SHIP_STATS.find(s =>
+                            s.symbol === galaxyInfo.symbol ||
+                            s.shipName.toLowerCase() === (galaxyInfo.name || '').toLowerCase()
+                        ) : null;
+                        return { mint, amount: entry.amount, galaxyInfo, stats, name: galaxyInfo?.name || 'Unknown', symbol: galaxyInfo?.symbol || '?' };
+                    }).filter(s => s.mint)
+                }));
+
                 return {
                     profileAddress,
                     fleetDetails,
+                    fleets: fleetsWithShips,
                     ships,
                     totalFleets: fleetDetails.length,
                     totalShips: ships.reduce((s, sh) => s + sh.owned, 0)
@@ -2585,10 +2703,16 @@
             // Show Fleet Composition Score
             const compositionScore = calculateFleetCompositionScore(fleetAnalysis, playerFleet.ships);
             scoreContainer.innerHTML = `
-                <div class="score-title">Fleet Composition Score</div>
+                <div class="score-title">Portfolio Overview — Fleet Composition Score</div>
                 <div class="score-value">${compositionScore}/100</div>
-                <div class="score-desc">Based on mining capacity, cargo efficiency, and fleet diversification with real SAGE statistics</div>
+                <div class="score-desc">Aggregate score across ALL fleets — mining capacity, cargo efficiency, and fleet diversification</div>
             `;
+
+            // Show objective selector if we have fleet data
+            const objSelector = document.getElementById('objectiveSelector');
+            if (playerFleet.fleetDetails && playerFleet.fleetDetails.length > 0) {
+                objSelector.style.display = 'block';
+            }
             
             // ────────────────────────────────────────────────────
             // Fleet Breakdown (expandable fleet cards)
@@ -2602,7 +2726,12 @@
                     const fleet = playerFleet.fleetDetails[fi];
                     const [factionName, factionClass] = factionMap[fleet.faction] || factionMap[0];
                     
-                    // Find ships assigned to this fleet
+                    // Get per-fleet ships (prefer fleets array with resolved stats, fallback to aggregated)
+                    const perFleetShips = (playerFleet.fleets && playerFleet.fleets[fi])
+                        ? playerFleet.fleets[fi].ships
+                        : [];
+
+                    // Also build assignedShips from aggregated data for ship list display
                     const assignedShips = [];
                     let fleetShipTotal = 0;
                     let fleetPointsUsed = 0;
@@ -2614,13 +2743,21 @@
                             if (fa.label === fleet.label) {
                                 assignedShips.push({ name: ship.name, amount: fa.amount, symbol: ship.symbol, stats: ship.stats });
                                 fleetShipTotal += fa.amount;
-                                // Calculate fleet points for this ship
                                 if (ship.stats && ship.stats.class) {
                                     fleetPointsUsed += (classPoints[ship.stats.class] || 1) * fa.amount;
                                 }
                             }
                         }
                     }
+
+                    // Calculate per-fleet metrics
+                    const fleetMetrics = perFleetShips.length > 0
+                        ? calculatePerFleetMetrics(perFleetShips)
+                        : { totalMining: 0, totalCargo: 0, totalFuel: 0, totalPoints: fleetPointsUsed, totalShips: fleetShipTotal, totalSduPerHour: 0, totalScanCost: 0, fuelAutonomy: 0, score: 0 };
+                    
+                    // Performance rating
+                    const perf = getFleetPerfRating(fleetMetrics, perFleetShips, selectedObjective);
+                    const rec = perFleetShips.length > 0 ? generatePerFleetRec(fleetMetrics, perFleetShips, selectedObjective) : '';
                     
                     // Fleet point utilization color coding
                     const pointsColor = fleetPointsUsed <= 100 ? 'var(--text-secondary)' : 
@@ -2635,12 +2772,40 @@
                                 <div style="font-size:0.7rem;${pointsStyle}margin-top:0.15rem;font-family:var(--font-display);font-weight:600;letter-spacing:0.02em;">${fleetPointsUsed}/145 pts</div>
                             </div>
                             <div class="fleet-card-meta">
+                                <span class="fleet-perf-rating" style="background:${perf.color}22;color:${perf.color};">${perf.rating} — ${perf.label}</span>
                                 <span class="faction-badge ${factionClass}">${factionName}</span>
                                 <span>${fleetShipTotal} ship${fleetShipTotal !== 1 ? 's' : ''}</span>
                                 <svg class="fleet-card-toggle" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                             </div>
                         </div>
                         <div class="fleet-card-ships" id="fleetCard${fi}">
+                            <div class="fleet-stats-grid">
+                                <div class="fleet-stat-mini">
+                                    <div class="fleet-stat-mini-value">⛏ ${fleetMetrics.totalMining > 0 ? fleetMetrics.totalMining.toFixed(1) : '—'}</div>
+                                    <div class="fleet-stat-mini-label">Mining Rate</div>
+                                </div>
+                                <div class="fleet-stat-mini">
+                                    <div class="fleet-stat-mini-value">📡 ${fleetMetrics.totalSduPerHour > 0 ? Math.round(fleetMetrics.totalSduPerHour).toLocaleString() : '—'}</div>
+                                    <div class="fleet-stat-mini-label">SDU/Hour</div>
+                                </div>
+                                <div class="fleet-stat-mini">
+                                    <div class="fleet-stat-mini-value">📦 ${fleetMetrics.totalCargo > 0 ? Math.round(fleetMetrics.totalCargo).toLocaleString() : '—'}</div>
+                                    <div class="fleet-stat-mini-label">Cargo</div>
+                                </div>
+                                <div class="fleet-stat-mini">
+                                    <div class="fleet-stat-mini-value">⛽ ${fleetMetrics.fuelAutonomy > 0 ? fleetMetrics.fuelAutonomy.toFixed(1) + 'h' : '—'}</div>
+                                    <div class="fleet-stat-mini-label">Fuel Autonomy</div>
+                                </div>
+                                <div class="fleet-stat-mini">
+                                    <div class="fleet-stat-mini-value" style="color:${pointsColor};">${fleetPointsUsed}/145</div>
+                                    <div class="fleet-stat-mini-label">Fleet Points</div>
+                                </div>
+                                <div class="fleet-stat-mini">
+                                    <div class="fleet-stat-mini-value">${fleetMetrics.score}</div>
+                                    <div class="fleet-stat-mini-label">Score</div>
+                                </div>
+                            </div>
+                            ${rec ? `<div class="fleet-rec">${rec}</div>` : ''}
                             ${assignedShips.map(s => {
                                 const shipPoints = s.stats ? (classPoints[s.stats.class] || 1) * s.amount : s.amount;
                                 const pointsText = s.stats ? ` (${shipPoints}pts)` : '';
@@ -2716,6 +2881,132 @@
             const toggle = card.querySelector('.fleet-card-toggle');
             ships.classList.toggle('expanded');
             toggle.classList.toggle('open');
+        }
+
+        // Select target objective
+        function selectObjective(objective) {
+            selectedObjective = objective;
+            document.querySelectorAll('.objective-pill').forEach(p => {
+                p.classList.toggle('active', p.dataset.objective === objective);
+            });
+            // Re-render fleet cards and recommendations
+            if (playerFleet) {
+                showPlayerFleet();
+                showPersonalizedRecommendations();
+            }
+        }
+
+        // Calculate per-fleet metrics
+        function calculatePerFleetMetrics(fleetShips) {
+            const classPoints = { '1': 1, '2': 4, '3': 9, '4': 16, '5': 25, '6': 36, '7': 49, '9': 81 };
+            let totalMining = 0, totalCargo = 0, totalFuel = 0, totalPoints = 0, totalShips = 0;
+            let totalSduPerHour = 0, totalScanCost = 0;
+
+            for (const s of fleetShips) {
+                const count = s.amount || 1;
+                totalShips += count;
+                if (s.stats) {
+                    totalMining += s.stats.miningRate * count;
+                    totalCargo += s.stats.cargoCapacity * count;
+                    totalFuel += s.stats.fuelCapacity * count;
+                    totalPoints += (classPoints[s.stats.class] || 1) * count;
+                    if (s.stats.scanCoolDown > 0) {
+                        totalSduPerHour += (s.stats.sduPerScan / s.stats.scanCoolDown) * 3600 * count;
+                        totalScanCost += s.stats.scanCost * count;
+                    }
+                }
+            }
+
+            // Fuel autonomy: hours of subwarp before fuel runs out (weighted avg)
+            let fuelAutonomy = 0;
+            if (fleetShips.length > 0) {
+                let totalFuelConsumption = 0;
+                for (const s of fleetShips) {
+                    if (s.stats) totalFuelConsumption += s.stats.subwarpFuelConsumptionRate * (s.amount || 1);
+                }
+                fuelAutonomy = totalFuelConsumption > 0 ? totalFuel / totalFuelConsumption : 0;
+            }
+
+            // Mini composition score (0-100)
+            let score = 0;
+            score += Math.min(30, totalMining / 10); // mining contribution
+            score += Math.min(20, totalSduPerHour / 100); // scanning contribution
+            score += Math.min(20, totalCargo / 50000); // cargo contribution
+            if (totalPoints <= 145 && totalPoints >= 100) score += 20;
+            else if (totalPoints < 100) score += Math.min(20, totalPoints / 100 * 20);
+            else score += Math.max(0, 20 - (totalPoints - 145) * 2);
+            // Diversity bonus
+            const hasMiner = fleetShips.some(s => s.stats?.spec === 'Miner');
+            const hasScanner = fleetShips.some(s => s.stats?.spec === 'Data Runner');
+            if (hasMiner && hasScanner) score += 10;
+            else if (hasMiner || hasScanner) score += 5;
+            score = Math.round(Math.min(100, Math.max(0, score)));
+
+            return { totalMining, totalCargo, totalFuel, totalPoints, totalShips, totalSduPerHour, totalScanCost, fuelAutonomy, score };
+        }
+
+        // Generate per-fleet recommendation based on objective
+        function generatePerFleetRec(metrics, fleetShips, objective) {
+            const hasMiner = fleetShips.some(s => s.stats?.spec === 'Miner');
+            const hasScanner = fleetShips.some(s => s.stats?.spec === 'Data Runner');
+            const hasFreight = fleetShips.some(s => s.stats?.cargoCapacity > 100000);
+            const hasZeroAmmo = fleetShips.some(s => s.stats?.ammoConsumptionRate === 0 && s.stats?.miningRate > 0);
+            const pointsLeft = 145 - metrics.totalPoints;
+
+            if (objective === 'mining') {
+                if (!hasMiner && !hasZeroAmmo) return '⛏️ No dedicated miners. Add Armstrong IMP series for zero-ammo mining.';
+                if (metrics.totalCargo < metrics.totalMining * 24 * 8) return '📦 Cargo fills too fast for 8h cycles. Add freight capacity or schedule more frequent runs.';
+                if (hasZeroAmmo) return '✅ Zero-ammo miners detected — excellent for sustained mining ops.';
+                return '⛏️ Good mining setup. Consider upgrading to Armstrong IMPs for zero ammo costs.';
+            }
+            if (objective === 'scanning') {
+                if (!hasScanner) return '📡 No Data Runners! Add VZUS opod or Fimbul BYOS Ranger for zero-cost SDU generation.';
+                if (metrics.totalScanCost > 0) return '💰 Some scanners have scan costs. Prioritize Data Runners (scanCost=0) for maximum SDU profit.';
+                return `✅ Strong scanning fleet — ${Math.round(metrics.totalSduPerHour)} SDU/hour with zero scan costs.`;
+            }
+            if (objective === 'crafting') {
+                if (!hasMiner && !hasScanner) return '🏗️ FICs need 5 SDU + resources. This fleet has neither miners nor scanners.';
+                if (!hasScanner) return '📡 Missing scanners for SDU production. FICs require 5 SDU each — add a Data Runner.';
+                if (!hasMiner) return '⛏️ Missing miners for resource input. FICs need materials — add mining capability.';
+                return '✅ Mixed miner + scanner fleet — good for Faction Infrastructure Contracts.';
+            }
+            // balanced
+            if (pointsLeft >= 25) return `⚡ ${pointsLeft} fleet points unused. Fill with specialist ships for better utilization.`;
+            if (!hasScanner && metrics.totalMining > 10) return '📡 Pure mining fleet — adding a Data Runner would diversify income streams.';
+            if (!hasMiner && metrics.totalSduPerHour > 0) return '⛏️ Pure scanning fleet — adding miners would enable FIC production.';
+            return '⚖️ Well-balanced fleet composition.';
+        }
+
+        // Get performance rating for a fleet given an objective
+        function getFleetPerfRating(metrics, fleetShips, objective) {
+            let rating = 'C', color = 'var(--text-tertiary)', label = 'Average';
+            const hasMiner = fleetShips.some(s => s.stats?.spec === 'Miner');
+            const hasScanner = fleetShips.some(s => s.stats?.spec === 'Data Runner');
+
+            if (objective === 'mining') {
+                const s = metrics.totalMining;
+                if (s >= 100) { rating = 'S'; color = 'var(--accent)'; label = 'Excellent Miner'; }
+                else if (s >= 20) { rating = 'A'; color = '#00d4aa'; label = 'Strong Miner'; }
+                else if (s >= 5) { rating = 'B'; color = '#f59e0b'; label = 'Moderate'; }
+                else { label = 'Weak Mining'; }
+            } else if (objective === 'scanning') {
+                const s = metrics.totalSduPerHour;
+                if (s >= 2000) { rating = 'S'; color = 'var(--accent)'; label = 'Excellent Scanner'; }
+                else if (s >= 500) { rating = 'A'; color = '#00d4aa'; label = 'Strong Scanner'; }
+                else if (s >= 50) { rating = 'B'; color = '#f59e0b'; label = 'Moderate'; }
+                else { label = 'Weak Scanning'; }
+            } else if (objective === 'crafting') {
+                if (hasMiner && hasScanner) { rating = 'A'; color = '#00d4aa'; label = 'FIC Ready'; }
+                else if (hasMiner || hasScanner) { rating = 'B'; color = '#f59e0b'; label = 'Partial'; }
+                else { label = 'Not FIC Capable'; }
+            } else {
+                const s = metrics.score;
+                if (s >= 80) { rating = 'S'; color = 'var(--accent)'; label = 'Optimal'; }
+                else if (s >= 60) { rating = 'A'; color = '#00d4aa'; label = 'Strong'; }
+                else if (s >= 40) { rating = 'B'; color = '#f59e0b'; label = 'Good'; }
+                else { label = 'Needs Work'; }
+            }
+            return { rating, color, label };
         }
 
         // Calculate real fleet statistics using SAGE data
@@ -2822,7 +3113,7 @@
             const content = document.getElementById('personalRecContent');
             
             // Generate recommendations based on real ship stats
-            const recommendations = generateRealStatsRecommendations(playerFleet.ships);
+            const recommendations = generateRealStatsRecommendations(playerFleet.ships, selectedObjective);
             
             // Build content
             let html = '<div class="rec-grid">';
@@ -2859,100 +3150,139 @@
         }
 
         // Generate recommendations based on real ship statistics
-        function generateRealStatsRecommendations(ships) {
+        function generateRealStatsRecommendations(ships, objective = 'balanced') {
             const recommendations = [];
             const fleetStats = calculateRealFleetStats(ships);
+            const objectiveLabels = { mining: '⛏️ Mining', scanning: '📡 Scanning', crafting: '🏗️ Crafting', balanced: '⚖️ Balanced' };
+            
+            // Add objective context header
+            if (objective !== 'balanced') {
+                recommendations.push({
+                    icon: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/>',
+                    title: `${objectiveLabels[objective]} Focus Active`,
+                    description: objective === 'mining' 
+                        ? 'Recommendations optimized for maximum resource extraction. Prioritizing mining rate, zero-ammo ships, and cargo capacity for sustained 24h autonomous cycles.'
+                        : objective === 'scanning'
+                        ? 'Recommendations optimized for SDU generation. Prioritizing Data Runners with zero scan costs, low scan cooldowns, and high sduPerScan values for Data Running profits.'
+                        : 'Recommendations optimized for Faction Infrastructure Contracts. FICs require 5 SDU + resources per contract (2 ATLAS each). Need both scanning AND mining capability.'
+                });
+            }
             
             // Check for Armstrong IMP advantage (zero ammo cost)
             const impShips = ships.filter(ship => 
                 ship.stats && ship.stats.manufacturer === 'Armstrong' && 
                 ship.stats.ammoConsumptionRate === 0
             );
-            
             const nonImpMiners = ships.filter(ship => 
                 ship.stats && ship.stats.miningRate > 0 && ship.stats.ammoConsumptionRate > 0
             );
-            
-            if (impShips.length > 0) {
-                const impMiningRate = impShips.reduce((sum, ship) => sum + (ship.stats.miningRate * ship.owned), 0);
-                recommendations.push({
-                    icon: '<circle cx="12" cy="12" r="10"/><line x1="22" y1="2" x2="11" y2="13"/>',
-                    title: '🏆 Armstrong IMP Advantage Detected',
-                    description: `Your ${impShips.length} Armstrong IMP ships (${Math.round(impMiningRate)} mining rate) consume ZERO ammunition during mining. This makes them significantly more profitable than other miners. Deploy these for primary mining operations in high-richness sectors (MRZ-8, MRZ-16, MRZ-31 for Iron Ore).`
-                });
-            } else if (nonImpMiners.length > 0) {
-                recommendations.push({
-                    icon: '<circle cx="12" cy="12" r="10"/><line x1="22" y1="2" x2="11" y2="13"/>',
-                    title: '⚠️ High Ammo Costs Detected',
-                    description: `Your mining ships consume ammunition (${nonImpMiners.length} ships affected). Consider upgrading to Armstrong IMP series (IMP Tip, IMP Tap, or IMP) for zero-ammo mining operations. This could dramatically improve profitability over 24-hour autonomous cycles.`
-                });
-            }
-            
-            // Data Runner opportunity
             const dataRunners = ships.filter(ship => 
                 ship.stats && ship.stats.spec === 'Data Runner'
             );
-            
-            if (dataRunners.length > 0) {
-                const totalScanValue = dataRunners.reduce((sum, ship) => 
-                    sum + (ship.stats.sduPerScan * ship.owned), 0
-                );
-                recommendations.push({
-                    icon: '<path d="M13 7l5 5-5 5"/><path d="M6 12h12"/>',
-                    title: '💎 Data Runner Fleet Excellence',
-                    description: `Your ${dataRunners.length} Data Runner ships generate ${totalScanValue} SDU per scan cycle with ZERO scan costs and no food consumption during scanning. Focus these on high Information Density sectors for Infrastructure Contract SDU requirements (5 SDU per contract = 2 ATLAS).`
-                });
-            } else if (fleetStats.totalShips > 0) {
-                recommendations.push({
-                    icon: '<path d="M13 7l5 5-5 5"/><path d="M6 12h12"/>',
-                    title: '📡 Missing Data Runner Capability',
-                    description: `Consider adding VZUS opod, Fimbul BYOS Ranger, or Opal Rayfam for efficient scanning operations. These ships have zero scan costs and generate high SDU yields for Infrastructure Contract production (guaranteed 2 ATLAS per contract).`
-                });
+
+            // Mining recommendations (show for mining, crafting, balanced)
+            if (objective !== 'scanning') {
+                if (impShips.length > 0) {
+                    const impMiningRate = impShips.reduce((sum, ship) => sum + (ship.stats.miningRate * ship.owned), 0);
+                    recommendations.push({
+                        icon: '<circle cx="12" cy="12" r="10"/><line x1="22" y1="2" x2="11" y2="13"/>',
+                        title: '🏆 Armstrong IMP Advantage Detected',
+                        description: objective === 'mining'
+                            ? `Your ${impShips.length} Armstrong IMP ships (${Math.round(impMiningRate)} mining rate) are IDEAL for your mining objective. Zero ammo = maximum 24h cycle profit. Target high-richness sectors (MRZ-8, MRZ-16, MRZ-31). Optimize cargo capacity for 8-24h unattended cycles.`
+                            : `Your ${impShips.length} Armstrong IMP ships (${Math.round(impMiningRate)} mining rate) consume ZERO ammunition during mining. Deploy for primary mining in high-richness sectors.`
+                    });
+                } else if (nonImpMiners.length > 0 && (objective === 'mining' || objective === 'crafting')) {
+                    recommendations.push({
+                        icon: '<circle cx="12" cy="12" r="10"/><line x1="22" y1="2" x2="11" y2="13"/>',
+                        title: '⚠️ High Ammo Costs — Upgrade to Armstrong IMPs',
+                        description: `Your ${nonImpMiners.length} mining ships consume ammunition. For ${objective === 'mining' ? 'maximum extraction' : 'FIC resource production'}, upgrade to Armstrong IMP series (IMP Tip 9pts, IMP Tap 16pts, IMP 36pts) for zero-ammo mining. Critical for profitable 24h autonomous cycles.`
+                    });
+                }
             }
             
-            // Cargo-to-mining ratio analysis
-            if (fleetStats.totalMiningRate > 0) {
+            // Scanning recommendations (show for scanning, crafting, balanced)
+            if (objective !== 'mining') {
+                if (dataRunners.length > 0) {
+                    const totalSduPerHour = dataRunners.reduce((sum, ship) => 
+                        sum + (ship.stats.sduPerScan / ship.stats.scanCoolDown) * 3600 * ship.owned, 0
+                    );
+                    recommendations.push({
+                        icon: '<path d="M13 7l5 5-5 5"/><path d="M6 12h12"/>',
+                        title: '💎 Data Runner Fleet Excellence',
+                        description: objective === 'scanning'
+                            ? `Your ${dataRunners.length} Data Runners generate ~${Math.round(totalSduPerHour)} SDU/hour with ZERO scan costs. Maximize by deploying to highest Information Density sectors. Each scan cycle is pure profit. Target sectors near starbase for quick deposits.`
+                            : objective === 'crafting'
+                            ? `Your ${dataRunners.length} Data Runners generate ~${Math.round(totalSduPerHour)} SDU/hour. At 5 SDU per FIC (2 ATLAS each), that's ~${Math.round(totalSduPerHour/5)} potential FICs/hour. Pair with miners for complete FIC production.`
+                            : `Your ${dataRunners.length} Data Runner ships generate ~${Math.round(totalSduPerHour)} SDU/hour with ZERO scan costs. Focus on high Information Density sectors.`
+                    });
+                } else if (fleetStats.totalShips > 0 && objective !== 'mining') {
+                    recommendations.push({
+                        icon: '<path d="M13 7l5 5-5 5"/><path d="M6 12h12"/>',
+                        title: objective === 'scanning' ? '🚨 No Data Runners — Critical Gap' : '📡 Missing Data Runner Capability',
+                        description: objective === 'scanning'
+                            ? 'You have NO Data Runners! For scanning objectives, VZUS opod (378 SDU/scan, 300s cooldown, 0 cost) and Fimbul BYOS Ranger (378 SDU/scan, 300s cooldown, 0 cost) are essential. Opal Rayfam (121 SDU/scan, 312s) is a Class-3 budget option.'
+                            : 'Consider adding VZUS opod, Fimbul BYOS Ranger, or Opal Rayfam for SDU generation. Zero scan costs = guaranteed profit per scan cycle.'
+                    });
+                }
+            }
+
+            // Crafting-specific recommendation
+            if (objective === 'crafting') {
+                const hasMiner = impShips.length > 0 || nonImpMiners.length > 0;
+                const hasScanner = dataRunners.length > 0;
+                if (hasMiner && hasScanner) {
+                    recommendations.push({
+                        icon: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3l-4 4-4-4"/>',
+                        title: '✅ FIC Production Ready',
+                        description: 'Your fleet has both mining and scanning capability — ideal for Faction Infrastructure Contracts. Each FIC needs 5 SDU + resource materials. Coordinate scan & mine cycles: scan for SDUs, mine resources, craft FICs at starbase for 2 ATLAS each.'
+                    });
+                } else if (!hasMiner && !hasScanner) {
+                    recommendations.push({
+                        icon: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3l-4 4-4-4"/>',
+                        title: '🚨 No FIC Production Capability',
+                        description: 'FICs require both SDUs (from scanning) and resources (from mining). Your fleet has neither. Add Armstrong IMP for mining + VZUS opod for scanning to start FIC production.'
+                    });
+                }
+            }
+            
+            // Cargo-to-mining ratio analysis (relevant for mining & crafting)
+            if ((objective === 'mining' || objective === 'crafting' || objective === 'balanced') && fleetStats.totalMiningRate > 0) {
                 const cargoFillHours = fleetStats.totalCargoCapacity / (fleetStats.totalMiningRate * 24);
                 if (cargoFillHours < 1) {
                     recommendations.push({
                         icon: '<path d="M14 7V4a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v3"/>',
                         title: '🚛 Cargo Bottleneck Identified',
-                        description: `Your fleet will fill cargo in ${cargoFillHours.toFixed(1)} hours but mines 24/7. Add transport ships (Fimbul Sledbarge: 609K cargo, Pearce D9: 553K cargo) or set up automated cargo runs to prevent mining downtime.`
+                        description: `Your fleet fills cargo in ${cargoFillHours.toFixed(1)} hours. ${objective === 'mining' ? 'Critical for mining objective: ' : ''}Add transport ships (Fimbul Sledbarge: 609K cargo, Pearce D9: 553K cargo) or schedule automated cargo runs.`
                     });
                 }
             }
             
-            // Fleet point efficiency with improved 145pt cap analysis
+            // Fleet point efficiency
             const totalPoints = ships.reduce((sum, ship) => {
-                const classPoints = {
-                    '1': 1, '2': 4, '3': 9, '4': 16, '5': 25, '6': 36, '7': 49, '9': 81
-                };
+                const classPoints = { '1': 1, '2': 4, '3': 9, '4': 16, '5': 25, '6': 36, '7': 49, '9': 81 };
                 return sum + (classPoints[ship.stats?.class] || 1) * ship.owned;
             }, 0);
-            
             const pointsRemaining = 145 - totalPoints;
             
             if (totalPoints > 145) {
                 recommendations.push({
                     icon: '<polygon points="13,2 3,14 12,22 22,10"/>',
                     title: '⚠️ Fleet Exceeds Point Cap',
-                    description: `Your fleet uses ${totalPoints}/145 points (${totalPoints - 145} over). SAGE enforces a 145-point limit per fleet. Consider redistributing ships across multiple fleets or replacing large ships with smaller efficient alternatives.`
+                    description: `Your fleet uses ${totalPoints}/145 points (${totalPoints - 145} over). SAGE enforces a 145-point limit per fleet. Redistribute ships across multiple fleets.`
                 });
             } else if (pointsRemaining >= 25) {
+                const fillSuggestion = objective === 'mining' ? 'Armstrong IMP Tip (9pts) or IMP Tap (16pts) for zero-ammo mining'
+                    : objective === 'scanning' ? 'Opal Rayfam (9pts, Data Runner) for more SDU generation'
+                    : objective === 'crafting' ? 'a mix of miners and scanners for FIC production'
+                    : 'Armstrong IMP series (16pts) or Class-3 specialists (9pts)';
                 recommendations.push({
                     icon: '<polygon points="13,2 3,14 12,22 22,10"/>',
-                    title: '⚡ Efficient Fleet Expansion',
-                    description: `Your fleet uses ${totalPoints}/145 points (${pointsRemaining} remaining). Optimal additions: Armstrong IMP series (16pts, zero-ammo mining), Class-3 specialists (9pts), or multiple Pearce X4s (1pt each) for cost-effective fleet filling.`
-                });
-            } else if (pointsRemaining > 0) {
-                recommendations.push({
-                    icon: '<polygon points="13,2 3,14 12,22 22,10"/>',
-                    title: '🎯 Near-Optimal Fleet Size',
-                    description: `Your fleet uses ${totalPoints}/145 points (${pointsRemaining} remaining). You're near the cap! Add small ships like Pearce X4 (1pt) or optimize composition with Class-2/3 swaps for better efficiency.`
+                    title: '⚡ Fleet Expansion Available',
+                    description: `${pointsRemaining} points remaining. Add ${fillSuggestion} to maximize your ${objective} potential.`
                 });
             }
             
-            return recommendations.slice(0, 4); // Limit to 4 recommendations
+            return recommendations.slice(0, 5); // Limit to 5 (1 objective header + 4 recs)
         }
 
         // Calculate real earnings potential
