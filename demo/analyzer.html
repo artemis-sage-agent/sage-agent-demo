@@ -1353,6 +1353,378 @@
         }
 
         /* ═══════════════════════════════════════════════════════
+           SAGE Fleet Optimizer Styling
+        ═══════════════════════════════════════════════════════ */
+
+        .optimizer-section {
+            margin-top: 6rem;
+            padding: 0;
+        }
+
+        .optimizer-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .optimizer-tab {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.875rem 1.75rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .optimizer-tab:hover {
+            background: var(--bg-raised);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+
+        .optimizer-tab.active {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+
+        .optimizer-content {
+            display: none;
+        }
+
+        .optimizer-content.active {
+            display: block;
+        }
+
+        .optimizer-card {
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .optimizer-card:hover {
+            border-color: var(--border-hover);
+        }
+
+        .optimizer-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .optimizer-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .fleet-points-summary {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .points-display {
+            margin-bottom: 0.5rem;
+        }
+
+        .points-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-right: 0.5rem;
+        }
+
+        .points-label {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .fleets-needed {
+            color: var(--text-tertiary);
+            font-size: 0.9rem;
+        }
+
+        .optimizer-form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .optimizer-form-group label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .optimizer-form-control {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            transition: all 0.25s ease;
+        }
+
+        .optimizer-form-control::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .optimizer-form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+        }
+
+        .optimizer-form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .ship-inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .ship-inventory-card {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .ship-inventory-card:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-raised);
+        }
+
+        .ship-inventory-card.selected {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        .ship-inventory-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .ship-inventory-class {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .ship-inventory-points {
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+
+        .ship-inventory-stats {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            line-height: 1.4;
+        }
+
+        .ship-inventory-quantity {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--accent);
+            color: var(--bg);
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .objective-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .objective-option {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+        }
+
+        .objective-option:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-raised);
+        }
+
+        .objective-option.selected {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+        }
+
+        .objective-option h4 {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .objective-option p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .optimizer-btn {
+            padding: 0.875rem 2rem;
+            border-radius: var(--radius);
+            border: none;
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .optimizer-btn-primary {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .optimizer-btn-primary:hover {
+            background: #00c499;
+            transform: translateY(-1px);
+        }
+
+        .optimizer-results {
+            margin-top: 2rem;
+        }
+
+        .optimizer-results h3 {
+            font-family: var(--font-display);
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .optimizer-info-box {
+            background: rgba(0, 212, 170, 0.1);
+            border: 1px solid rgba(0, 212, 170, 0.3);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .optimizer-error-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            color: #ef4444;
+            font-size: 0.9rem;
+        }
+
+        .optimizer-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-subtle);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .optimizer-table th,
+        .optimizer-table td {
+            padding: 0.875rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .optimizer-table th {
+            background: var(--bg-raised);
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .optimizer-table td {
+            color: var(--text-primary);
+            font-size: 0.85rem;
+        }
+
+        .optimizer-table tbody tr:hover {
+            background: var(--bg-raised);
+        }
+
+        .fleet-composition {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .fleet-composition-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .fleet-composition-ships {
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .fleet-composition-stats {
+            color: var(--text-tertiary);
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+
+        /* ═══════════════════════════════════════════════════════
            Responsive
         ═══════════════════════════════════════════════════════ */
 
@@ -1824,6 +2196,180 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ════════════════════════════════════════════════════
+                 SAGE Fleet Optimizer Section
+            ════════════════════════════════════════════════════ -->
+            <div class="optimizer-section reveal">
+                <div class="section-header">
+                    <p class="section-label">Fleet Optimization</p>
+                    <h2 class="section-title">SAGE Fleet Optimizer</h2>
+                    <p class="section-desc">
+                        Advanced fleet composition, LP efficiency analysis, and market arbitrage calculations using real SAGE game data.
+                    </p>
+                </div>
+
+                <!-- Optimizer Tabs -->
+                <div class="optimizer-tabs">
+                    <button class="optimizer-tab active" data-tab="fleet" onclick="showOptimizerTab('fleet')">Fleet Builder</button>
+                    <button class="optimizer-tab" data-tab="lp" onclick="showOptimizerTab('lp')">LP Efficiency</button>
+                    <button class="optimizer-tab" data-tab="arbitrage" onclick="showOptimizerTab('arbitrage')">Market Arbitrage</button>
+                </div>
+
+                <!-- Fleet Builder Tab -->
+                <div id="optimizer-fleet" class="optimizer-content active">
+                    <div class="optimizer-card">
+                        <h3>Ship Inventory</h3>
+                        <p class="optimizer-desc">Select ships from your inventory. Click to add, click again to increase quantity. Fleet point cap: 145 per fleet.</p>
+                        
+                        <div class="fleet-points-summary">
+                            <div class="points-display">
+                                <span class="points-value" id="totalFleetPoints">0</span>
+                                <span class="points-label">/ 145 Points</span>
+                            </div>
+                            <div class="fleets-needed">
+                                Fleets Needed: <span id="fleetsNeeded">0</span>
+                            </div>
+                        </div>
+
+                        <div class="optimizer-form-group">
+                            <label>Filter by Class:</label>
+                            <select class="optimizer-form-control" id="shipClassFilter" onchange="filterShipsByClass()">
+                                <option value="">All Classes</option>
+                                <option value="1">Class 1 (1 point)</option>
+                                <option value="2">Class 2 (4 points)</option>
+                                <option value="3">Class 3 (9 points)</option>
+                                <option value="4">Class 4 (16 points)</option>
+                                <option value="5">Class 5 (25 points)</option>
+                                <option value="6">Class 6 (36 points)</option>
+                                <option value="7">Class 7 (49 points)</option>
+                                <option value="9">Class 9 (81 points)</option>
+                            </select>
+                        </div>
+
+                        <div class="ship-inventory-grid" id="shipInventoryGrid">
+                            <!-- Ships will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="optimizer-card">
+                        <h3>Fleet Objective</h3>
+                        <p class="optimizer-desc">Select your primary fleet objective to optimize ship composition.</p>
+                        
+                        <div class="objective-selector" id="objectiveSelector">
+                            <div class="objective-option selected" data-objective="mining" onclick="selectFleetObjective('mining')">
+                                <h4>Mining</h4>
+                                <p>Optimize for mining rate and cargo capacity</p>
+                            </div>
+                            <div class="objective-option" data-objective="scanning" onclick="selectFleetObjective('scanning')">
+                                <h4>Scanning</h4>
+                                <p>Maximize SDU production and survey efficiency</p>
+                            </div>
+                            <div class="objective-option" data-objective="freighting" onclick="selectFleetObjective('freighting')">
+                                <h4>Freighting</h4>
+                                <p>Optimize cargo capacity and fuel efficiency</p>
+                            </div>
+                            <div class="objective-option" data-objective="crafting" onclick="selectFleetObjective('crafting')">
+                                <h4>Crafting</h4>
+                                <p>Maximize crew and cargo for production chains</p>
+                            </div>
+                            <div class="objective-option" data-objective="profit" onclick="selectFleetObjective('profit')">
+                                <h4>Profit Max</h4>
+                                <p>Balance efficiency across all activities</p>
+                            </div>
+                        </div>
+
+                        <button class="optimizer-btn optimizer-btn-primary" onclick="optimizeFleetComposition()">Optimize Fleet Composition</button>
+                        
+                        <div class="optimizer-results" id="fleetOptimizerResults" style="display: none;">
+                            <!-- Results will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LP Efficiency Tab -->
+                <div id="optimizer-lp" class="optimizer-content">
+                    <div class="optimizer-card">
+                        <h3>LP Efficiency Calculator</h3>
+                        <p class="optimizer-desc">Calculate net LP per hour and LP per ATLAS for all craftable items, including supply chain complexity and compounding fees.</p>
+
+                        <div class="optimizer-form-grid">
+                            <div class="optimizer-form-group">
+                                <label>Available Crew:</label>
+                                <input type="number" class="optimizer-form-control" id="lpAvailableCrew" value="100" min="1">
+                            </div>
+                            <div class="optimizer-form-group">
+                                <label>Mining Travel Time (h):</label>
+                                <input type="number" class="optimizer-form-control" id="lpMiningTravel" value="2" min="0" step="0.1">
+                            </div>
+                            <div class="optimizer-form-group">
+                                <label>Starbase Travel Time (h):</label>
+                                <input type="number" class="optimizer-form-control" id="lpStarbaseTravel" value="1" min="0" step="0.1">
+                            </div>
+                            <div class="optimizer-form-group">
+                                <label>ATLAS Price (USD):</label>
+                                <input type="number" class="optimizer-form-control" id="lpAtlasPrice" value="0.003" min="0" step="0.0001">
+                            </div>
+                            <div class="optimizer-form-group">
+                                <label>Price Multiplier:</label>
+                                <input type="number" class="optimizer-form-control" id="lpPriceMultiplier" value="1.2" min="0.1" step="0.1">
+                            </div>
+                        </div>
+
+                        <button class="optimizer-btn optimizer-btn-primary" onclick="calculateLPEfficiency()">Calculate LP Efficiency</button>
+                        
+                        <div class="optimizer-results" id="lpResults" style="display: none;">
+                            <!-- Results will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Market Arbitrage Tab -->
+                <div id="optimizer-arbitrage" class="optimizer-content">
+                    <div class="optimizer-card">
+                        <h3>Market Arbitrage Calculator</h3>
+                        <p class="optimizer-desc">Calculate profit potential for trading runs between different locations using your fleet composition.</p>
+
+                        <div class="optimizer-form-grid">
+                            <div class="optimizer-form-group">
+                                <label>Resource:</label>
+                                <select class="optimizer-form-control" id="arbitrageResource" onchange="updateArbitragePriceSuggestions()">
+                                    <option value="">Select Resource</option>
+                                </select>
+                            </div>
+                            <div class="optimizer-form-group">
+                                <label>Trade Ship:</label>
+                                <select class="optimizer-form-control" id="arbitrageTradeShip">
+                                    <option value="">Select Ship</option>
+                                </select>
+                            </div>
+                            <div class="optimizer-form-group">
+                                <label>Buy Price (ATLAS):</label>
+                                <input type="number" class="optimizer-form-control" id="arbitrageBuyPrice" step="0.000001">
+                            </div>
+                            <div class="optimizer-form-group">
+                                <label>Sell Price (ATLAS):</label>
+                                <input type="number" class="optimizer-form-control" id="arbitrageSellPrice" step="0.000001">
+                            </div>
+                            <div class="optimizer-form-group">
+                                <label>Distance (sectors):</label>
+                                <input type="number" class="optimizer-form-control" id="arbitrageDistance" value="5" min="1">
+                            </div>
+                            <div class="optimizer-form-group">
+                                <label>Number of Trips:</label>
+                                <input type="number" class="optimizer-form-control" id="arbitrageTrips" value="10" min="1">
+                            </div>
+                        </div>
+
+                        <button class="optimizer-btn optimizer-btn-primary" onclick="calculateArbitrageProfit()">Calculate Profit</button>
+                        
+                        <div class="optimizer-results" id="arbitrageResults" style="display: none;">
+                            <!-- Results will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -1895,6 +2441,869 @@
             { symbol: "T1TAN", shipName: "Pearce T1", manufacturer: "Pearce", spec: "Fighter", class: "9", cargoCapacity: 12296610, fuelCapacity: 8345147, ammoCapacity: 13266644, foodConsumptionRate: 42.486, ammoConsumptionRate: 133.775, miningRate: 2675.491, subwarpSpeed: 0.0064, warpSpeed: 0.1, maxWarpDistance: 17.1, warpCoolDown: 780, warpFuelConsumptionRate: 129255.15, subwarpFuelConsumptionRate: 35509.66, planetExitFuelAmount: 35510, scanCoolDown: 756, sduPerScan: 49972, scanCost: 63953, requiredCrew: 212, passengerCapacity: 2773, respawnTime: 740 },
             { symbol: "PHI", shipName: "Rainbow Phi", manufacturer: "Rainbow", spec: "Fighter", class: "9", cargoCapacity: 15149652, fuelCapacity: 9771668, ammoCapacity: 8987082, foodConsumptionRate: 51.104, ammoConsumptionRate: 133.775, miningRate: 2675.491, subwarpSpeed: 0.0073, warpSpeed: 0.1, maxWarpDistance: 17.55, warpCoolDown: 780, warpFuelConsumptionRate: 121421.5, subwarpFuelConsumptionRate: 33357.56, planetExitFuelAmount: 33358, scanCoolDown: 696, sduPerScan: 51134, scanCost: 76928, requiredCrew: 255, passengerCapacity: 2773, respawnTime: 740 }
         ];
+
+        // ═══════════════════════════════════════════════════════
+        // SAGE Fleet Optimizer Data
+        // ═══════════════════════════════════════════════════════
+        
+        const SAGE_SHIPS = {
+            // Class 1 Ships
+            "OGKARU": {
+                name: "Ogrika Ruch",
+                class: 1,
+                points: 1,
+                crew: 1,
+                cargo: 249,
+                fuel: 450,
+                ammo: 104,
+                mining: 2620,
+                speed: 7600,
+                price: 4990,
+                type: "Racer"
+            },
+            "OPALJ": {
+                name: "Opal Jet",
+                class: 1,
+                points: 1,
+                crew: 1,
+                cargo: 249,
+                fuel: 450,
+                ammo: 104,
+                mining: 2620,
+                speed: 8100,
+                price: 3990,
+                type: "Racer"
+            },
+            "FBLAIR": {
+                name: "Fimbul Airbike",
+                class: 1,
+                points: 1,
+                crew: 1,
+                cargo: 249,
+                fuel: 450,
+                ammo: 104,
+                mining: 2620,
+                speed: 8400,
+                price: 2990,
+                type: "Racer"
+            },
+            "VZUSSO": {
+                name: "VZUS solos",
+                class: 1,
+                points: 1,
+                crew: 1,
+                cargo: 249,
+                fuel: 450,
+                ammo: 104,
+                mining: 2620,
+                speed: 7600,
+                price: 4410,
+                type: "Racer"
+            },
+            "PULSE": {
+                name: "Busan Pulse",
+                class: 1,
+                points: 1,
+                crew: 1,
+                cargo: 249,
+                fuel: 450,
+                ammo: 104,
+                mining: 2620,
+                speed: 8600,
+                price: null,
+                type: "Racer"
+            },
+            "PX4": {
+                name: "Pearce X4",
+                class: 1,
+                points: 1,
+                crew: 1,
+                cargo: 389,
+                fuel: 267,
+                ammo: 228,
+                mining: 3200,
+                speed: 7000,
+                price: 7800,
+                type: "Fighter"
+            },
+            "FBLEUN": {
+                name: "Fimbul ECOS Unibomba",
+                class: 1,
+                points: 1,
+                crew: 1,
+                cargo: 274,
+                fuel: 267,
+                ammo: 336,
+                mining: 3250,
+                speed: 5200,
+                price: 8490,
+                type: "Bomber"
+            },
+            
+            // Class 2 Ships
+            "CALMAX": {
+                name: "Calico Maxhog",
+                class: 2,
+                points: 4,
+                crew: 1,
+                cargo: 2205,
+                fuel: 1150,
+                ammo: 288,
+                mining: 7430,
+                speed: 6700,
+                price: 39400,
+                type: "Transport"
+            },
+            "OPALJJ": {
+                name: "Opal Jetjet",
+                class: 2,
+                points: 4,
+                crew: 2,
+                cargo: 863,
+                fuel: 1797,
+                ammo: 359,
+                mining: 8100,
+                speed: 8100,
+                price: 34900,
+                type: "Racer"
+            },
+            "FBLLOW": {
+                name: "Fimbul Lowbie",
+                class: 2,
+                points: 4,
+                crew: 1,
+                cargo: 1965,
+                fuel: 1390,
+                ammo: 288,
+                mining: 7430,
+                speed: 6100,
+                price: 39000,
+                type: "Transport"
+            },
+            "OGKANR": {
+                name: "Ogrika Niruch",
+                class: 2,
+                points: 4,
+                crew: 1,
+                cargo: 1965,
+                fuel: 1390,
+                ammo: 288,
+                mining: 7430,
+                speed: 6400,
+                price: 118990,
+                type: "Transport"
+            },
+            "CALSCD": {
+                name: "Calico Scud",
+                class: 2,
+                points: 4,
+                crew: 1,
+                cargo: 863,
+                fuel: 1797,
+                ammo: 359,
+                mining: 8100,
+                speed: 7800,
+                price: 119000,
+                type: "Racer"
+            },
+            "PX5": {
+                name: "Pearce X5",
+                class: 2,
+                points: 4,
+                crew: 2,
+                cargo: 1107,
+                fuel: 923,
+                ammo: 1270,
+                mining: 9900,
+                speed: 6400,
+                price: 69000,
+                type: "Fighter"
+            },
+            
+            // Class 3 Ships
+            "OGKAMK": {
+                name: "Ogrika Mik",
+                class: 3,
+                points: 9,
+                crew: 2,
+                cargo: 3832,
+                fuel: 4023,
+                ammo: 4396,
+                mining: 30620,
+                speed: 6400,
+                price: 199000,
+                type: "Fighter"
+            },
+            "VZUSAM": {
+                name: "VZUS ambwe",
+                class: 3,
+                points: 9,
+                crew: 3,
+                cargo: 4180,
+                fuel: 4313,
+                ammo: 4645,
+                mining: 29790,
+                speed: 5200,
+                price: 199000,
+                type: "Bounty Hunter"
+            },
+            "CHI": {
+                name: "Rainbow Chi",
+                class: 3,
+                points: 9,
+                crew: 1,
+                cargo: 3832,
+                fuel: 4023,
+                ammo: 4396,
+                mining: 30620,
+                speed: 7300,
+                price: 137900,
+                type: "Fighter"
+            },
+            "CALSHIP": {
+                name: "Calico Shipit",
+                class: 3,
+                points: 9,
+                crew: 2,
+                cargo: 11363,
+                fuel: 4562,
+                ammo: 622,
+                mining: 22760,
+                speed: 3200,
+                price: null,
+                type: "Freighter"
+            },
+            "PR6": {
+                name: "Pearce R6",
+                class: 3,
+                points: 9,
+                crew: 2,
+                cargo: 7399,
+                fuel: 5142,
+                ammo: 995,
+                mining: 22860,
+                speed: 5800,
+                price: 590000,
+                type: "Repair"
+            },
+            "THRILL": {
+                name: "Busan Thrill of Life",
+                class: 3,
+                points: 9,
+                crew: 2,
+                cargo: 3832,
+                fuel: 4023,
+                ammo: 4396,
+                mining: 30620,
+                speed: 7000,
+                price: 690000,
+                type: "Fighter"
+            },
+            "CALMED": {
+                name: "Calico Medtech",
+                class: 3,
+                points: 9,
+                crew: 2,
+                cargo: 4379,
+                fuel: 6138,
+                ammo: 1825,
+                mining: 25040,
+                speed: 5500,
+                price: 499000,
+                type: "Rescue"
+            },
+            "IMP1": {
+                name: "Armstrong IMP Tip",
+                class: 3,
+                points: 9,
+                crew: 3,
+                cargo: 9323,
+                fuel: 4894,
+                ammo: 1161,
+                mining: 62070,
+                speed: 3900,
+                price: 690000,
+                type: "Miner"
+            },
+            "TUFAFE": {
+                name: "Tufa Feist",
+                class: 3,
+                points: 9,
+                crew: 2,
+                cargo: 3832,
+                fuel: 3193,
+                ammo: 5225,
+                mining: 30620,
+                speed: 8100,
+                price: 188000,
+                type: "Fighter"
+            },
+            "FBLBEA": {
+                name: "Fimbul BYOS Earp",
+                class: 3,
+                points: 9,
+                crew: 2,
+                cargo: 3832,
+                fuel: 3193,
+                ammo: 5225,
+                mining: 30620,
+                speed: 7700,
+                price: 199000,
+                type: "Fighter"
+            },
+            "OPALRF": {
+                name: "Opal Rayfam",
+                class: 3,
+                points: 9,
+                crew: 2,
+                cargo: 5640,
+                fuel: 4147,
+                ammo: 1659,
+                mining: 25240,
+                speed: 4700,
+                price: 890000,
+                type: "Data Runner"
+            },
+            "PX6": {
+                name: "Pearce X6",
+                class: 3,
+                points: 9,
+                crew: 3,
+                cargo: 4661,
+                fuel: 3193,
+                ammo: 4396,
+                mining: 30620,
+                speed: 6400,
+                price: 199000,
+                type: "Fighter"
+            },
+            
+            // Class 4 Ships
+            "OGKATU": {
+                name: "Ogrika Tursic",
+                class: 4,
+                points: 16,
+                crew: 4,
+                cargo: 13264,
+                fuel: 13924,
+                ammo: 18087,
+                mining: 94680,
+                speed: 6400,
+                price: null,
+                type: "Fighter"
+            },
+            "OM": {
+                name: "Rainbow Om",
+                class: 4,
+                points: 16,
+                crew: 4,
+                cargo: 39332,
+                fuel: 18661,
+                ammo: 2153,
+                mining: 70370,
+                speed: 3800,
+                price: null,
+                type: "Freighter"
+            },
+            "PF4": {
+                name: "Pearce F4",
+                class: 4,
+                points: 16,
+                crew: 4,
+                cargo: 16135,
+                fuel: 13924,
+                ammo: 15216,
+                mining: 94680,
+                speed: 6400,
+                price: null,
+                type: "Fighter"
+            },
+            "CALEV": {
+                name: "Calico Evac",
+                class: 4,
+                points: 16,
+                crew: 7,
+                cargo: 18030,
+                fuel: 15503,
+                ammo: 6316,
+                mining: 77410,
+                speed: 5500,
+                price: null,
+                type: "Rescue"
+            },
+            "CALATS": {
+                name: "Calico ATS Enforcer",
+                class: 4,
+                points: 16,
+                crew: 2,
+                cargo: 16135,
+                fuel: 13924,
+                ammo: 15216,
+                mining: 94680,
+                speed: 6700,
+                price: null,
+                type: "Fighter"
+            },
+            "FBLBRA": {
+                name: "Fimbul BYOS Ranger",
+                class: 4,
+                points: 16,
+                crew: 5,
+                cargo: 16652,
+                fuel: 20097,
+                ammo: 5742,
+                mining: 78050,
+                speed: 6500,
+                price: null,
+                type: "Data Runner"
+            },
+            "FBLMEX": {
+                name: "Fimbul Mamba EX",
+                class: 4,
+                points: 16,
+                crew: 5,
+                cargo: 17341,
+                fuel: 14929,
+                ammo: 16077,
+                mining: 92120,
+                speed: 4900,
+                price: 399900,
+                type: "Bounty Hunter"
+            },
+            "IMP2": {
+                name: "Armstrong IMP Tap",
+                class: 4,
+                points: 16,
+                crew: 5,
+                cargo: 32270,
+                fuel: 19810,
+                ammo: 4019,
+                mining: 191920,
+                speed: 3900,
+                price: null,
+                type: "Miner"
+            },
+            "VZUSOP": {
+                name: "VZUS opod",
+                class: 4,
+                points: 16,
+                crew: 5,
+                cargo: 13781,
+                fuel: 22968,
+                ammo: 5742,
+                mining: 78050,
+                speed: 4700,
+                price: null,
+                type: "Data Runner"
+            },
+            "FBLBPL": {
+                name: "Fimbul BYOS Packlite",
+                class: 4,
+                points: 16,
+                crew: 5,
+                cargo: 45074,
+                fuel: 18661,
+                ammo: 2153,
+                mining: 70370,
+                speed: 4800,
+                price: null,
+                type: "Freighter"
+            },
+            "CALCH": {
+                name: "Calico Compakt Hero",
+                class: 4,
+                points: 16,
+                crew: 4,
+                cargo: 17341,
+                fuel: 16652,
+                ammo: 11484,
+                mining: 85090,
+                speed: 6100,
+                price: null,
+                type: "Multi-role"
+            },
+            "FBLMAM": {
+                name: "Fimbul Mamba",
+                class: 4,
+                points: 16,
+                crew: 5,
+                cargo: 17341,
+                fuel: 14929,
+                ammo: 16077,
+                mining: 92120,
+                speed: 4900,
+                price: null,
+                type: "Bounty Hunter"
+            },
+            
+            // Class 5 Ships
+            "ARC": {
+                name: "Rainbow Arc",
+                class: 5,
+                points: 25,
+                crew: 14,
+                cargo: 156019,
+                fuel: 64594,
+                ammo: 7453,
+                mining: 217580,
+                speed: 3800,
+                price: null,
+                type: "Freighter"
+            },
+            "PMR8": {
+                name: "Pearce MR8",
+                class: 5,
+                points: 25,
+                crew: 16,
+                cargo: 90914,
+                fuel: 65091,
+                ammo: 34710,
+                mining: 250780,
+                speed: 5100,
+                price: null,
+                type: "Multi-role"
+            },
+            "OGKATP": {
+                name: "Ogrika Thripid",
+                class: 5,
+                points: 25,
+                crew: 11,
+                cargo: 45911,
+                fuel: 58135,
+                ammo: 72544,
+                mining: 292750,
+                speed: 6400,
+                price: null,
+                type: "Fighter"
+            },
+            "OGKASP": {
+                name: "Ogrika Sunpaa",
+                class: 5,
+                points: 25,
+                crew: 19,
+                cargo: 156019,
+                fuel: 64594,
+                ammo: 7453,
+                mining: 217580,
+                speed: 3500,
+                price: null,
+                type: "Freighter"
+            },
+            "FBLBBU": {
+                name: "Fimbul BYOS Butch",
+                class: 5,
+                points: 25,
+                crew: 15,
+                cargo: 45911,
+                fuel: 58135,
+                ammo: 72544,
+                mining: 292750,
+                speed: 7100,
+                price: null,
+                type: "Fighter"
+            },
+            "PR8": {
+                name: "Pearce R8",
+                class: 5,
+                points: 25,
+                crew: 15,
+                cargo: 91823,
+                fuel: 94407,
+                ammo: 12919,
+                mining: 218570,
+                speed: 4700,
+                price: null,
+                type: "Refuel/Repair"
+            },
+            "FBLEGR": {
+                name: "Fimbul ECOS Greenader",
+                class: 5,
+                points: 25,
+                crew: 20,
+                cargo: 59228,
+                fuel: 58135,
+                ammo: 58135,
+                mining: 296700,
+                speed: 4100,
+                price: null,
+                type: "Bomber"
+            },
+            "OPALBB": {
+                name: "Opal Bitboat",
+                class: 5,
+                points: 25,
+                crew: 21,
+                cargo: 81488,
+                fuel: 57638,
+                ammo: 11925,
+                mining: 219560,
+                speed: 6400,
+                price: null,
+                type: "Transport"
+            },
+            
+            // Class 6 Ships
+            "CALG": {
+                name: "Calico Guardian",
+                class: 6,
+                points: 36,
+                crew: 47,
+                cargo: 242159,
+                fuel: 233904,
+                ammo: 171988,
+                mining: 813420,
+                speed: 6100,
+                price: null,
+                type: "Multi-role"
+            },
+            "PC9": {
+                name: "Pearce C9",
+                class: 6,
+                points: 36,
+                crew: 59,
+                cargo: 227712,
+                fuel: 201226,
+                ammo: 251103,
+                mining: 905150,
+                speed: 6400,
+                price: null,
+                type: "Fighter"
+            },
+            "HEART": {
+                name: "Busan Maiden Heart",
+                class: 6,
+                points: 36,
+                crew: 51,
+                cargo: 227712,
+                fuel: 201226,
+                ammo: 251103,
+                mining: 905150,
+                speed: 7000,
+                price: null,
+                type: "Fighter"
+            },
+            "VZUSBA": {
+                name: "VZUS ballad",
+                class: 6,
+                points: 36,
+                crew: 51,
+                cargo: 227712,
+                fuel: 201226,
+                ammo: 251103,
+                mining: 905150,
+                speed: 5800,
+                price: null,
+                type: "Fighter"
+            },
+            "OGKAJA": {
+                name: "Ogrika Jod Asteris",
+                class: 6,
+                points: 36,
+                crew: 63,
+                cargo: 316458,
+                fuel: 233904,
+                ammo: 41277,
+                mining: 678870,
+                speed: 6400,
+                price: null,
+                type: "Transport"
+            },
+            "IMP3": {
+                name: "Armstrong IMP",
+                class: 6,
+                points: 36,
+                crew: 43,
+                cargo: 524220,
+                fuel: 237344,
+                ammo: 48157,
+                mining: 1834770,
+                speed: 3900,
+                price: null,
+                type: "Miner"
+            },
+            "FBLSLE": {
+                name: "Fimbul Sledbarge",
+                class: 6,
+                points: 36,
+                crew: 41,
+                cargo: 608838,
+                fuel: 223585,
+                ammo: 25798,
+                mining: 672750,
+                speed: 2600,
+                price: null,
+                type: "Freighter"
+            },
+            "FBLEBO": {
+                name: "Fimbul ECOS Bombarella",
+                class: 6,
+                points: 36,
+                crew: 63,
+                cargo: 205010,
+                fuel: 201226,
+                ammo: 270022,
+                mining: 917390,
+                speed: 4100,
+                price: null,
+                type: "Bomber"
+            },
+            "PD9": {
+                name: "Pearce D9",
+                class: 6,
+                points: 36,
+                crew: 41,
+                cargo: 553114,
+                fuel: 189187,
+                ammo: 72235,
+                mining: 733910,
+                speed: 4100,
+                price: null,
+                type: "Salvage"
+            },
+            
+            // Class 7 Ships
+            "FBLETR": {
+                name: "Fimbul ECOS Treearrow",
+                class: 7,
+                points: 49,
+                crew: 118,
+                cargo: 828682,
+                fuel: 696521,
+                ammo: 934648,
+                mining: 2836470,
+                speed: 4100,
+                price: null,
+                type: "Bomber"
+            },
+            "PC11": {
+                name: "Pearce C11",
+                class: 7,
+                points: 49,
+                crew: 109,
+                cargo: 788200,
+                fuel: 696521,
+                ammo: 1107290,
+                mining: 2798650,
+                speed: 6400,
+                price: null,
+                type: "Fighter"
+            },
+            "FBLBTA": {
+                name: "Fimbul BYOS Tankship",
+                class: 7,
+                points: 49,
+                crew: 76,
+                cargo: 788200,
+                fuel: 696521,
+                ammo: 1107290,
+                mining: 2798650,
+                speed: 7700,
+                price: null,
+                type: "Fighter"
+            },
+            
+            // Class 9 Ships (Titans)
+            "PHI": {
+                name: "Rainbow Phi",
+                class: 9,
+                points: 81,
+                crew: 255,
+                cargo: 15149652,
+                fuel: 9771668,
+                ammo: 8987082,
+                mining: 26754910,
+                speed: 7300,
+                price: null,
+                type: "Fighter"
+            },
+            "SUPER": {
+                name: "Fimbul ECOS Superphoenix",
+                class: 9,
+                points: 81,
+                crew: 347,
+                cargo: 9928586,
+                fuel: 9771668,
+                ammo: 14051231,
+                mining: 27116460,
+                speed: 4100,
+                price: null,
+                type: "Bomber"
+            },
+            "T1TAN": {
+                name: "Pearce T1",
+                class: 9,
+                points: 81,
+                crew: 212,
+                cargo: 12296610,
+                fuel: 8345147,
+                ammo: 13266644,
+                mining: 26754910,
+                speed: 6400,
+                price: null,
+                type: "Fighter"
+            },
+            "STAND": {
+                name: "Busan The Last Stand mk. VIII",
+                class: 9,
+                points: 81,
+                crew: 412,
+                cargo: 13149072,
+                fuel: 9771668,
+                ammo: 11174510,
+                mining: 27478010,
+                speed: 7000,
+                price: null,
+                type: "Fighter"
+            }
+        };
+
+        // Resource and crafting data
+        const SAGE_RESOURCES = {
+            // Raw Materials
+            "HYG": { name: "Hydrogen", hardness: 100, priceRange: [0.00026606, 0.00027777] },
+            "CARBON": { name: "Carbon", hardness: 100, priceRange: [0.00045152, 0.00056986] },
+            "BIOMASS": { name: "Biomass", hardness: 100, priceRange: [0.0004751, 0.00075] },
+            "NITRO": { name: "Nitrogen", hardness: 100, priceRange: [0.00052826, 0.000879] },
+            "FEORE": { name: "Iron Ore", hardness: 200, priceRange: [0.00069102, 0.0008] },
+            "CUORE": { name: "Copper Ore", hardness: 200, priceRange: [0.00071, 0.000799] },
+            "SAND": { name: "Silica", hardness: 200, priceRange: [0.00090802, 0.00125] },
+            "LUMAN": { name: "Lumanite", hardness: 250, priceRange: [0.00100888, 0.00155555] },
+            "TIORE": { name: "Titanium Ore", hardness: 500, priceRange: [0.00120022, 0.001849] },
+            "DIAMOND": { name: "Diamond", hardness: 400, priceRange: [0.0019, 0.002999] },
+            "ROCH": { name: "Rochinol", hardness: 400, priceRange: [0.0019, 0.00242261] },
+            "ARCO": { name: "Arco", hardness: 400, priceRange: [0.0019, 0.00238] },
+            
+            // Crafted Materials
+            "IRON": { name: "Iron", duration: 1, points: 2, fee: 0.0000363, inputs: ["FEORE"] },
+            "COPPER": { name: "Copper", duration: 1, points: 2, fee: 0.00004135, inputs: ["CUORE"] },
+            "TTNM": { name: "Titanium", duration: 1, points: 3, fee: 0.0000871, inputs: ["TIORE"] },
+            "STEEL": { name: "Steel", duration: 4, points: 3, fee: 0.00009965, inputs: ["IRON", "CARBON"] },
+            "POLYMER": { name: "Polymer", duration: 4, points: 3, fee: 0.00001655, inputs: ["BIOMASS", "CARBON"] },
+            "MAGNET": { name: "Magnet", duration: 4, points: 4, fee: 0.00004105, inputs: ["IRON"] },
+            "HCRB": { name: "Hydrocarbon", duration: 2, points: 4, fee: 0.00004825, inputs: ["CARBON", "HYG"] },
+            "GRAPH": { name: "Graphene", duration: 2, points: 5, fee: 0.00007105, inputs: ["CARBON"] },
+            "AGEL": { name: "Aerogel", duration: 2, points: 7, fee: 0.0002932, inputs: ["SAND"] },
+            "ENRGSUB": { name: "Energy Substrate", duration: 6, points: 10, fee: 0.0001403, inputs: ["HYG", "CARBON"] },
+            "CRYSLAT": { name: "Crystal Lattice", duration: 4, points: 13, fee: 0.00020185, inputs: ["SAND", "CARBON"] },
+            "STRANGE": { name: "Strange Emitter", duration: 6, points: 16, fee: 0.00020755, inputs: ["DIAMOND", "ENRGSUB"] },
+            "SPRCOND": { name: "Super Conductor", duration: 8, points: 20, fee: 0.00051015, inputs: ["COPPER", "GRAPH"] },
+            "FRMWRK": { name: "Framework", duration: 12, points: 68, fee: 0.00016795, inputs: ["STEEL", "POLYMER"] },
+            "ELECTRO": { name: "Electronics", duration: 14, points: 92, fee: 0.0001326, inputs: ["COPPER", "SAND"] },
+            "PWRSRC": { name: "Power Source", duration: 15, points: 98, fee: 0.0001246, inputs: ["ENRGSUB", "MAGNET"] },
+            "FSTAB": { name: "Field Stabilizer", duration: 24, points: 222, fee: 0.00085765, inputs: ["CRYSLAT", "STRANGE"] },
+            "PRTACL": { name: "Particle Accelerator", duration: 96, points: 498, fee: 0.00075215, inputs: ["SPRCOND", "FSTAB"] },
+            
+            // Consumables
+            "FUEL": { name: "Fuel", duration: 1, points: 3, fee: 0.0000513, inputs: ["HCRB", "HYG"] },
+            "AMMO": { name: "Ammunition", duration: 1, points: 3, fee: 0.0000622, inputs: ["IRON", "CARBON"] },
+            "FOOD": { name: "Food", duration: 1, points: 6, fee: 0.00005425, inputs: ["BIOMASS"] },
+            "TOOL": { name: "Toolkit", duration: 2, points: 14, fee: 0.0000702, inputs: ["STEEL", "ELECTRO"] }
+        };
+
+        // Global optimizer state
+        let selectedOptimizerShips = {};
+        let selectedFleetObjective = 'mining';
+        let totalOptimizerFleetPoints = 0;
 
         // Global state
         let currentFaction = 'mud';
@@ -3768,6 +5177,452 @@
                 </div>
             `).join('');
         }
+        // ═══════════════════════════════════════════════════════
+        // SAGE Fleet Optimizer Functions
+        // ═══════════════════════════════════════════════════════
+
+        // Initialize optimizer on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeFleetOptimizer();
+        });
+
+        function initializeFleetOptimizer() {
+            populateShipInventoryGrid();
+            populateArbitrageSelectors();
+            updateFleetPointsDisplay();
+        }
+
+        function showOptimizerTab(tabName) {
+            // Hide all content
+            const contents = document.querySelectorAll('.optimizer-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Hide all tab active states
+            const tabs = document.querySelectorAll('.optimizer-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected content and tab
+            document.getElementById('optimizer-' + tabName).classList.add('active');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        }
+
+        function populateShipInventoryGrid() {
+            const grid = document.getElementById('shipInventoryGrid');
+            grid.innerHTML = '';
+            
+            const classFilter = document.getElementById('shipClassFilter').value;
+            
+            Object.entries(SAGE_SHIPS).forEach(([code, ship]) => {
+                if (classFilter && ship.class.toString() !== classFilter) {
+                    return;
+                }
+                
+                const card = document.createElement('div');
+                card.className = 'ship-inventory-card';
+                card.dataset.shipCode = code;
+                
+                const quantity = selectedOptimizerShips[code] || 0;
+                if (quantity > 0) {
+                    card.classList.add('selected');
+                }
+                
+                card.innerHTML = `
+                    <div class="ship-inventory-name">${ship.name}</div>
+                    <div class="ship-inventory-class">Class ${ship.class} ${ship.type}</div>
+                    <div class="ship-inventory-points">${ship.points} Fleet Points</div>
+                    <div class="ship-inventory-stats">
+                        Crew: ${ship.crew} | Cargo: ${ship.cargo.toLocaleString()}<br>
+                        Mining: ${ship.mining.toLocaleString()} | Speed: ${ship.speed.toLocaleString()}
+                    </div>
+                    ${quantity > 0 ? `<div class="ship-inventory-quantity">${quantity}</div>` : ''}
+                `;
+                
+                card.addEventListener('click', () => toggleOptimizerShip(code));
+                grid.appendChild(card);
+            });
+        }
+
+        function filterShipsByClass() {
+            populateShipInventoryGrid();
+        }
+
+        function toggleOptimizerShip(shipCode) {
+            if (!selectedOptimizerShips[shipCode]) {
+                selectedOptimizerShips[shipCode] = 0;
+            }
+            selectedOptimizerShips[shipCode]++;
+            
+            // Remove if clicked too many times
+            if (selectedOptimizerShips[shipCode] > 10) {
+                selectedOptimizerShips[shipCode] = 0;
+            }
+            
+            if (selectedOptimizerShips[shipCode] === 0) {
+                delete selectedOptimizerShips[shipCode];
+            }
+            
+            populateShipInventoryGrid();
+            updateFleetPointsDisplay();
+        }
+
+        function updateFleetPointsDisplay() {
+            totalOptimizerFleetPoints = 0;
+            
+            Object.entries(selectedOptimizerShips).forEach(([code, quantity]) => {
+                totalOptimizerFleetPoints += SAGE_SHIPS[code].points * quantity;
+            });
+            
+            document.getElementById('totalFleetPoints').textContent = totalOptimizerFleetPoints;
+            document.getElementById('fleetsNeeded').textContent = Math.ceil(totalOptimizerFleetPoints / 145);
+        }
+
+        function selectFleetObjective(objective) {
+            selectedFleetObjective = objective;
+            
+            const objectives = document.querySelectorAll('.objective-option');
+            objectives.forEach(obj => obj.classList.remove('selected'));
+            
+            document.querySelector(`[data-objective="${objective}"]`).classList.add('selected');
+        }
+
+        function optimizeFleetComposition() {
+            if (Object.keys(selectedOptimizerShips).length === 0) {
+                alert('Please select some ships first!');
+                return;
+            }
+            
+            const results = document.getElementById('fleetOptimizerResults');
+            results.style.display = 'block';
+            
+            // Create ship list for optimization
+            const shipList = [];
+            Object.entries(selectedOptimizerShips).forEach(([code, quantity]) => {
+                for (let i = 0; i < quantity; i++) {
+                    shipList.push({
+                        code,
+                        ...SAGE_SHIPS[code]
+                    });
+                }
+            });
+            
+            // Run knapsack optimization
+            const fleets = optimizeFleetKnapsack(shipList, selectedFleetObjective);
+            
+            let html = `<h3>Optimized Fleet Compositions</h3>`;
+            
+            if (fleets.length === 0) {
+                html += '<div class="optimizer-error-box">No valid fleet compositions found. Try reducing ship selection or adjusting objective.</div>';
+            } else {
+                html += '<div class="optimizer-info-box">Fleets optimized using knapsack algorithm for maximum efficiency within 145-point limit.</div>';
+                
+                fleets.forEach((fleet, index) => {
+                    const fleetPoints = fleet.ships.reduce((sum, ship) => sum + ship.points, 0);
+                    const totalCargo = fleet.ships.reduce((sum, ship) => sum + ship.cargo, 0);
+                    const totalMining = fleet.ships.reduce((sum, ship) => sum + ship.mining, 0);
+                    const totalCrew = fleet.ships.reduce((sum, ship) => sum + ship.crew, 0);
+                    
+                    html += `
+                        <div class="fleet-composition">
+                            <div class="fleet-composition-title">Fleet ${index + 1} (${fleetPoints}/145 points)</div>
+                            <div class="fleet-composition-ships">
+                                ${fleet.ships.map(ship => ship.name).join(', ')}
+                            </div>
+                            <div class="fleet-composition-stats">
+                                Total Cargo: ${totalCargo.toLocaleString()} | 
+                                Mining Rate: ${totalMining.toLocaleString()} | 
+                                Crew: ${totalCrew} | 
+                                Efficiency Score: ${fleet.score.toFixed(1)}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            results.innerHTML = html;
+        }
+
+        function optimizeFleetKnapsack(ships, objective) {
+            // Sort ships by efficiency for the given objective
+            const sortedShips = [...ships].sort((a, b) => {
+                const scoreA = calculateShipEfficiencyScore(a, objective);
+                const scoreB = calculateShipEfficiencyScore(b, objective);
+                return scoreB / b.points - scoreA / a.points; // Efficiency per point
+            });
+            
+            const fleets = [];
+            const usedShips = new Set();
+            
+            // Greedy knapsack approach
+            while (sortedShips.some(ship => !usedShips.has(ship))) {
+                const fleet = { ships: [], totalPoints: 0, score: 0 };
+                
+                for (const ship of sortedShips) {
+                    if (usedShips.has(ship)) continue;
+                    
+                    if (fleet.totalPoints + ship.points <= 145) {
+                        fleet.ships.push(ship);
+                        fleet.totalPoints += ship.points;
+                        fleet.score += calculateShipEfficiencyScore(ship, objective);
+                        usedShips.add(ship);
+                    }
+                }
+                
+                if (fleet.ships.length > 0) {
+                    fleets.push(fleet);
+                }
+            }
+            
+            return fleets;
+        }
+
+        function calculateShipEfficiencyScore(ship, objective) {
+            switch (objective) {
+                case 'mining':
+                    return ship.mining * 0.7 + ship.cargo * 0.3;
+                case 'scanning':
+                    return ship.cargo * 0.6 + ship.speed * 0.4;
+                case 'freighting':
+                    return ship.cargo * 0.8 + (10000 / (ship.fuel / ship.cargo)) * 0.2;
+                case 'crafting':
+                    return ship.crew * 300 + ship.cargo * 0.5;
+                case 'profit':
+                    return (ship.mining * 0.3 + ship.cargo * 0.3 + ship.crew * 100 + ship.speed * 0.2) / ship.points;
+                default:
+                    return ship.mining + ship.cargo;
+            }
+        }
+
+        function calculateLPEfficiency() {
+            const crew = parseInt(document.getElementById('lpAvailableCrew').value);
+            const miningTravel = parseFloat(document.getElementById('lpMiningTravel').value);
+            const starbaseTravel = parseFloat(document.getElementById('lpStarbaseTravel').value);
+            const atlasPrice = parseFloat(document.getElementById('lpAtlasPrice').value);
+            const priceMultiplier = parseFloat(document.getElementById('lpPriceMultiplier').value);
+            
+            const results = document.getElementById('lpResults');
+            results.style.display = 'block';
+            
+            const lpEfficiencies = [];
+            
+            Object.entries(SAGE_RESOURCES).forEach(([code, resource]) => {
+                if (!resource.points) return; // Skip raw materials
+                
+                const supplyChain = calculateResourceSupplyChain(code, crew);
+                const totalTime = supplyChain.totalTime + miningTravel + starbaseTravel;
+                const totalCost = supplyChain.totalCost * atlasPrice * priceMultiplier;
+                const totalFees = supplyChain.totalFees * atlasPrice;
+                
+                const lpPerHour = resource.points / totalTime;
+                const lpPerAtlas = resource.points / (totalCost + totalFees);
+                
+                lpEfficiencies.push({
+                    name: resource.name,
+                    points: resource.points,
+                    totalTime: totalTime.toFixed(2),
+                    totalCost: (totalCost + totalFees).toFixed(6),
+                    lpPerHour: lpPerHour.toFixed(2),
+                    lpPerAtlas: lpPerAtlas.toFixed(0),
+                    efficiency: lpPerHour * lpPerAtlas // Combined metric
+                });
+            });
+            
+            // Sort by efficiency
+            lpEfficiencies.sort((a, b) => b.efficiency - a.efficiency);
+            
+            let html = `
+                <h3>LP Efficiency Rankings</h3>
+                <div class="optimizer-info-box">Ranked by combined LP/hour × LP/ATLAS efficiency score. Higher is better.</div>
+                <table class="optimizer-table">
+                    <thead>
+                        <tr>
+                            <th>Resource</th>
+                            <th>LP Points</th>
+                            <th>Total Time (h)</th>
+                            <th>Total Cost (ATLAS)</th>
+                            <th>LP/Hour</th>
+                            <th>LP/ATLAS</th>
+                            <th>Efficiency Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            lpEfficiencies.forEach(item => {
+                html += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.points}</td>
+                        <td>${item.totalTime}</td>
+                        <td>${item.totalCost}</td>
+                        <td>${item.lpPerHour}</td>
+                        <td>${item.lpPerAtlas}</td>
+                        <td>${item.efficiency.toFixed(0)}</td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            results.innerHTML = html;
+        }
+
+        function calculateResourceSupplyChain(resourceCode, availableCrew) {
+            const resource = SAGE_RESOURCES[resourceCode];
+            if (!resource) return { totalTime: 0, totalCost: 0, totalFees: 0 };
+            
+            let totalTime = resource.duration || 0;
+            let totalCost = 0;
+            let totalFees = resource.fee || 0;
+            
+            if (resource.inputs) {
+                resource.inputs.forEach(inputCode => {
+                    const input = SAGE_RESOURCES[inputCode];
+                    if (input) {
+                        if (input.priceRange) {
+                            // Raw material - add mining/purchase cost
+                            totalCost += (input.priceRange[0] + input.priceRange[1]) / 2;
+                        } else {
+                            // Crafted material - recurse
+                            const subChain = calculateResourceSupplyChain(inputCode, availableCrew);
+                            totalTime += subChain.totalTime;
+                            totalCost += subChain.totalCost;
+                            totalFees += subChain.totalFees * 1.05; // 5% compounding
+                        }
+                    }
+                });
+            }
+            
+            // Apply crew efficiency
+            if (totalTime > 0 && availableCrew > 1) {
+                totalTime = totalTime / Math.min(availableCrew, 10); // Cap crew efficiency
+            }
+            
+            return { totalTime, totalCost, totalFees };
+        }
+
+        function populateArbitrageSelectors() {
+            const resourceSelect = document.getElementById('arbitrageResource');
+            const tradeShipSelect = document.getElementById('arbitrageTradeShip');
+            
+            // Populate resources
+            Object.entries(SAGE_RESOURCES).forEach(([code, resource]) => {
+                if (resource.priceRange) { // Only raw materials for arbitrage
+                    const option = document.createElement('option');
+                    option.value = code;
+                    option.textContent = resource.name;
+                    resourceSelect.appendChild(option);
+                }
+            });
+            
+            // Populate freighter ships
+            Object.entries(SAGE_SHIPS).forEach(([code, ship]) => {
+                if (ship.type.includes('Freighter') || ship.type.includes('Transport') || ship.cargo > 5000) {
+                    const option = document.createElement('option');
+                    option.value = code;
+                    option.textContent = `${ship.name} (${ship.cargo.toLocaleString()} cargo)`;
+                    tradeShipSelect.appendChild(option);
+                }
+            });
+        }
+
+        function updateArbitragePriceSuggestions() {
+            const resourceCode = document.getElementById('arbitrageResource').value;
+            if (!resourceCode) return;
+            
+            const resource = SAGE_RESOURCES[resourceCode];
+            if (resource && resource.priceRange) {
+                document.getElementById('arbitrageBuyPrice').value = resource.priceRange[0];
+                document.getElementById('arbitrageSellPrice').value = resource.priceRange[1];
+            }
+        }
+
+        function calculateArbitrageProfit() {
+            const resourceCode = document.getElementById('arbitrageResource').value;
+            const shipCode = document.getElementById('arbitrageTradeShip').value;
+            const buyPrice = parseFloat(document.getElementById('arbitrageBuyPrice').value);
+            const sellPrice = parseFloat(document.getElementById('arbitrageSellPrice').value);
+            const distance = parseInt(document.getElementById('arbitrageDistance').value);
+            const trips = parseInt(document.getElementById('arbitrageTrips').value);
+            
+            if (!resourceCode || !shipCode || !buyPrice || !sellPrice) {
+                alert('Please fill in all fields!');
+                return;
+            }
+            
+            const ship = SAGE_SHIPS[shipCode];
+            const resource = SAGE_RESOURCES[resourceCode];
+            
+            if (!ship || !resource) {
+                alert('Invalid ship or resource selection!');
+                return;
+            }
+            
+            const results = document.getElementById('arbitrageResults');
+            results.style.display = 'block';
+            
+            // Calculate basic metrics
+            const profitPerUnit = sellPrice - buyPrice;
+            const maxCargo = ship.cargo;
+            const profitPerTrip = profitPerUnit * maxCargo;
+            const totalProfit = profitPerTrip * trips;
+            
+            // Estimate travel time (simplified)
+            const travelTimePerTrip = distance * 2; // Round trip in hours
+            const totalTime = travelTimePerTrip * trips;
+            const profitPerHour = totalProfit / totalTime;
+            
+            // Estimate fuel costs (simplified)
+            const fuelCostPerTrip = ship.fuel * 0.001 * distance * 2; // Rough estimate
+            const totalFuelCost = fuelCostPerTrip * trips;
+            const netProfit = totalProfit - totalFuelCost;
+            
+            let html = `
+                <h3>Market Arbitrage Analysis</h3>
+                <div class="optimizer-info-box">Trade route analysis for ${resource.name} using ${ship.name}</div>
+                <table class="optimizer-table">
+                    <tbody>
+                        <tr>
+                            <td><strong>Profit per Unit</strong></td>
+                            <td>${profitPerUnit.toFixed(6)} ATLAS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Max Cargo</strong></td>
+                            <td>${maxCargo.toLocaleString()} units</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Profit per Trip</strong></td>
+                            <td>${profitPerTrip.toFixed(4)} ATLAS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total Profit (${trips} trips)</strong></td>
+                            <td>${totalProfit.toFixed(4)} ATLAS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Estimated Total Time</strong></td>
+                            <td>${totalTime.toFixed(1)} hours</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Profit per Hour</strong></td>
+                            <td>${profitPerHour.toFixed(4)} ATLAS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Estimated Fuel Cost</strong></td>
+                            <td>${totalFuelCost.toFixed(4)} ATLAS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Net Profit</strong></td>
+                            <td style="color: ${netProfit > 0 ? 'var(--accent)' : '#ef4444'}">${netProfit.toFixed(4)} ATLAS</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+            
+            if (netProfit <= 0) {
+                html += '<div class="optimizer-error-box">Warning: This route may not be profitable after fuel costs. Consider shorter distances or better price spreads.</div>';
+            }
+            
+            results.innerHTML = html;
+        }
+
     </script>
 
     <!-- ════════════════════════════════════════════════════
