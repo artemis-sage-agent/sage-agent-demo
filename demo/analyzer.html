@@ -1479,7 +1479,7 @@
             ════════════════════════════════════════════════════ -->
             <div class="wallet-section reveal">
                 <h2 class="wallet-title">Connect Your Fleet</h2>
-                <p class="wallet-subtitle">Connect your wallet to see personalized fleet recommendations with real ship stats</p>
+                <p class="wallet-subtitle">Enter your wallet address or SAGE player profile for personalized fleet recommendations</p>
                 
                 <div class="wallet-input-group">
                     <!-- Wallet Connect Button -->
@@ -1500,7 +1500,7 @@
                         type="text" 
                         class="wallet-input" 
                         id="walletInput" 
-                        placeholder="Enter your Solana wallet address..."
+                        placeholder="Enter wallet address or SAGE profile..."
                         autocomplete="off"
                         spellcheck="false"
                     >
@@ -2349,12 +2349,14 @@
                 }
 
                 // Strategy B: Search pprofELX program for a Profile containing this wallet key
+                // A wallet can have multiple pprofELX profiles — we need the one with a SagePlayerProfile
                 if (!profileAddress) {
                     console.log('[SAGE] Trying pprofELX profile lookup...');
                     const profiles = await sageRpc('getProgramAccounts', [
                         PLAYER_PROFILE_PROGRAM_ID,
                         {
                             encoding: 'base64',
+                            dataSlice: { offset: 0, length: 0 },
                             filters: [
                                 { memcmp: { offset: 0, bytes: DISC_PROFILE_B58 } },
                                 { memcmp: { offset: 30, bytes: walletAddress } },
@@ -2362,8 +2364,32 @@
                         }
                     ]);
                     if (profiles && profiles.length > 0) {
-                        profileAddress = profiles[0].pubkey;
-                        console.log('[SAGE] Found pprofELX profile:', profileAddress);
+                        console.log(`[SAGE] Found ${profiles.length} pprofELX profile(s), checking for SagePlayerProfile...`);
+                        const DISC_SPP_B58 = bytesToBase58([0x0a, 0x37, 0x4b, 0xea, 0x7e, 0x0e, 0x2f, 0x92]);
+                        // Check each profile for a corresponding SagePlayerProfile
+                        for (const p of profiles) {
+                            const sppCheck = await sageRpc('getProgramAccounts', [
+                                SAGE_PROGRAM_ID,
+                                {
+                                    encoding: 'base64',
+                                    dataSlice: { offset: 0, length: 0 },
+                                    filters: [
+                                        { memcmp: { offset: 0, bytes: DISC_SPP_B58 } },
+                                        { memcmp: { offset: 9, bytes: p.pubkey } },
+                                    ],
+                                }
+                            ]);
+                            if (sppCheck && sppCheck.length > 0) {
+                                profileAddress = p.pubkey;
+                                console.log('[SAGE] Found pprofELX profile with SAGE registration:', profileAddress);
+                                break;
+                            }
+                        }
+                        // Fallback: use first profile if none had a SagePlayerProfile
+                        if (!profileAddress) {
+                            profileAddress = profiles[0].pubkey;
+                            console.log('[SAGE] No SAGE-registered profile found, using first:', profileAddress);
+                        }
                     }
                 }
 
