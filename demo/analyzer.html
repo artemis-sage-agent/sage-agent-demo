@@ -1554,6 +1554,11 @@
                     <p class="fleet-subtitle" id="fleetWalletAddress"></p>
                 </div>
                 
+                <!-- Fleet Breakdown — FIRST block (populated when SAGE data available) -->
+                <div class="fleet-breakdown" id="fleetBreakdown" style="display:none;">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+
                 <div class="fleet-stats" id="fleetStats">
                     <!-- Will be populated by JavaScript -->
                 </div>
@@ -1571,11 +1576,6 @@
                         <div class="objective-pill" data-objective="scanning" onclick="selectObjective('scanning')">📡 Scanning</div>
                         <div class="objective-pill" data-objective="crafting" onclick="selectObjective('crafting')">🏗️ Crafting</div>
                     </div>
-                </div>
-
-                <!-- Fleet Breakdown (populated when SAGE data available) -->
-                <div class="fleet-breakdown" id="fleetBreakdown" style="display:none;">
-                    <!-- Will be populated by JavaScript -->
                 </div>
 
                 <!-- Complete Ship Roster -->
@@ -2322,28 +2322,79 @@
                     });
                 }
 
-                // Step 1: Find PlayerProfile by wallet key at offset 30
-                console.log('[SAGE] Looking up PlayerProfile for', walletAddress);
-                const profiles = await sageRpc('getProgramAccounts', [
-                    PLAYER_PROFILE_PROGRAM_ID,
-                    {
-                        encoding: 'base64',
-                        filters: [
-                            { memcmp: { offset: 0, bytes: DISC_PROFILE_B58 } },
-                            { memcmp: { offset: 30, bytes: walletAddress } },
-                        ],
-                    }
-                ]);
+                // Step 1: Resolve the pprofELX profile key
+                // Strategy: The input might be:
+                //   a) A SagePlayerProfile address (owned by SAGE2 program, 74 bytes)
+                //   b) A regular wallet address (needs pprofELX lookup)
+                // We try (a) first since it's a single getAccountInfo call, then fall back to (b)
+                
+                console.log('[SAGE] Resolving profile for', walletAddress);
+                let profileAddress = null;
 
-                if (!profiles || profiles.length === 0) {
-                    console.log('[SAGE] No PlayerProfile found for wallet');
+                // Strategy A: Check if input is a SagePlayerProfile account (owned by SAGE2)
+                try {
+                    const acctInfo = await sageRpc('getAccountInfo', [
+                        walletAddress, { encoding: 'base64' }
+                    ]);
+                    if (acctInfo && acctInfo.value && acctInfo.value.owner === SAGE_PROGRAM_ID) {
+                        const buf = decodeAccountData(acctInfo.value.data[0]);
+                        // SagePlayerProfile layout: disc(8) + version(1) + pprofKey(32) + gameId(32) + bump(1) = 74
+                        if (buf.length === 74) {
+                            profileAddress = readPubkey(buf, 9); // pprofELX key at bytes 9-41
+                            console.log('[SAGE] Input is SagePlayerProfile → pprofELX key:', profileAddress);
+                        }
+                    }
+                } catch (e) {
+                    console.log('[SAGE] Strategy A (SagePlayerProfile check) failed:', e.message);
+                }
+
+                // Strategy B: Search pprofELX program for a Profile containing this wallet key
+                if (!profileAddress) {
+                    console.log('[SAGE] Trying pprofELX profile lookup...');
+                    const profiles = await sageRpc('getProgramAccounts', [
+                        PLAYER_PROFILE_PROGRAM_ID,
+                        {
+                            encoding: 'base64',
+                            filters: [
+                                { memcmp: { offset: 0, bytes: DISC_PROFILE_B58 } },
+                                { memcmp: { offset: 30, bytes: walletAddress } },
+                            ],
+                        }
+                    ]);
+                    if (profiles && profiles.length > 0) {
+                        profileAddress = profiles[0].pubkey;
+                        console.log('[SAGE] Found pprofELX profile:', profileAddress);
+                    }
+                }
+
+                // Strategy C: Check if input IS a pprofELX profile key directly
+                // (search for SagePlayerProfile accounts that reference it)
+                if (!profileAddress) {
+                    console.log('[SAGE] Trying input as pprofELX key directly...');
+                    const DISC_SPP_B58 = bytesToBase58([0x0a, 0x37, 0x4b, 0xea, 0x7e, 0x0e, 0x2f, 0x92]);
+                    const sppAccounts = await sageRpc('getProgramAccounts', [
+                        SAGE_PROGRAM_ID,
+                        {
+                            encoding: 'base64',
+                            dataSlice: { offset: 0, length: 0 },
+                            filters: [
+                                { memcmp: { offset: 0, bytes: DISC_SPP_B58 } },
+                                { memcmp: { offset: 9, bytes: walletAddress } },
+                            ],
+                        }
+                    ]);
+                    if (sppAccounts && sppAccounts.length > 0) {
+                        profileAddress = walletAddress; // The input IS the pprofELX key
+                        console.log('[SAGE] Input is pprofELX key directly');
+                    }
+                }
+
+                if (!profileAddress) {
+                    console.log('[SAGE] No profile found for input address');
                     return null;
                 }
 
-                const profileAddress = profiles[0].pubkey;
-                console.log('[SAGE] Found profile:', profileAddress);
-
-                // Step 2: Find all Fleet accounts for this profile
+                // Step 2: Find all Fleet accounts for this pprofELX profile key
                 const fleetAccounts = await sageRpc('getProgramAccounts', [
                     SAGE_PROGRAM_ID,
                     {
