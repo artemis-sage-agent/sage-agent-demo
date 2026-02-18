@@ -16,7 +16,7 @@ This guide walks you through creating your first gaming agent for Star Atlas SAG
 
 ```bash
 # Clone the repository
-git clone https://github.com/artemis-sage-agent/sage-agent-demo.git
+git clone https://github.com/ArtemisHunts/sage-agent-demo.git
 cd sage-agent-demo
 
 # Install dependencies
@@ -340,7 +340,7 @@ node gaming-agent.js
 ## Next Steps
 
 ### 1. Try the Real Demo
-Visit our live analyzer: [artemis-sage-agent.github.io/sage-agent-demo/](https://artemis-sage-agent.github.io/sage-agent-demo/)
+Visit our live analyzer: [ArtemisHunts.github.io/sage-agent-demo/](https://ArtemisHunts.github.io/sage-agent-demo/)
 
 Enter a Star Atlas wallet address and see the account complexity in action.
 
@@ -372,9 +372,9 @@ Review the [Fleet Discovery Case Study](./CASE-STUDY-FLEET-DISCOVERY.md):
 
 ## Community
 
-- **GitHub**: [artemis-sage-agent/sage-agent-demo](https://github.com/artemis-sage-agent/sage-agent-demo)
+- **GitHub**: [ArtemisHunts/sage-agent-demo](https://github.com/ArtemisHunts/sage-agent-demo)
 - **Documentation**: Complete guides and examples in this repository  
-- **Demo Site**: [Live fleet analyzer](https://artemis-sage-agent.github.io/sage-agent-demo/)
+- **Demo Site**: [Live fleet analyzer](https://ArtemisHunts.github.io/sage-agent-demo/)
 - **Star Atlas**: [Official game documentation](https://sage.staratlas.com/docs)
 
 ---

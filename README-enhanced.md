@@ -6,7 +6,7 @@
 
 > The first autonomous AI agent built for 24/7 gaming operations on production blockchain infrastructure
 
-[![Live Demo](https://img.shields.io/badge/🎮_Live_Demo-sage--agent--demo-00d4aa?style=for-the-badge)](https://artemis-sage-agent.github.io/sage-agent-demo/)
+[![Live Demo](https://img.shields.io/badge/🎮_Live_Demo-sage--agent--demo-00d4aa?style=for-the-badge)](https://ArtemisHunts.github.io/sage-agent-demo/)
 [![Hackathon Winner](https://img.shields.io/badge/🏆_Colosseum-COMPLETED-gold?style=for-the-badge)](https://www.colosseum.com/hackathons/agent)
 [![Gaming Agent](https://img.shields.io/badge/🎯_Category-Gaming_Infrastructure-4A90E2?style=for-the-badge)](#gaming-vs-trading)
 [![Production Ready](https://img.shields.io/badge/⚡_Status-Production-success?style=for-the-badge)](#battle-tested-infrastructure)
@@ -61,11 +61,11 @@ Explore the complete S.T.R.I.K.E. system:
 
 | Component | Description | Link |
 |-----------|-------------|------|
-| **🏠 Landing Page** | Project overview and vision | [View →](https://artemis-sage-agent.github.io/sage-agent-demo/) |
-| **📊 Dashboard** | Fleet management interface | [View →](https://artemis-sage-agent.github.io/sage-agent-demo/dashboard.html) |
-| **🔍 Fleet Analyzer** | Technical AI analysis | [View →](https://artemis-sage-agent.github.io/sage-agent-demo/analyzer.html) |
-| **📜 Manifesto** | Vision for autonomous gaming | [View →](https://artemis-sage-agent.github.io/sage-agent-demo/manifesto.html) |
-| **🗓️ Roadmap** | Development timeline | [View →](https://artemis-sage-agent.github.io/sage-agent-demo/roadmap.html) |
+| **🏠 Landing Page** | Project overview and vision | [View →](https://ArtemisHunts.github.io/sage-agent-demo/) |
+| **📊 Dashboard** | Fleet management interface | [View →](https://ArtemisHunts.github.io/sage-agent-demo/dashboard.html) |
+| **🔍 Fleet Analyzer** | Technical AI analysis | [View →](https://ArtemisHunts.github.io/sage-agent-demo/analyzer.html) |
+| **📜 Manifesto** | Vision for autonomous gaming | [View →](https://ArtemisHunts.github.io/sage-agent-demo/manifesto.html) |
+| **🗓️ Roadmap** | Development timeline | [View →](https://ArtemisHunts.github.io/sage-agent-demo/roadmap.html) |
 
 ---
 
@@ -148,7 +148,7 @@ Batch optimization: 50+ account requests per RPC call
 
 ```bash
 # Clone the repository
-git clone https://github.com/artemis-sage-agent/sage-agent-demo.git
+git clone https://github.com/ArtemisHunts/sage-agent-demo.git
 cd sage-agent-demo
 
 # Install dependencies (if using build tools)
@@ -470,8 +470,8 @@ const ALERTS = {
 ### Official Links
 | Resource | URL |
 |----------|-----|
-| **🎮 Live Demo** | https://artemis-sage-agent.github.io/sage-agent-demo/ |
-| **📚 Documentation** | https://github.com/artemis-sage-agent/docs |
+| **🎮 Live Demo** | https://ArtemisHunts.github.io/sage-agent-demo/ |
+| **📚 Documentation** | https://github.com/ArtemisHunts/docs |
 | **💬 Community** | [Discord Server](https://discord.gg/staratlas) |
 | **🐦 Updates** | [@TheArtemisHunts](https://x.com/TheArtemisHunts) |
 
@@ -536,10 +536,10 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 📈 Analytics & Metrics
 
 ### Repository Statistics
-![GitHub stars](https://img.shields.io/github/stars/artemis-sage-agent/sage-agent-demo?style=social)
-![GitHub forks](https://img.shields.io/github/forks/artemis-sage-agent/sage-agent-demo?style=social)
-![GitHub issues](https://img.shields.io/github/issues/artemis-sage-agent/sage-agent-demo)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/artemis-sage-agent/sage-agent-demo)
+![GitHub stars](https://img.shields.io/github/stars/ArtemisHunts/sage-agent-demo?style=social)
+![GitHub forks](https://img.shields.io/github/forks/ArtemisHunts/sage-agent-demo?style=social)
+![GitHub issues](https://img.shields.io/github/issues/ArtemisHunts/sage-agent-demo)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/ArtemisHunts/sage-agent-demo)
 
 ### Technology Stack
 ![HTML](https://img.shields.io/badge/HTML-E34F26?style=flat&logo=html5&logoColor=white)

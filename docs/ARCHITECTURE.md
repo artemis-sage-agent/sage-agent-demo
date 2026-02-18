@@ -466,4 +466,4 @@ The architecture prioritizes reliability, security, and user control while provi
 
 ---
 
-*For technical questions or contribution guidelines, see our [GitHub repository](https://github.com/artemis-sage-agent/sage-agent-demo) or join our [Discord community](https://discord.gg/staratlas).*
+*For technical questions or contribution guidelines, see our [GitHub repository](https://github.com/ArtemisHunts/sage-agent-demo) or join our [Discord community](https://discord.gg/staratlas).*

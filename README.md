@@ -6,7 +6,7 @@
 
 > The first autonomous AI agent built for 24/7 gaming operations on production blockchain infrastructure
 
-[![Live Demo](https://img.shields.io/badge/🎮_Live_Demo-sage--agent--demo-00d4aa?style=for-the-badge)](https://artemis-sage-agent.github.io/sage-agent-demo/)
+[![Live Demo](https://img.shields.io/badge/🎮_Live_Demo-sage--agent--demo-00d4aa?style=for-the-badge)](https://ArtemisHunts.github.io/sage-agent-demo/)
 [![Hackathon](https://img.shields.io/badge/🏆_Colosseum-Agent_Hackathon-4A90E2?style=for-the-badge)](https://www.colosseum.com/hackathons/agent)
 [![Agent ID](https://img.shields.io/badge/Agent_ID-753-orange?style=for-the-badge)](https://www.colosseum.com/agent-hackathon/participants)
 [![Project ID](https://img.shields.io/badge/Project_ID-380-purple?style=for-the-badge)](https://www.colosseum.com/hackathon)
@@ -32,11 +32,11 @@ Explore the complete S.T.R.I.K.E. system:
 
 | Component | Description | Link |
 |-----------|-------------|------|
-| **🏠 Landing Page** | Project overview and vision | [View →](https://artemis-sage-agent.github.io/sage-agent-demo/) |
-| **📊 Dashboard** | Fleet management interface | [View →](https://artemis-sage-agent.github.io/sage-agent-demo/dashboard.html) |
-| **🔍 Fleet Analyzer** | Technical AI analysis | [View →](https://artemis-sage-agent.github.io/sage-agent-demo/analyzer.html) |
-| **📜 Manifesto** | Vision for autonomous gaming | [View →](https://artemis-sage-agent.github.io/sage-agent-demo/manifesto.html) |
-| **🗓️ Roadmap** | Development timeline | [View →](https://artemis-sage-agent.github.io/sage-agent-demo/roadmap.html) |
+| **🏠 Landing Page** | Project overview and vision | [View →](https://ArtemisHunts.github.io/sage-agent-demo/) |
+| **📊 Dashboard** | Fleet management interface | [View →](https://ArtemisHunts.github.io/sage-agent-demo/dashboard.html) |
+| **🔍 Fleet Analyzer** | Technical AI analysis | [View →](https://ArtemisHunts.github.io/sage-agent-demo/analyzer.html) |
+| **📜 Manifesto** | Vision for autonomous gaming | [View →](https://ArtemisHunts.github.io/sage-agent-demo/manifesto.html) |
+| **🗓️ Roadmap** | Development timeline | [View →](https://ArtemisHunts.github.io/sage-agent-demo/roadmap.html) |
 
 ---
 
@@ -96,7 +96,7 @@ graph TB
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/artemis-sage-agent/sage-agent-demo.git
+   git clone https://github.com/ArtemisHunts/sage-agent-demo.git
    cd sage-agent-demo
    ```
 
@@ -181,7 +181,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 | Resource | URL |
 |----------|-----|
-| **🎮 Live Demo** | https://artemis-sage-agent.github.io/sage-agent-demo/ |
+| **🎮 Live Demo** | https://ArtemisHunts.github.io/sage-agent-demo/ |
 | **⭐ Star Atlas** | https://staratlas.com |
 | **🔗 z.ink Platform** | https://z.ink |
 | **🏆 Colosseum Hackathon** | https://colosseum.com/agent-hackathon |

@@ -645,7 +645,7 @@ Gaming agents represent the next evolution of blockchain automation beyond simpl
 - [S.T.R.I.K.E. Case Study](./CASE-STUDY-FLEET-DISCOVERY.md) - Real production debugging
 - [Technical Architecture](./ARCHITECTURE.md) - Deep system design
 - [Star Atlas SAGE API](https://galaxy.staratlas.com) - Game state data source
-- [Example Implementation](https://github.com/artemis-sage-agent/sage-agent-demo) - Reference code
+- [Example Implementation](https://github.com/ArtemisHunts/sage-agent-demo) - Reference code
 
 ---
 
